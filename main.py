@@ -3,8 +3,7 @@ import pygubu
 import tkinter as tk
 import tkinter.ttk as ttk
 
-import guiMagazzino
-import guiOrdini
+import interfacce
 
 PROJECT_PATH = pathlib.Path(__file__).parent
 PROJECT_UI = PROJECT_PATH / "StockItManager.ui"
@@ -113,10 +112,10 @@ class StockitmanagerApp:
         self.mainwindow.mainloop()
 
     def GestioneMagazzino(self):
-        guiMagazzino.RicercaProdottoWidget()
+        interfacce.RicercaProdottoWidget()
 
     def GestioneOrdini(self):
-        guiOrdini.OrdiniWidget()
+        interfacce.OrdiniWidget()
 
     def GestioneAssistenza(self):
         pass

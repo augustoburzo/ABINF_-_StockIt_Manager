@@ -314,7 +314,7 @@
           <property name="row">0</property>
         </layout>
         <child>
-          <object class="tk.Label" id="label1">
+          <object class="tk.Label" id="labelNomeProdotto">
             <property name="background">#fff</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#01509e</property>
@@ -327,7 +327,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry1">
+          <object class="tk.Entry" id="entryNomeProdotto">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
@@ -340,7 +340,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="label2">
+          <object class="tk.Label" id="labelQnty">
             <property name="background">#fff</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#01509e</property>
@@ -353,7 +353,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry2">
+          <object class="tk.Entry" id="entryQntyProdotto">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
@@ -367,7 +367,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="label5">
+          <object class="tk.Label" id="labelNote">
             <property name="background">#fff</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#01509e</property>
@@ -381,7 +381,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry3">
+          <object class="tk.Entry" id="entryNote">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
@@ -394,7 +394,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="label6">
+          <object class="tk.Label" id="labelCliente">
             <property name="background">#fff</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#01509e</property>
@@ -407,7 +407,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Entry" id="entry4">
+          <object class="tk.Entry" id="entryCliente">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
@@ -422,7 +422,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Label" id="label7">
+          <object class="tk.Label" id="labelDestinazione">
             <property name="background">#fff</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#01509e</property>
@@ -435,7 +435,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Listbox" id="listbox2">
+          <object class="tk.Listbox" id="lbDestinazione">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
@@ -455,6 +455,7 @@
             <property name="activebackground">#016ad3</property>
             <property name="activeforeground">#aaa</property>
             <property name="background">#016ad3</property>
+            <property name="command" type="command" cbtype="simple">inserisciOrdine</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="foreground">#fff</property>
             <property name="highlightbackground">#01509e</property>
@@ -488,7 +489,7 @@
           <property name="row">1</property>
         </layout>
         <child>
-          <object class="tk.Listbox" id="listbox1">
+          <object class="tk.Listbox" id="lbProdottiInOrdine">
             <property name="background">#01509e</property>
             <property name="font">{Bahnschrift} 12 {}</property>
             <property name="height">18</property>
