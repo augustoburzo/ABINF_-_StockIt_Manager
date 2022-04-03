@@ -65,15 +65,18 @@ class OrdineLiberoWidget(tk.Toplevel):
         self.title('Inserisci ordine libero > AB Informatica - StockIt Manager')
 
     def inserisciOrdine(self):
+        #Generazione variabili
         self.nomeProdottoInOrdine = self.entry1.get()
         self.qntyProdottoInOrdine = self.entry2.get()
         self.noteProdottoInOrdine = self.entry3.get()
         self.clienteProdottoInOrdine = self.entry4.get()
         self.magazzinoProdottoInOrdine = self.listbox2.focus_get()
 
+        #Controllo dei campi, se non popolati generano errore
         if self.nomeProdottoInOrdine or self.qntyProdottoInOrdine == "":
             tk.messagebox.showerror(title="Campi incompleti", message="Completa tutti i campi richiesti!")
         else:
+            #Dove scrivere i dati raccolti dalla maschera
             print(self.nomeProdottoInOrdine+" "+self.qntyProdottoInOrdine+" "+self.noteProdottoInOrdine+" "
                   +self.clienteProdottoInOrdine)
 
