@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="tk.Toplevel" id="mainWindow">
+    <property name="background">#fff</property>
+    <property name="container">false</property>
+    <property name="height">200</property>
+    <property name="iconbitmap">barcode.ico</property>
+    <property name="minsize">800|600</property>
+    <property name="resizable">none</property>
+    <property name="title" translatable="yes">AB Informatica - StockIt Manager</property>
+    <property name="width">200</property>
+    <containerlayout manager="grid">
+      <property name="anchor">center</property>
+    </containerlayout>
+    <child>
+      <object class="ttk.Label" id="label1">
+        <property name="borderwidth">0</property>
+        <property name="image">Splash.png</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="columnspan">8</property>
+          <property name="row">0</property>
+          <property name="rowspan">6</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="frmComandi">
+        <property name="background">#fff</property>
+        <property name="height">600</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">8</property>
+          <property name="row">0</property>
+          <property name="rowspan">6</property>
+          <property name="sticky">e</property>
+        </layout>
+        <child>
+          <object class="tk.Button" id="btnMagazzino">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">GestioneMagazzino</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="highlightbackground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Magazzino</property>
+            <bind sequence="" handler="" add="" />
+            <layout manager="pack">
+              <property name="ipadx">16</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnOrdini">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">GestioneOrdini</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Ordini P.V.</property>
+            <layout manager="pack">
+              <property name="ipadx">17</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnAssistenza">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">GestioneAssistenza</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Assistenza</property>
+            <layout manager="pack">
+              <property name="ipadx">14</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnCassa">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">GestioneAssistenza</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="ipadx">33</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnBacheca">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">BackecaComunicazioni</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Bacheca
+comunicazioni</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnChat">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">ChatStaff</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Chat P.V.</property>
+            <layout manager="pack">
+              <property name="ipadx">23</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="btnStampe">
+            <property name="activebackground">#fff</property>
+            <property name="activeforeground">#0a76fa</property>
+            <property name="background">#fff</property>
+            <property name="command" type="command" cbtype="simple">StampaReport</property>
+            <property name="font">{Bahnschrift} 14 {bold}</property>
+            <property name="foreground">#01509e</property>
+            <property name="padx">20</property>
+            <property name="pady">20</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Stampe</property>
+            <layout manager="pack">
+              <property name="ipadx">29</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="pygubu.builder.widgets.toplevelmenu" id="topMenuBuilder">
+        <child>
+          <object class="tk.Menu" id="topMenu">
+            <child>
+              <object class="tk.Menuitem.Submenu" id="fileMenu">
+                <property name="label" translatable="yes">File</property>
+                <property name="tearoff">false</property>
+                <property name="underline">0</property>
+                <child>
+                  <object class="tk.Menuitem.Command" id="btnExit">
+                    <property name="label" translatable="yes">Exit</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="magazzinoMenu">
+                <property name="label" translatable="yes">Magazzino</property>
+                <property name="underline">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="ordiniMenu">
+                <property name="label" translatable="yes">Ordini</property>
+                <property name="underline">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="assistenzaMenu">
+                <property name="label" translatable="yes">Assistenza</property>
+                <property name="underline">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="cassaMenu">
+                <property name="label" translatable="yes">Cassa</property>
+                <property name="underline">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="bachecaMenu">
+                <property name="label" translatable="yes">Bacheca</property>
+                <property name="underline">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="chatMenu">
+                <property name="label" translatable="yes">Chat</property>
+                <property name="underline">1</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="stampeMenu">
+                <property name="label" translatable="yes">Stampe</property>
+                <property name="underline">4</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

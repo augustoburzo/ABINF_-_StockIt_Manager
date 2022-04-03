@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="tk.Toplevel" id="toplevel1">
+    <property name="background">#fff</property>
+    <property name="geometry">1024x600</property>
+    <property name="height">200</property>
+    <property name="iconbitmap">barcode.ico</property>
+    <property name="resizable">none</property>
+    <property name="title" translatable="yes">Ordini &gt; AB Informatica - StockIt Manager</property>
+    <property name="width">200</property>
+    <child>
+      <object class="tk.LabelFrame" id="labelframe1">
+        <property name="background">#fff</property>
+        <property name="font">{Bahnschrift} 12 {}</property>
+        <property name="foreground">#01509e</property>
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Prodotti in ordine</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="padx">10</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="tk.Listbox" id="listbox1">
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="height">8</property>
+            <property name="width">90</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.LabelFrame" id="labelframe4">
+        <property name="background">#fff</property>
+        <property name="font">{Bahnschrift} 12 {}</property>
+        <property name="foreground">#01509e</property>
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Prodotti in consegna</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="padx">10</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object class="tk.Listbox" id="listbox4">
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="height">8</property>
+            <property name="width">90</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.LabelFrame" id="labelframe5">
+        <property name="background">#fff</property>
+        <property name="font">{Bahnschrift} 12 {}</property>
+        <property name="foreground">#01509e</property>
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Prodotti ricevuti</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="padx">10</property>
+          <property name="row">2</property>
+        </layout>
+        <child>
+          <object class="tk.Listbox" id="listbox5">
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="height">8</property>
+            <property name="width">90</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="frame1">
+        <property name="background">#fff</property>
+        <property name="height">200</property>
+        <property name="width">160</property>
+        <layout manager="grid">
+          <property name="column">1</property>
+          <property name="pady">10</property>
+          <property name="row">0</property>
+          <property name="rowspan">3</property>
+          <property name="sticky">ns</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="row" id="all" name="pad">3</property>
+        </containerlayout>
+        <child>
+          <object class="tk.Button" id="button1">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Ordine magazzino</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button2">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Ordine libero</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button3">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Metti in consegna</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">2</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button4">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Consegnato</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">3</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button5">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Elimina ordine</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">4</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button6">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Tutti in consegna</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">5</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button7">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Tutti consegnati</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">6</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button8">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Rimetti in consegna</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">7</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Button" id="button9">
+            <property name="activebackground">#01509e</property>
+            <property name="activeforeground">#eee</property>
+            <property name="background">#01509e</property>
+            <property name="font">{Bahnschrift} 12 {}</property>
+            <property name="foreground">#fff</property>
+            <property name="pady">15</property>
+            <property name="relief">flat</property>
+            <property name="text" translatable="yes">Svuota ricevuti</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="row">8</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
