@@ -1,5 +1,6 @@
 import pathlib
 import tkinter as tk
+from tkinter import messagebox
 import tkinter.ttk as ttk
 
 import guiMagazzino
@@ -45,7 +46,7 @@ class OrdineLiberoWidget(tk.Toplevel):
         self.btnInserisciOrdine = tk.Button(self.frameInserisciOrdine)
         self.btnInserisciOrdine.configure(activebackground='#016ad3', activeforeground='#aaa', background='#016ad3', font='{Bahnschrift} 12 {}')
         self.btnInserisciOrdine.configure(foreground='#fff', highlightbackground='#01509e', highlightcolor='#fff', padx='20')
-        self.btnInserisciOrdine.configure(relief='flat', text='Inserisci ordine')
+        self.btnInserisciOrdine.configure(relief='flat', text='Inserisci ordine', command=self.inserisciOrdine)
         self.btnInserisciOrdine.grid(column='0', columnspan='8', padx='10', pady='10', row='2', sticky='ew')
         self.frameInserisciOrdine.configure(background='#fff', font='{Bahnschrift} 12 {}', foreground='#01509e', height='200')
         self.frameInserisciOrdine.configure(text='Inserisci ordine', width='200')
@@ -62,6 +63,19 @@ class OrdineLiberoWidget(tk.Toplevel):
         self.geometry('1024x600')
         self.resizable(False, False)
         self.title('Inserisci ordine libero > AB Informatica - StockIt Manager')
+
+    def inserisciOrdine(self):
+        self.nomeProdottoInOrdine = self.entry1.get()
+        self.qntyProdottoInOrdine = self.entry2.get()
+        self.noteProdottoInOrdine = self.entry3.get()
+        self.clienteProdottoInOrdine = self.entry4.get()
+        self.magazzinoProdottoInOrdine = self.listbox2.focus_get()
+
+        if self.nomeProdottoInOrdine or self.qntyProdottoInOrdine == "":
+            tk.messagebox.showerror(title="Campi incompleti", message="Completa tutti i campi richiesti!")
+        else:
+            print(self.nomeProdottoInOrdine+" "+self.qntyProdottoInOrdine+" "+self.noteProdottoInOrdine+" "
+                  +self.clienteProdottoInOrdine)
 
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
