@@ -4,6 +4,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 import guiMagazzino
+import guiOrdini
 
 PROJECT_PATH = pathlib.Path(__file__).parent
 PROJECT_UI = PROJECT_PATH / "StockItManager.ui"
@@ -12,7 +13,7 @@ PROJECT_UI = PROJECT_PATH / "StockItManager.ui"
 class StockitmanagerApp:
     def __init__(self, master=None):
         # build ui
-        self.mainWindow = tk.Toplevel(root, container='false')
+        self.mainWindow = tk.Toplevel(master, container='false')
         self.label1 = ttk.Label(self.mainWindow)
         self.img_Splash = tk.PhotoImage(file='Splash.png')
         self.label1.configure(borderwidth='0', image=self.img_Splash)
@@ -73,7 +74,7 @@ class StockitmanagerApp:
         self.fileMenu = tk.Menu(self.topMenu, tearoff='false')
         self.topMenu.add(tk.CASCADE, menu=self.fileMenu, label='File', underline='0')
         self.mi_btnExit = 0
-        self.fileMenu.add('command', label='Exit', command=root.destroy)
+        self.fileMenu.add('command', label='Exit')
         self.magazzinoMenu = tk.Menu(self.topMenu)
         self.topMenu.add(tk.CASCADE, menu=self.magazzinoMenu, label='Magazzino', underline='0')
         self.ordiniMenu = tk.Menu(self.topMenu)
@@ -89,6 +90,12 @@ class StockitmanagerApp:
         self.stampeMenu = tk.Menu(self.topMenu)
         self.topMenu.add(tk.CASCADE, menu=self.stampeMenu, label='Stampe', underline='4')
         self.mainWindow.configure(menu=self.topMenu)
+        self.btnClose = tk.Button(self.mainWindow)
+        self.btnClose.configure(activebackground='#97cbff', activeforeground='#f00', background='#97cbff',
+                                font='{Bahnschrift} 12 {}')
+        self.btnClose.configure(foreground='#ffffff', height='3', relief='flat', text='Chiudi sessione')
+        self.btnClose.grid(column='0', row='5', sticky='sw')
+        self.btnClose.configure(command=self.stop)
         self.mainWindow.configure(background='#fff', height='200', width='200')
         self.mainWindow.iconbitmap('barcode.ico')
         self.mainWindow.minsize(800, 600)
@@ -100,17 +107,16 @@ class StockitmanagerApp:
         self.mainwindow = self.mainWindow
 
     def stop(self):
-        return 0
+        root.destroy()
 
     def run(self):
         self.mainwindow.mainloop()
 
     def GestioneMagazzino(self):
         guiMagazzino.RicercaProdottoWidget()
-        pass
 
     def GestioneOrdini(self):
-        pass
+        guiOrdini.OrdiniWidget()
 
     def GestioneAssistenza(self):
         pass
@@ -129,5 +135,4 @@ if __name__ == '__main__':
     root.withdraw()
     app = StockitmanagerApp(root)
     app.run()
-
 

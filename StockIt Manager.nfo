@@ -1,0 +1,100 @@
+**AB Informatica - StockIt Manager**
+
+#FUNZIONI BASE
+	1. Gestione Magazzino
+	2. Gestione Ordini Punti Vendita
+	3. Gestione Assistenza Prodotti
+	4. Bacheca Comunicazioni
+	5. Chat Punti Vendita
+	6. Gestione Cassa
+	7. Stampa Report
+	8. Fidelity Card
+------------------------------------------------------------
+
+#STRUTTURA DATABASE
+
+	##Elenco tabelle
+	
+		1.	productTable	#Tabella prodotti
+		2.	IVApercents		#Tabella regimi iva
+		3.	ordersTable		#Tabella ordini
+		4.	usersTable		#Tabella operatori
+		5.	storesTable		#Tabella punti vendita
+		6.	assistanceTable	#Tabella prodotti in assistenza
+		7.	socialTable		#Tabella bacheca social
+		8.	chatTable		#Tabella cronologia chat
+		9.	categoriesTable	#Tabella categorie prodotto
+		10.	fidelityCard	#Tabella fidelity card
+		
+	##Contenuto tabelle
+	
+		1.	productTable
+			1.1		IDProdotto
+			1.2		nomeProdotto
+			1.3		regimeIVA
+			1.4		costoProdotto
+			1.5		prezzoPubblico
+			1.6		EAN
+			1.7		categoriaProdotto
+			1.8		qntyProdotto
+			1.9		giacenzaMag1
+			1.10	giacenzaMag2
+			1.11	giacenzaMag3
+		
+		2.	IVApercents
+			2.1		IDAliquota
+			2.2		nomeAliquota
+			2.3		percentualeAliquota
+			2.4		descrizioneAliquota
+			
+		3.	ordersTable
+			3.1		IDOrdine
+			3.2		IDProdotto
+			3.3		nomeProdotto
+			3.4		qntyOrdineProdotto
+			3.5		noteOrdine
+			3.6		puntoVenditaDest
+			3.7		operatore
+			
+		4.	usersTable
+			4.1		IDOperatore
+			4.2		nomeOperatore
+			4.3		cognomeOperatore
+			4.4		puntoVendita
+			4.5		pwdOperatore
+		
+###################DA COMPLETARE
+
+
+#INTERFACCIA ORDINI
+	
+	##Buttons
+		btnOrdineMagazzino	#Ordine magazzino
+			@ordineMagazzino
+			
+		btnOrdineLibero		#Ordine libero
+			@ordineLibero
+			
+		btnInConsegna		#Metti in consegna
+			@inConsegna
+			
+		btnConsegnato		#Consegnato
+			@consegnato
+			
+		btnEliminaOrdine	#Elimina ordine
+			@eliminaOrdine
+			
+		btnTuttiInConsegna	#Tutti in consegna
+			@tuttiInConsegna
+			
+		btnTuttiConsegnati	#Tutti consegnati
+			@tuttiConsegnati
+			
+		btnRimettiConsegna	#Rimetti in consegna
+			@rimettiConsegna
+			
+		btnSvuota			#Svuota ricevuti
+			@svuotaRicevuti
+		
+		
+		
