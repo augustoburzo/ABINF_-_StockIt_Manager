@@ -9,8 +9,11 @@ from tkinter import END, ANCHOR, TOP, BOTH, NO, YES
 import mysql.connector
 from fpdf import FPDF
 import threading
+import tkinter.simpledialog
+import tkinter.messagebox
 
 import databaseOperations
+import main
 
 columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
@@ -216,16 +219,47 @@ class OrdiniWidget(tk.Toplevel):
         self.aggiornamentoOrdini()
 
     def nuovoOrdine(self):
-        pass
+        self.nomeProdotto = self.entryNomeProdotto.get()
+        self.quantita = self.entryQuantita.get()
+        self.note = self.entryNoteProdotto.get()
+        self.nomeCliente = self.entryNomeCliente.get()
+
+        #INSERISCE I DATI NEL DATABASE
+        databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente)
+
+        #AGGIORNA LA TABELLA ORDINI
+        self.aggiornamentoOrdini()
+
+        #AZZERA I CAMPI
+        self.entryNomeProdotto.delete(0,END)
+        self.entryQuantita.delete(0,END)
+        self.entryNoteProdotto.delete(0,END)
+        self.entryNomeCliente.delete(0,END)
+
+
 
     def eliminaOrdine(self):
-        pass
+        indice = self.tblOrdiniDaEvadere.focus()
+        idx = self.tblOrdiniDaEvadere.item(indice)
+
 
     def evadiOrdine(self):
-        pass
+        indice = self.tblOrdiniDaEvadere.focus()
+        idx = self.tblOrdiniDaEvadere.item(indice)
+        valore = idx['values'][0]
+
+        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='',quantity='')
+
+        self.aggiornamentoOrdini()
 
     def ordineConsegnato(self):
-        pass
+        indice = self.tblOrdiniEvasi.focus()
+        idx = self.tblOrdiniEvasi.item(indice)
+        valore = idx['values'][0]
+
+        databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+
+        self.aggiornamentoOrdini()
 
     def aggiornamentoOrdini(self):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
@@ -233,9 +267,21 @@ class OrdiniWidget(tk.Toplevel):
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
 
+        #PULISCE TABELLA
+        self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
+
         for ordine in ordini:
             self.tblOrdiniDaEvadere.insert("", END, values=ordine)
-            print(ordine)
+
+        self.cursor.execute("SELECT * FROM orders_shipped")
+        ordini = self.cursor.fetchall()
+
+        # PULISCE TABELLA
+        self.tblOrdiniEvasi.delete(*self.tblOrdiniEvasi.get_children())
+
+        for ordine in ordini:
+            self.tblOrdiniEvasi.insert("", END, values=ordine)
+
 
 #FINESTRA STAMPE########################################################################################################
 class StampeWidget(tk.Toplevel):
@@ -380,11 +426,12 @@ class StockItApp:
         self.btnBuoni.configure(image=self.img_creditcard, text='Cassa')
         self.btnBuoni.pack(expand='false', padx='5', side='left')
         self.btnBuoni.configure(command=self.finestraFidelity)
-        self.btnSettings = ttk.Button(self.frmPulsantiSup)
-        self.img_settings = tk.PhotoImage(file='settings.png')
-        self.btnSettings.configure(image=self.img_settings, text='Cassa')
-        self.btnSettings.pack(expand='false', padx='5', side='left')
-        self.btnSettings.configure(command=self.finestraFidelity)
+        if operatore == False:
+            self.btnSettings = ttk.Button(self.frmPulsantiSup)
+            self.img_settings = tk.PhotoImage(file='settings.png')
+            self.btnSettings.configure(image=self.img_settings, text='Cassa')
+            self.btnSettings.pack(expand='false', padx='5', side='left')
+            self.btnSettings.configure(command=self.finestraFidelity)
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
@@ -428,6 +475,10 @@ class StockItApp:
         self.btnOrdineEvaso.configure(text='Ordine evaso')
         self.btnOrdineEvaso.pack(expand='false', ipadx='10', ipady='6', side='left')
         self.btnOrdineEvaso.configure(command=self.ordineEvaso)
+        self.btnAggiornaOrdini = ttk.Button(self.frmPulsantiInf)
+        self.btnAggiornaOrdini.configure(text='Aggiorna ordini')
+        self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
+        self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
         self.btnInserisciComunicazione = ttk.Button(self.frmPulsantiInf)
         self.btnInserisciComunicazione.configure(text='Inserisci comunicazione')
         self.btnInserisciComunicazione.pack(expand='false', ipadx='10', ipady='6', side='right')
@@ -474,7 +525,13 @@ class StockItApp:
         pass
 
     def ordineEvaso(self):
-        pass
+        indice = self.tblOrdiniDaEvadere.focus()
+        idx = self.tblOrdiniDaEvadere.item(indice)
+        valore = idx['values'][0]
+
+        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+
+        self.aggiornamentoOrdini()
 
     def inserisciComunicazione(self):
         pass
@@ -488,17 +545,37 @@ class StockItApp:
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
 
+        self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
+
+
         for ordine in ordini:
             self.tblOrdiniDaEvadere.insert("", END, values=ordine)
-            print(ordine)
+
+operatore = False
 
 if __name__ == '__main__':
+
+
+    def getPassword(prompt='Inserisci password', confirm=1):
+        try1 = tkinter.simpledialog.askstring('Password', prompt, show='*')
+
+        if try1 == '3791464824':
+            operatore = False
+        elif try1 == 'operatore':
+            operatore = True
+            return operatore
+        else:
+            tkinter.messagebox.showerror()
+            exit()
+
     databaseOperations.VerificaDatabase()
+
     root = tk.Tk()
     root.minsize(width=700, height=650)
     root.geometry('1024x650')
     root.state('zoomed')
     root.title('AB Informatica - StockIt Manager')
     root.iconbitmap('barcode.ico')
+    #operatore = getPassword()
     app = StockItApp(root)
     app.run()
