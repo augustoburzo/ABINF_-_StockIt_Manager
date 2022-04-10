@@ -1,0 +1,16 @@
+[client]
+host=z2599.ddns.net
+user=z2599
+password=mtsa6156
+database=stockit
+port=3306
+socket=/tmp/mysql.sock
+
+[mysqld]
+port=3306
+socket=/tmp/mysql.sock
+key_buffer_size=16M
+max_allowed_packet=128M
+
+[mysqldump]
+quick

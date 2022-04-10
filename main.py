@@ -2,29 +2,134 @@ import pathlib
 import pygubu
 import tkinter as tk
 import tkinter.ttk as ttk
+from pygubu.widgets.calendarframe import CalendarFrame
+from multiprocessing import Process
+from playsound import playsound
+from tkinter import END, ANCHOR, TOP, BOTH, NO, YES
+import mysql.connector
+from fpdf import FPDF
+import threading
 
-PROJECT_PATH = pathlib.Path(__file__).parent
-PROJECT_UI = PROJECT_PATH / "NewGUI.ui"
+columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
+columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
 
+#FINESTRA ASSISTENZA####################################################################################################
+class AssistenzaWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(AssistenzaWidget, self).__init__(master, **kw)
+        self.lfNuovaPratica = ttk.Labelframe(self)
+        self.frameAssLabel = ttk.Frame(self.lfNuovaPratica)
+        self.lblAssNomeCliente = ttk.Label(self.frameAssLabel)
+        self.lblAssNomeCliente.configure(text='Nome cliente:')
+        self.lblAssNomeCliente.pack(anchor='e', expand='true', side='top')
+        self.lblAssContattoCliente = ttk.Label(self.frameAssLabel)
+        self.lblAssContattoCliente.configure(text='Contatto cliente:')
+        self.lblAssContattoCliente.pack(anchor='e', expand='true', side='top')
+        self.lblAssProdotto = ttk.Label(self.frameAssLabel)
+        self.lblAssProdotto.configure(text='Prodotto:')
+        self.lblAssProdotto.pack(anchor='e', expand='true', side='top')
+        self.lblAssDifetto = ttk.Label(self.frameAssLabel)
+        self.lblAssDifetto.configure(text='Difetto riscontrato:')
+        self.lblAssDifetto.pack(anchor='e', expand='true', side='top')
+        self.lblAssData = ttk.Label(self.frameAssLabel)
+        self.lblAssData.configure(text='Data di consegna:')
+        self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
+        self.frameAssLabel.configure(width='200')
+        self.frameAssLabel.pack(expand='false', fill='y', padx='5', pady='5', side='left')
+        self.frameEntryAss = ttk.Frame(self.lfNuovaPratica)
+        self.entryAssNomeCliente = ttk.Entry(self.frameEntryAss)
+        self.entryAssNomeCliente.configure(width='60')
+        self.entryAssNomeCliente.pack(expand='true', fill='x', side='top')
+        self.entryAssContattoCliente = ttk.Entry(self.frameEntryAss)
+        self.entryAssContattoCliente.configure(width='60')
+        self.entryAssContattoCliente.pack(expand='true', fill='x', side='top')
+        self.entryAssProdotto = ttk.Entry(self.frameEntryAss)
+        self.entryAssProdotto.configure(width='60')
+        self.entryAssProdotto.pack(expand='true', fill='x', side='top')
+        self.entryAssDifetto = ttk.Entry(self.frameEntryAss)
+        self.entryAssDifetto.configure(width='60')
+        self.entryAssDifetto.pack(expand='true', fill='x', side='top')
+        self.calendarDataCons = CalendarFrame(self.frameEntryAss)
+        self.calendarDataCons.configure(firstweekday='6', month='1')
+        self.calendarDataCons.pack(anchor='w', side='left')
+        self.lblAssNote = ttk.Label(self.frameEntryAss)
+        self.lblAssNote.configure(padding='5', text='Note:')
+        self.lblAssNote.pack(anchor='e', expand='false', ipady='80', side='left')
+        self.textAssNote = tk.Text(self.frameEntryAss)
+        self.textAssNote.configure(height='10', width='35')
+        self.textAssNote.pack(expand='true', fill='both', side='top')
+        self.frameEntryAss.configure(height='200', width='200')
+        self.frameEntryAss.pack(expand='true', fill='both', padx='5', pady='5', side='left')
+        self.btnNuovaAssistenza = ttk.Button(self.lfNuovaPratica)
+        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.btnNuovaAssistenza.configure(image=self.img_plus, text='Inserisci')
+        self.btnNuovaAssistenza.pack(expand='true', padx='5', pady='5', side='top')
+        self.btnNuovaAssistenza.configure(command=self.nuovaAssistenza)
+        self.vuoto1 = ttk.Frame(self.lfNuovaPratica)
+        self.vuoto1.configure(height='185', width='64')
+        self.vuoto1.pack(side='top')
+        self.lfNuovaPratica.configure(height='200', text='Nuova Pratica Assistenza', width='200')
+        self.lfNuovaPratica.pack(expand='false', fill='x', padx='5', pady='5', side='top')
+        self.lfPraticheInCorso = ttk.Labelframe(self)
+        self.treeview1 = ttk.Treeview(self.lfPraticheInCorso)
+        self.treeview1.pack(expand='true', fill='both', side='top')
+        self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
+        self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frame3 = ttk.Frame(self)
+        self.btnInLavorazione = ttk.Button(self.frame3)
+        self.btnInLavorazione.configure(text='Pratica in lavorazione')
+        self.btnInLavorazione.pack(expand='true', fill='x', side='left')
+        self.btnInLavorazione.configure(command=self.praticaLavorazione)
+        self.btnPraticaLavorata = ttk.Button(self.frame3)
+        self.btnPraticaLavorata.configure(text='Pratica lavorata')
+        self.btnPraticaLavorata.pack(expand='true', fill='x', side='left')
+        self.btnPraticaLavorata.configure(command=self.praticaLavorata)
+        self.btnPraticaRestituita = ttk.Button(self.frame3)
+        self.btnPraticaRestituita.configure(text='Pratica restituita')
+        self.btnPraticaRestituita.pack(expand='true', fill='x', side='left')
+        self.btnPraticaRestituita.configure(command=self.praticaRestituita)
+        self.frame3.configure(height='200', width='200')
+        self.frame3.pack(fill='x', padx='5', side='top')
+        self.sizegrip3 = ttk.Sizegrip(self)
+        self.sizegrip3.pack(anchor='se', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('800x600')
+        self.minsize(1024, 680)
+        self.title('Gestione Assistenza | AB Informatica - StockIt Manager')
 
+    def nuovaAssistenza(self):
+        pass
 
+    def praticaLavorazione(self):
+        pass
+
+    def praticaLavorata(self):
+        pass
+
+    def praticaRestituita(self):
+        pass
+
+#FINESTRA ORDINI########################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-        super(OrdiniWidget, self).__init__(master, **kw)
+        self.mydb = mysql.connector.connect(option_files='connector.cnf') #CONNESSIONE DATABASE
+        self.cursor = self.mydb.cursor()
+
+        super(OrdiniWidget, self).__init__(master, **kw) #INIZIO BUILD INTERFACCIA ORDINI
         self.lfNuovoOrdine = ttk.Labelframe(self)
         self.frameLabelOrdine = ttk.Frame(self.lfNuovoOrdine)
-        self.label4 = ttk.Label(self.frameLabelOrdine)
-        self.label4.configure(text='Nome prodotto:')
-        self.label4.pack(anchor='e', expand='true', side='top')
-        self.label5 = ttk.Label(self.frameLabelOrdine)
-        self.label5.configure(text='Quantità:')
-        self.label5.pack(anchor='e', expand='true', side='top')
-        self.label6 = ttk.Label(self.frameLabelOrdine)
-        self.label6.configure(text='Note:')
-        self.label6.pack(anchor='e', expand='true', side='top')
-        self.label7 = ttk.Label(self.frameLabelOrdine)
-        self.label7.configure(text='Nome cliente:')
-        self.label7.pack(anchor='e', expand='true', side='top')
+        self.lblOrdNomeProdotto = ttk.Label(self.frameLabelOrdine)
+        self.lblOrdNomeProdotto.configure(text='Nome prodotto:')
+        self.lblOrdNomeProdotto.pack(anchor='e', expand='true', side='top')
+        self.lblOrdQuantita = ttk.Label(self.frameLabelOrdine)
+        self.lblOrdQuantita.configure(text='Quantità:')
+        self.lblOrdQuantita.pack(anchor='e', expand='true', side='top')
+        self.lblOrdNote = ttk.Label(self.frameLabelOrdine)
+        self.lblOrdNote.configure(text='Note:')
+        self.lblOrdNote.pack(anchor='e', expand='true', side='top')
+        self.lblNomeCliente = ttk.Label(self.frameLabelOrdine)
+        self.lblNomeCliente.configure(text='Nome cliente:')
+        self.lblNomeCliente.pack(anchor='e', expand='true', side='top')
         self.frameLabelOrdine.configure(width='200')
         self.frameLabelOrdine.pack(expand='false', fill='y', padx='5', pady='5', side='left')
         self.frameEntryOrdine = ttk.Frame(self.lfNuovoOrdine)
@@ -50,13 +155,39 @@ class OrdiniWidget(tk.Toplevel):
         self.lfNuovoOrdine.configure(height='200', text='Nuovo Ordine', width='200')
         self.lfNuovoOrdine.pack(expand='false', fill='x', padx='5', pady='5', side='top')
         self.lfNuoviOrdini = ttk.Labelframe(self)
-        self.tabOrdiniDaEvadere = ttk.Treeview(self.lfNuoviOrdini)
-        self.tabOrdiniDaEvadere.pack(expand='true', fill='both', side='top')
+
+        #TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
+        self.tblOrdiniDaEvadere = ttk.Treeview(self.lfNuoviOrdini, columns=columnsOrdini, show='headings')
+        self.tblOrdiniDaEvadere.pack(expand='true', fill='both', side='top')
+        self.tblOrdiniDaEvadere.heading('numOrdine', text='Prog.')
+        self.tblOrdiniDaEvadere.column(0, width=40, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('nomeProdotto', text='Nome Prodotto')
+        self.tblOrdiniDaEvadere.heading('quantita', text='Quantità')
+        self.tblOrdiniDaEvadere.column(2, width=67, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('note', text='Note')
+        self.tblOrdiniDaEvadere.column(3, width=100, stretch=YES)
+        self.tblOrdiniDaEvadere.heading('nomeCliente', text='Nome cliente')
+        self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
+        ################################################################################################################
+
         self.lfNuoviOrdini.configure(height='200', text='Ordini da evadere', width='200')
         self.lfNuoviOrdini.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.lfOrdiniEvasi = ttk.Labelframe(self)
-        self.tabOrdiniEvasi = ttk.Treeview(self.lfOrdiniEvasi)
-        self.tabOrdiniEvasi.pack(expand='true', fill='both', side='top')
+
+        #TABELLA ORDINI EVASI###########################################################################################
+        self.tblOrdiniEvasi = ttk.Treeview(self.lfOrdiniEvasi, columns=columnsOrdini, show='headings')
+        self.tblOrdiniEvasi.pack(expand='true', fill='both', side='top')
+        self.tblOrdiniEvasi.heading('numOrdine', text='Prog.')
+        self.tblOrdiniEvasi.column(0, width=40, stretch=NO)
+        self.tblOrdiniEvasi.heading('nomeProdotto', text='Nome Prodotto')
+        self.tblOrdiniEvasi.heading('quantita', text='Quantità')
+        self.tblOrdiniEvasi.column(2, width=67, stretch=NO)
+        self.tblOrdiniEvasi.heading('note', text='Note')
+        self.tblOrdiniEvasi.column(3, width=100, stretch=YES)
+        self.tblOrdiniEvasi.heading('nomeCliente', text='Nome cliente')
+        self.tblOrdiniEvasi.column(4, width=300, stretch=NO)
+        ################################################################################################################
+
         self.lfOrdiniEvasi.configure(height='200', text='Ordini evasi', width='200')
         self.lfOrdiniEvasi.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.framePulsantiInf = ttk.Frame(self)
@@ -79,6 +210,9 @@ class OrdiniWidget(tk.Toplevel):
         self.configure(height='200', width='200')
         self.geometry('800x600')
         self.minsize(1024, 680)
+        self.title('Gestione Ordini | AB Informatica - StockIt Manager')
+
+        self.aggiornamentoOrdini()
 
     def nuovoOrdine(self):
         pass
@@ -92,7 +226,16 @@ class OrdiniWidget(tk.Toplevel):
     def ordineConsegnato(self):
         pass
 
-###################################FINESTRA STAMPE######################################################################
+    def aggiornamentoOrdini(self):
+
+        self.cursor.execute("SELECT * FROM orders_to_ship")
+        ordini = self.cursor.fetchall()
+
+        for ordine in ordini:
+            self.tblOrdiniDaEvadere.insert("", END, values=ordine)
+            print(ordine)
+
+#FINESTRA STAMPE########################################################################################################
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(StampeWidget, self).__init__(master, **kw)
@@ -199,9 +342,8 @@ class StampeWidget(tk.Toplevel):
     def stampaComunicazione(self):
         pass
 
-################################INTERFACCIA FINESTRA BASE###############################################################
-
-class NewguiApp:
+#FINESTRA PRINCIPALE####################################################################################################
+class StockItApp:
     def __init__(self, master=None):
         # build ui
         self.masterFrame = ttk.Frame(master)
@@ -239,13 +381,29 @@ class NewguiApp:
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
+        #TABELLA COMUNICAZIONI E DEFINIZIONI############################################################################
         self.tblComunicazioni = ttk.Treeview(self.lfComunicazioni)
         self.tblComunicazioni.pack(expand='true', fill='both', padx='4', pady='4', side='top')
-        self.lfComunicazioni.configure(height='200', text='Comunicazioni', width='200')
+        ################################################################################################################
+
+        self.lfComunicazioni.configure(height='200', text='Comunicazioni', width='200') #LABELFRAME COMUNICAZIONI
         self.lfComunicazioni.pack(expand='true', fill='both', pady='5', side='top')
         self.lfOrdiniDaEvadere = ttk.Labelframe(self.masterFrame)
-        self.tblOrdiniDaEvadere = ttk.Treeview(self.lfOrdiniDaEvadere)
+
+        #TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
+        self.tblOrdiniDaEvadere = ttk.Treeview(self.lfOrdiniDaEvadere, columns=columnsOrdini, show='headings')
         self.tblOrdiniDaEvadere.pack(expand='true', fill='both', padx='4', pady='4', side='top')
+        self.tblOrdiniDaEvadere.heading('numOrdine', text='Prog.')
+        self.tblOrdiniDaEvadere.column(0, width=40, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('nomeProdotto', text='Nome Prodotto')
+        self.tblOrdiniDaEvadere.heading('quantita', text='Quantità')
+        self.tblOrdiniDaEvadere.column(2, width=67, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('note', text='Note')
+        self.tblOrdiniDaEvadere.column(3, width=100, stretch=YES)
+        self.tblOrdiniDaEvadere.heading('nomeCliente', text='Nome cliente')
+        self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
+        ################################################################################################################
+
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
         self.lfOrdiniDaEvadere.pack(expand='true', fill='both', side='top')
         self.sizegrip1 = ttk.Sizegrip(self.masterFrame)
@@ -276,6 +434,8 @@ class NewguiApp:
         self.masterFrame.configure(height='200', width='1024')
         self.masterFrame.pack(expand='true', fill='both', side='top')
 
+        self.aggiornamentoOrdini()
+
         # Main widget
         self.mainwindow = self.masterFrame
 
@@ -289,7 +449,7 @@ class NewguiApp:
         OrdiniWidget(root)
 
     def finestraAssistenza(self):
-        pass
+        AssistenzaWidget(root)
 
     def finestraCassa(self):
         pass
@@ -315,13 +475,22 @@ class NewguiApp:
     def eliminaComunicazione(self):
         pass
 
+    def aggiornamentoOrdini(self):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        self.cursor.execute("SELECT * FROM orders_to_ship")
+        ordini = self.cursor.fetchall()
+
+        for ordine in ordini:
+            self.tblOrdiniDaEvadere.insert("", END, values=ordine)
+            print(ordine)
 
 if __name__ == '__main__':
     root = tk.Tk()
     root.minsize(width=700, height=650)
     root.geometry('1024x650')
     root.state('zoomed')
-    app = NewguiApp(root)
+    root.title('AB Informatica - StockIt Manager')
+    root.iconbitmap('barcode.ico')
+    app = StockItApp(root)
     app.run()
-
-
