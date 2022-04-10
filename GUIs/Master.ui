@@ -508,4 +508,11 @@
       </object>
     </child>
   </object>
+  <object class="tk.Toplevel" id="toplevel1">
+    <property name="background">#fff</property>
+    <property name="geometry">640x480</property>
+    <property name="height">200</property>
+    <property name="title" translatable="yes">Seleziona quantità e magazzino</property>
+    <property name="width">200</property>
+  </object>
 </interface>

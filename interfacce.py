@@ -1,8 +1,11 @@
 import pathlib
+import threading
 import tkinter as tk
+from multiprocessing import Process
 from tkinter import messagebox, END
 import tkinter.ttk as ttk
 
+#INTERFACCIA RICERCA PRODOTTI
 
 class RicercaProdottoWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
@@ -86,6 +89,8 @@ class RicercaProdottoWidget(tk.Toplevel):
         self.resizable(False, False)
         self.title('Ricerca Prodotto > AB Informatica - StockIt Manager')
 
+
+#INTERFACCIA INSERIMENTO ORDINE LIBERO
 class OrdineLiberoWidget(tk.Toplevel):
     def __init__(self, master=None):
         # build ui
@@ -170,7 +175,7 @@ class OrdineLiberoWidget(tk.Toplevel):
             self.entryNote.delete(0, END)
             self.entryCliente.delete(0, END)
 
-
+#INTERFACCIA ORDINI
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(OrdiniWidget, self).__init__(master, **kw)

@@ -1,0 +1,684 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="ttk.Frame" id="masterFrame">
+    <property name="height">200</property>
+    <property name="width">1024</property>
+    <layout manager="pack">
+      <property name="expand">true</property>
+      <property name="fill">both</property>
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="frmPulsantiSup">
+        <property name="height">40</property>
+        <property name="width">1024</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="fill">x</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnStampa">
+            <property name="command" type="command" cbtype="simple">finestraStampe</property>
+            <property name="image">printer.png</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">right</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnOrdini">
+            <property name="command" type="command" cbtype="simple">finestraOrdini</property>
+            <property name="image">box1.png</property>
+            <property name="text" translatable="yes">Ordini</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnAssistenza">
+            <property name="command" type="command" cbtype="simple">finestraAssistenza</property>
+            <property name="image">call-center.png</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnCassa">
+            <property name="command" type="command" cbtype="simple">finestraCassa</property>
+            <property name="image">money.png</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnChat">
+            <property name="command" type="command" cbtype="simple">finestraChat</property>
+            <property name="image">chat.png</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button2">
+            <property name="command" type="command" cbtype="simple">finestraFidelity</property>
+            <property name="image">credit-card.png</property>
+            <property name="text" translatable="yes">Cassa</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="padx">5</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfComunicazioni">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Comunicazioni</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Treeview" id="tblComunicazioni">
+            <property name="height">7</property>
+            <property name="selectmode">extended</property>
+            <property name="show">headings</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">4</property>
+              <property name="pady">4</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfOrdiniDaEvadere">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Ordini da evadere</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Treeview" id="tblOrdiniDaEvadere">
+            <property name="height">7</property>
+            <property name="selectmode">extended</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">4</property>
+              <property name="pady">4</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Sizegrip" id="sizegrip1">
+        <layout manager="pack">
+          <property name="anchor">se</property>
+          <property name="side">bottom</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frmPulsantiInf">
+        <property name="height">60</property>
+        <property name="width">1024</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="side">bottom</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnStampaOrdini">
+            <property name="command" type="command" cbtype="simple">stampaOrdini</property>
+            <property name="text" translatable="yes">Stampa ordini</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="ipadx">10</property>
+              <property name="ipady">6</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnInserisciOrdine">
+            <property name="command" type="command" cbtype="simple">finestraInserisciOrdine</property>
+            <property name="text" translatable="yes">Inserisci ordine</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="ipadx">10</property>
+              <property name="ipady">6</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnOrdineEvaso">
+            <property name="command" type="command" cbtype="simple">ordineEvaso</property>
+            <property name="text" translatable="yes">Evadi Ordine</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="ipadx">10</property>
+              <property name="ipady">6</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnInserisciComunicazione">
+            <property name="command" type="command" cbtype="simple">inserisciComunicazione</property>
+            <property name="text" translatable="yes">Inserisci comunicazione</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="ipadx">10</property>
+              <property name="ipady">6</property>
+              <property name="side">right</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnEliminaComunicazione">
+            <property name="command" type="command" cbtype="simple">eliminaComunicazione</property>
+            <property name="text" translatable="yes">Elimina comunicazione</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="ipadx">10</property>
+              <property name="ipady">6</property>
+              <property name="side">right</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="ToplevelStampe">
+    <property name="geometry">300x480</property>
+    <property name="height">200</property>
+    <property name="resizable">none</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="lfStampeOrdini">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Stampe Ordini</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnStampaNuoviOrdini">
+            <property name="command" type="command" cbtype="simple">stampaOrdini</property>
+            <property name="text" translatable="yes">Stampa nuovi ordini</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnStampaOrdiniEvasi">
+            <property name="command" type="command" cbtype="simple">stampaEvasi</property>
+            <property name="text" translatable="yes">Stampa ordini evasi</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnStampaOrdiniConsegnati">
+            <property name="command" type="command" cbtype="simple">stampaConsegnati</property>
+            <property name="text" translatable="yes">Stampa ordini consegnati</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfStampeAssistenza">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Stampe Assistenza</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnStampaNuovePratiche">
+            <property name="command" type="command" cbtype="simple">stampaNuovePratiche</property>
+            <property name="text" translatable="yes">Stampa nuove pratiche</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnStampaPraticheInLavorazione">
+            <property name="command" type="command" cbtype="simple">stampaPraticheLavorazione</property>
+            <property name="text" translatable="yes">Stampa pratiche in lavorazione</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnStampaPraticheLavorate">
+            <property name="command" type="command" cbtype="simple">stampaPraticheLavorate</property>
+            <property name="text" translatable="yes">Stampa pratiche lavorate</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfStampeCassa">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Stampe Cassa</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnReportData">
+            <property name="command" type="command" cbtype="simple">stampaReportData</property>
+            <property name="text" translatable="yes">Stampa report per data</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnReportMese">
+            <property name="command" type="command" cbtype="simple">stampaReportMese</property>
+            <property name="text" translatable="yes">Stampa report per mese</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnReportAnno">
+            <property name="command" type="command" cbtype="simple">stampaReportAnno</property>
+            <property name="text" translatable="yes">Stampa report per anno</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfStampeBuoniSpesa">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Stampe Buoni Spesa</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnBuoniReportTotale">
+            <property name="command" type="command" cbtype="simple">stampaReportBuoni</property>
+            <property name="text" translatable="yes">Stampa report totale</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnBuoniStampaReportCarta">
+            <property name="command" type="command" cbtype="simple">stampaReportPerCarta</property>
+            <property name="text" translatable="yes">Stampa report per carta</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfStampeComunicazioni">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Stampe Comunicazioni</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnStampaComunicazione">
+            <property name="command" type="command" cbtype="simple">stampaComunicazione</property>
+            <property name="text" translatable="yes">Stampa comunicazione</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="ToplevelOrdini">
+    <property name="geometry">800x600</property>
+    <property name="height">200</property>
+    <property name="minsize">800|600</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="lfNuovoOrdine">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Nuovo Ordine</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="frameLabelOrdine">
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="fill">y</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="label4">
+                <property name="text" translatable="yes">Nome prodotto:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label5">
+                <property name="text" translatable="yes">Quantità:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label6">
+                <property name="text" translatable="yes">Note:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label7">
+                <property name="text" translatable="yes">Nome cliente:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frameEntryOrdine">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Entry" id="entryNomeProdotto">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryQuantita">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryNoteProdotto">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryNomeCliente">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnNuovoOrdine">
+            <property name="command" type="command" cbtype="simple">nuovoOrdine</property>
+            <property name="image">plus.png</property>
+            <property name="text" translatable="yes">Inserisci</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfNuoviOrdini">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Ordini da evadere</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Treeview" id="tabOrdiniDaEvadere">
+            <property name="height">6</property>
+            <property name="selectmode">extended</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="lfOrdiniEvasi">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Ordini evasi</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Treeview" id="tabOrdiniEvasi">
+            <property name="height">6</property>
+            <property name="selectmode">extended</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="framePulsantiInf">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btnEliminaOrdine">
+            <property name="command" type="command" cbtype="simple">eliminaOrdine</property>
+            <property name="text" translatable="yes">Elimina ordine</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnEvadiOrdine">
+            <property name="command" type="command" cbtype="simple">evadiOrdine</property>
+            <property name="text" translatable="yes">Evadi ordine</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btnOrdineConsegnato">
+            <property name="command" type="command" cbtype="simple">ordineConsegnato</property>
+            <property name="text" translatable="yes">Ordine consegnato</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Sizegrip" id="sizegrip2">
+        <layout manager="pack">
+          <property name="anchor">se</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
