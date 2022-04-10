@@ -10,6 +10,8 @@ import mysql.connector
 from fpdf import FPDF
 import threading
 
+import databaseOperations
+
 columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
 
@@ -31,9 +33,12 @@ class AssistenzaWidget(tk.Toplevel):
         self.lblAssDifetto = ttk.Label(self.frameAssLabel)
         self.lblAssDifetto.configure(text='Difetto riscontrato:')
         self.lblAssDifetto.pack(anchor='e', expand='true', side='top')
-        self.lblAssData = ttk.Label(self.frameAssLabel)
-        self.lblAssData.configure(text='Data di consegna:')
-        self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
+        #self.lblAssData = ttk.Label(self.frameAssLabel)
+        #self.lblAssData.configure(text='Data di consegna:')
+        #self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
+        self.lblAssNote = ttk.Label(self.frameAssLabel)
+        self.lblAssNote.configure(padding='5', text='Note:')
+        self.lblAssNote.pack(anchor='e', expand='false', ipady='70', side='top')
         self.frameAssLabel.configure(width='200')
         self.frameAssLabel.pack(expand='false', fill='y', padx='5', pady='5', side='left')
         self.frameEntryAss = ttk.Frame(self.lfNuovaPratica)
@@ -49,12 +54,10 @@ class AssistenzaWidget(tk.Toplevel):
         self.entryAssDifetto = ttk.Entry(self.frameEntryAss)
         self.entryAssDifetto.configure(width='60')
         self.entryAssDifetto.pack(expand='true', fill='x', side='top')
-        self.calendarDataCons = CalendarFrame(self.frameEntryAss)
-        self.calendarDataCons.configure(firstweekday='6', month='1')
-        self.calendarDataCons.pack(anchor='w', side='left')
-        self.lblAssNote = ttk.Label(self.frameEntryAss)
-        self.lblAssNote.configure(padding='5', text='Note:')
-        self.lblAssNote.pack(anchor='e', expand='false', ipady='80', side='left')
+        #self.calendarDataCons = CalendarFrame(self.frameEntryAss)
+        #self.calendarDataCons.configure(firstweekday='6', month='1')
+        #self.calendarDataCons.pack(anchor='w', side='left')
+
         self.textAssNote = tk.Text(self.frameEntryAss)
         self.textAssNote.configure(height='10', width='35')
         self.textAssNote.pack(expand='true', fill='both', side='top')
@@ -112,8 +115,6 @@ class AssistenzaWidget(tk.Toplevel):
 #FINESTRA ORDINI########################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-        self.mydb = mysql.connector.connect(option_files='connector.cnf') #CONNESSIONE DATABASE
-        self.cursor = self.mydb.cursor()
 
         super(OrdiniWidget, self).__init__(master, **kw) #INIZIO BUILD INTERFACCIA ORDINI
         self.lfNuovoOrdine = ttk.Labelframe(self)
@@ -227,7 +228,8 @@ class OrdiniWidget(tk.Toplevel):
         pass
 
     def aggiornamentoOrdini(self):
-
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
 
@@ -373,11 +375,16 @@ class StockItApp:
         self.btnChat.configure(image=self.img_chat, text='Cassa')
         self.btnChat.pack(expand='false', padx='5', side='left')
         self.btnChat.configure(command=self.finestraChat)
-        self.button2 = ttk.Button(self.frmPulsantiSup)
+        self.btnBuoni = ttk.Button(self.frmPulsantiSup)
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
-        self.button2.configure(image=self.img_creditcard, text='Cassa')
-        self.button2.pack(expand='false', padx='5', side='left')
-        self.button2.configure(command=self.finestraFidelity)
+        self.btnBuoni.configure(image=self.img_creditcard, text='Cassa')
+        self.btnBuoni.pack(expand='false', padx='5', side='left')
+        self.btnBuoni.configure(command=self.finestraFidelity)
+        self.btnSettings = ttk.Button(self.frmPulsantiSup)
+        self.img_settings = tk.PhotoImage(file='settings.png')
+        self.btnSettings.configure(image=self.img_settings, text='Cassa')
+        self.btnSettings.pack(expand='false', padx='5', side='left')
+        self.btnSettings.configure(command=self.finestraFidelity)
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
@@ -486,6 +493,7 @@ class StockItApp:
             print(ordine)
 
 if __name__ == '__main__':
+    databaseOperations.VerificaDatabase()
     root = tk.Tk()
     root.minsize(width=700, height=650)
     root.geometry('1024x650')
