@@ -42,3 +42,17 @@ class VerificaDatabase():
         #except:
         #    tkinter.messagebox.showerror(title='Impossibile collegare', message='Impossibile collegarsi al database\n'
         #                                                                        'Controllare le impostazioni')
+
+class GestioneOrdini():
+    def __init__(self, switch, idx, nomeProdotto, quantity, note, nomeCliente):
+        if switch == 0: #INSERIMENTO ORDINE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            sql = ("""INSERT
+                        INTO
+                        `orders_to_ship`(`nomeProdotto`, `quantita`, `note`, `cliente`)
+                        VALUES(%s, %s, %s, %s)""")
+            val = (nomeProdotto, quantity, note, nomeCliente)
+            self.cursor.execute(sql, val)
+        elif switch == 1: #ORDINE IN CONSEGNA
+            pass
