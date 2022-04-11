@@ -1,9 +1,8 @@
-import tkinter.messagebox
 from datetime import date
 import mysql.connector
 
 
-class VerificaDatabase():
+class VerificaDatabase:
     def __init__(self):
         self.mydb = mysql.connector.connect(option_files='VerifyConnector.cnf')  # CONNESSIONE DATABASE
         self.cursor = self.mydb.cursor()
@@ -52,13 +51,12 @@ class VerificaDatabase():
         self.mydb.commit()
         self.cursor.close()
         self.mydb.close()
-        #except:
-        #    tkinter.messagebox.showerror(title='Impossibile collegare', message='Impossibile collegarsi al database\n'
-        #                                                                        'Controllare le impostazioni')
 
-class GestioneAssistenza():
+
+class GestioneAssistenza:
     def __init__(self, switch, idx, nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note):
-        if switch == 0: #PRODOTTO RITIRATO
+        if switch == 0:
+            #PRODOTTO RITIRATO
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             sql = ("""INSERT
@@ -72,7 +70,7 @@ class GestioneAssistenza():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 1: #PRATICA IN LAVORAZIONE
+        elif switch == 1:  #PRATICA IN LAVORAZIONE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'in lavorazione' WHERE " \
@@ -84,7 +82,7 @@ class GestioneAssistenza():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 2: #PRATICA LAVORATA
+        elif switch == 2:  #PRATICA LAVORATA
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'lavorata' WHERE " \
@@ -96,7 +94,7 @@ class GestioneAssistenza():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 3: #PRATICA RESTITUITA
+        elif switch == 3:  #PRATICA RESTITUITA
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = %s WHERE " \
@@ -109,7 +107,7 @@ class GestioneAssistenza():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 4: #ELIMINA ORDINE
+        elif switch == 4:  #ELIMINA ORDINE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')
             self.cursor = self.mydb.cursor()
             _SQLDel = "DELETE FROM assistenzaProdotti WHERE idx = '%s';"
@@ -117,9 +115,9 @@ class GestioneAssistenza():
             self.mydb.commit()
 
 
-class GestioneOrdini():
+class GestioneOrdini:
     def __init__(self, switch, idx, nomeProdotto, quantity, note, nomeCliente):
-        if switch == 0: #INSERIMENTO ORDINE
+        if switch == 0:  #INSERIMENTO ORDINE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             sql = ("""INSERT
@@ -132,7 +130,7 @@ class GestioneOrdini():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 1: #ORDINE IN CONSEGNA
+        elif switch == 1:  #ORDINE IN CONSEGNA
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "INSERT INTO orders_shipped SELECT * FROM orders_to_ship WHERE idx = '%s';"
@@ -146,7 +144,7 @@ class GestioneOrdini():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 2: #ORDINE IN CONSEGNA
+        elif switch == 2:  #ORDINE IN CONSEGNA
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "INSERT INTO orders_received SELECT * FROM orders_shipped WHERE idx = '%s';"
@@ -160,7 +158,7 @@ class GestioneOrdini():
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 3: #ELIMINA ORDINE
+        elif switch == 3:  #ELIMINA ORDINE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')
             self.cursor = self.mydb.cursor()
             _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"

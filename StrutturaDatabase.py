@@ -1,7 +1,7 @@
 import mysql.connector
-import sys
 
-class StrutturaDatabase():
+
+class StrutturaDatabase:
     def __init__(self):
         print("La seguente procedura distruggerà completamente il database!\n"
               "Si intende continuare? (S o N)")
@@ -76,8 +76,6 @@ class StrutturaDatabase():
                                     VALUES ('Manager', 'manager', 'manager', 'all')""")
             print('Manager User creato')
             self.mydb.commit()
-
-
             self.cursor.close()
             self.mydb.close()
 
@@ -89,6 +87,7 @@ class StrutturaDatabase():
         else:
             print('Risposta non valida.')
             self.__init__()
+
 
 if __name__ == '__main__':
     app = StrutturaDatabase()

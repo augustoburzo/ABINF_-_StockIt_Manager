@@ -1,28 +1,23 @@
-import pathlib
-import pygubu
 import tkinter as tk
 import tkinter.ttk as ttk
-from pygubu.widgets.calendarframe import CalendarFrame
-from multiprocessing import Process
-from playsound import playsound
 from tkinter import END, ANCHOR, TOP, BOTH, NO, YES
 import mysql.connector
 from fpdf import FPDF
-import threading
 import tkinter.simpledialog
 import tkinter.messagebox
 from datetime import date
 
-
 import databaseOperations
-import main
 
 columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-#FINESTRA ASSISTENZA####################################################################################################
+
+# FINESTRA ASSISTENZA####################################################################################################
+
+
 class AssistenzaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(AssistenzaWidget, self).__init__(master, **kw)
@@ -40,9 +35,9 @@ class AssistenzaWidget(tk.Toplevel):
         self.lblAssDifetto = ttk.Label(self.frameAssLabel)
         self.lblAssDifetto.configure(text='Difetto riscontrato:')
         self.lblAssDifetto.pack(anchor='e', expand='true', side='top')
-        #self.lblAssData = ttk.Label(self.frameAssLabel)
-        #self.lblAssData.configure(text='Data di consegna:')
-        #self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
+        # self.lblAssData = ttk.Label(self.frameAssLabel)
+        # self.lblAssData.configure(text='Data di consegna:')
+        # self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
         self.lblAssNote = ttk.Label(self.frameAssLabel)
         self.lblAssNote.configure(padding='5', text='Note:')
         self.lblAssNote.pack(anchor='e', expand='false', ipady='70', side='top')
@@ -61,9 +56,9 @@ class AssistenzaWidget(tk.Toplevel):
         self.entryAssDifetto = ttk.Entry(self.frameEntryAss)
         self.entryAssDifetto.configure(width='60')
         self.entryAssDifetto.pack(expand='true', fill='x', side='top')
-        #self.calendarDataCons = CalendarFrame(self.frameEntryAss)
-        #self.calendarDataCons.configure(firstweekday='6', month='1')
-        #self.calendarDataCons.pack(anchor='w', side='left')
+        # self.calendarDataCons = CalendarFrame(self.frameEntryAss)
+        # self.calendarDataCons.configure(firstweekday='6', month='1')
+        # self.calendarDataCons.pack(anchor='w', side='left')
 
         self.textAssNote = tk.Text(self.frameEntryAss)
         self.textAssNote.configure(height='10', width='35')
@@ -86,19 +81,19 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.heading('numAssistenza', text='Prog.')
         self.treeview1.column(0, width=40, stretch=NO)
         self.treeview1.heading('nomeCliente', text='Nome cliente')
-        #self.treeview1.column(1, width=70, stretch=YES)
+        # self.treeview1.column(1, width=70, stretch=YES)
         self.treeview1.heading('contattoCliente', text='Contatto cliente')
-        #self.treeview1.column(2, width=90, stretch=NO)
+        # self.treeview1.column(2, width=90, stretch=NO)
         self.treeview1.heading('prodotto', text='Prodotto')
-        #self.treeview1.column(3, width=150, stretch=YES)
+        # self.treeview1.column(3, width=150, stretch=YES)
         self.treeview1.heading('difettoProdotto', text='Difetto riscontrato')
-        #self.treeview1.column(4, width=350, stretch=YES)
+        # self.treeview1.column(4, width=350, stretch=YES)
         self.treeview1.heading('dataConsegna', text='Data di consegna')
         self.treeview1.column(5, width=100, stretch=NO)
         self.treeview1.heading('note', text='Note')
-        #self.treeview1.column(4, width=300, stretch=NO)
+        # self.treeview1.column(4, width=300, stretch=NO)
         self.treeview1.heading('statoPratica', text='Stato pratica')
-        #self.treeview1.column(4, width=60, stretch=NO)
+        # self.treeview1.column(4, width=60, stretch=NO)
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -126,7 +121,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.configure(height='200', width='200')
         self.geometry('800x600')
         self.minsize(1360, 680)
-        #self.state('zoomed')
+        # self.state('zoomed')
         self.title('Gestione Assistenza | AB Informatica - StockIt Manager')
 
         self.aggiornamentoOrdini()
@@ -141,9 +136,9 @@ class AssistenzaWidget(tk.Toplevel):
         self.data = date.today()
 
         # INSERISCE I DATI NEL DATABASE
-        databaseOperations.GestioneAssistenza(0, 0,nomeCliente=self.nomeCliente,contattoCliente=self.contattoCliente,
-                                              prodotto=self.prodotto,difettoProdotto=self.difettoProdotto,note=self.note,
-                                              dataConsegna=self.data)
+        databaseOperations.GestioneAssistenza(0, 0, nomeCliente=self.nomeCliente, contattoCliente=self.contattoCliente,
+                                              prodotto=self.prodotto, difettoProdotto=self.difettoProdotto,
+                                              note=self.note, dataConsegna=self.data)
 
         # AGGIORNA LA TABELLA ORDINI
         self.aggiornamentoOrdini()
@@ -153,7 +148,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.entryAssContattoCliente.delete(0, END)
         self.entryAssProdotto.delete(0, END)
         self.entryAssDifetto.delete(0, END)
-        self.textAssNote.delete(1.0,END)
+        self.textAssNote.delete(1.0, END)
 
     def praticaLavorazione(self):
         indice = self.treeview1.focus()
@@ -197,18 +192,18 @@ class AssistenzaWidget(tk.Toplevel):
         self.cursor.execute("SELECT * FROM assistenzaProdotti")
         ordini = self.cursor.fetchall()
 
-        #PULISCE TABELLA
+        # PULISCE TABELLA
         self.treeview1.delete(*self.treeview1.get_children())
 
         for ordine in ordini:
             self.treeview1.insert("", END, values=ordine)
 
 
-#FINESTRA ORDINI########################################################################################################
+# FINESTRA ORDINI########################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
 
-        super(OrdiniWidget, self).__init__(master, **kw) #INIZIO BUILD INTERFACCIA ORDINI
+        super(OrdiniWidget, self).__init__(master, **kw)  # INIZIO BUILD INTERFACCIA ORDINI
         self.lfNuovoOrdine = ttk.Labelframe(self)
         self.frameLabelOrdine = ttk.Frame(self.lfNuovoOrdine)
         self.lblOrdNomeProdotto = ttk.Label(self.frameLabelOrdine)
@@ -249,7 +244,7 @@ class OrdiniWidget(tk.Toplevel):
         self.lfNuovoOrdine.pack(expand='false', fill='x', padx='5', pady='5', side='top')
         self.lfNuoviOrdini = ttk.Labelframe(self)
 
-        #TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
+        # TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
         self.tblOrdiniDaEvadere = ttk.Treeview(self.lfNuoviOrdini, columns=columnsOrdini, show='headings')
         self.tblOrdiniDaEvadere.pack(expand='true', fill='both', side='top')
         self.tblOrdiniDaEvadere.heading('numOrdine', text='Prog.')
@@ -267,7 +262,7 @@ class OrdiniWidget(tk.Toplevel):
         self.lfNuoviOrdini.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.lfOrdiniEvasi = ttk.Labelframe(self)
 
-        #TABELLA ORDINI EVASI###########################################################################################
+        # TABELLA ORDINI EVASI###########################################################################################
         self.tblOrdiniEvasi = ttk.Treeview(self.lfOrdiniEvasi, columns=columnsOrdini, show='headings')
         self.tblOrdiniEvasi.pack(expand='true', fill='both', side='top')
         self.tblOrdiniEvasi.heading('numOrdine', text='Prog.')
@@ -313,19 +308,17 @@ class OrdiniWidget(tk.Toplevel):
         self.note = self.entryNoteProdotto.get()
         self.nomeCliente = self.entryNomeCliente.get()
 
-        #INSERISCE I DATI NEL DATABASE
+        # INSERISCE I DATI NEL DATABASE
         databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente)
 
-        #AGGIORNA LA TABELLA ORDINI
+        # AGGIORNA LA TABELLA ORDINI
         self.aggiornamentoOrdini()
 
-        #AZZERA I CAMPI
-        self.entryNomeProdotto.delete(0,END)
-        self.entryQuantita.delete(0,END)
-        self.entryNoteProdotto.delete(0,END)
-        self.entryNomeCliente.delete(0,END)
-
-
+        # AZZERA I CAMPI
+        self.entryNomeProdotto.delete(0, END)
+        self.entryQuantita.delete(0, END)
+        self.entryNoteProdotto.delete(0, END)
+        self.entryNomeCliente.delete(0, END)
 
     def eliminaOrdine(self):
         indice = self.tblOrdiniDaEvadere.focus()
@@ -341,7 +334,7 @@ class OrdiniWidget(tk.Toplevel):
         idx = self.tblOrdiniDaEvadere.item(indice)
         valore = idx['values'][0]
 
-        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='',quantity='')
+        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
 
         self.aggiornamentoOrdini()
 
@@ -360,7 +353,7 @@ class OrdiniWidget(tk.Toplevel):
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
 
-        #PULISCE TABELLA
+        # PULISCE TABELLA
         self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
 
         for ordine in ordini:
@@ -376,7 +369,7 @@ class OrdiniWidget(tk.Toplevel):
             self.tblOrdiniEvasi.insert("", END, values=ordine)
 
 
-#FINESTRA STAMPE########################################################################################################
+# FINESTRA STAMPE########################################################################################################
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(StampeWidget, self).__init__(master, **kw)
@@ -483,7 +476,14 @@ class StampeWidget(tk.Toplevel):
     def stampaComunicazione(self):
         pass
 
-#FINESTRA PRINCIPALE####################################################################################################
+
+# FINESTRA PRINCIPALE###################################################################################################
+
+
+def finestraStampe():
+    StampeWidget(root)
+
+
 class StockItApp:
     def __init__(self, master=None):
         # build ui
@@ -493,7 +493,7 @@ class StockItApp:
         self.img_printer = tk.PhotoImage(file='printer.png')
         self.btnStampa.configure(image=self.img_printer, text='Cassa')
         self.btnStampa.pack(expand='false', padx='5', pady='5', side='right')
-        self.btnStampa.configure(command=self.finestraStampe)
+        self.btnStampa.configure(command=finestraStampe)
         self.btnOrdini = ttk.Button(self.frmPulsantiSup)
         self.img_box1 = tk.PhotoImage(file='box1.png')
         self.btnOrdini.configure(image=self.img_box1, text='Ordini')
@@ -534,7 +534,7 @@ class StockItApp:
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
-        #TABELLA COMUNICAZIONI E DEFINIZIONI############################################################################
+        # TABELLA COMUNICAZIONI E DEFINIZIONI###########################################################################
         self.tblComunicazioni = ttk.Treeview(self.lfComunicazioni, columns=columnsComunicazioni, show='headings')
         self.tblComunicazioni.pack(expand='true', fill='both', padx='4', pady='4', side='top')
         self.tblComunicazioni.heading('numComunicazione', text='Prog.')
@@ -543,14 +543,13 @@ class StockItApp:
         self.tblComunicazioni.column(1, width=120, stretch=NO)
         self.tblComunicazioni.heading('messaggio', text='Messaggio')
 
-
         ################################################################################################################
 
-        self.lfComunicazioni.configure(height='200', text='Comunicazioni', width='200') #LABELFRAME COMUNICAZIONI
+        self.lfComunicazioni.configure(height='200', text='Comunicazioni', width='200')  # LABELFRAME COMUNICAZIONI
         self.lfComunicazioni.pack(expand='true', fill='both', pady='5', side='top')
         self.lfOrdiniDaEvadere = ttk.Labelframe(self.masterFrame)
 
-        #TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
+        # TABELLA ORDINI DA EVADERE E DEFINIZIONI#######################################################################
         self.tblOrdiniDaEvadere = ttk.Treeview(self.lfOrdiniDaEvadere, columns=columnsOrdini, show='headings')
         self.tblOrdiniDaEvadere.pack(expand='true', fill='both', padx='4', pady='4', side='top')
         self.tblOrdiniDaEvadere.heading('numOrdine', text='Prog.')
@@ -606,13 +605,12 @@ class StockItApp:
     def run(self):
         self.mainwindow.mainloop()
 
-    def finestraStampe(self):
-        StampeWidget(root)
-
-    def finestraOrdini(self):
+    @staticmethod
+    def finestraOrdini():
         OrdiniWidget(root)
 
-    def finestraAssistenza(self):
+    @staticmethod
+    def finestraAssistenza():
         AssistenzaWidget(root)
 
     def finestraCassa(self):
@@ -653,12 +651,11 @@ class StockItApp:
 
         self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
 
-
         for ordine in ordini:
             self.tblOrdiniDaEvadere.insert("", END, values=ordine)
 
-operatore = 0
 
+operatore = 0
 
 if __name__ == '__main__':
 
