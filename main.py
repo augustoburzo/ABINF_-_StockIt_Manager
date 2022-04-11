@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import END, ANCHOR, TOP, BOTH, NO, YES
+from tkinter import END, NO, YES
 import mysql.connector
 from fpdf import FPDF
 import tkinter.simpledialog
@@ -15,7 +15,7 @@ columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodott
                      'note', 'statoPratica')
 
 
-# FINESTRA ASSISTENZA####################################################################################################
+# FINESTRA ASSISTENZA###################################################################################################
 
 
 class AssistenzaWidget(tk.Toplevel):
@@ -35,9 +35,6 @@ class AssistenzaWidget(tk.Toplevel):
         self.lblAssDifetto = ttk.Label(self.frameAssLabel)
         self.lblAssDifetto.configure(text='Difetto riscontrato:')
         self.lblAssDifetto.pack(anchor='e', expand='true', side='top')
-        # self.lblAssData = ttk.Label(self.frameAssLabel)
-        # self.lblAssData.configure(text='Data di consegna:')
-        # self.lblAssData.pack(anchor='e', expand='true', ipady='80', side='top')
         self.lblAssNote = ttk.Label(self.frameAssLabel)
         self.lblAssNote.configure(padding='5', text='Note:')
         self.lblAssNote.pack(anchor='e', expand='false', ipady='70', side='top')
@@ -56,10 +53,6 @@ class AssistenzaWidget(tk.Toplevel):
         self.entryAssDifetto = ttk.Entry(self.frameEntryAss)
         self.entryAssDifetto.configure(width='60')
         self.entryAssDifetto.pack(expand='true', fill='x', side='top')
-        # self.calendarDataCons = CalendarFrame(self.frameEntryAss)
-        # self.calendarDataCons.configure(firstweekday='6', month='1')
-        # self.calendarDataCons.pack(anchor='w', side='left')
-
         self.textAssNote = tk.Text(self.frameEntryAss)
         self.textAssNote.configure(height='10', width='35')
         self.textAssNote.pack(expand='true', fill='both', side='top')
@@ -81,19 +74,13 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.heading('numAssistenza', text='Prog.')
         self.treeview1.column(0, width=40, stretch=NO)
         self.treeview1.heading('nomeCliente', text='Nome cliente')
-        # self.treeview1.column(1, width=70, stretch=YES)
         self.treeview1.heading('contattoCliente', text='Contatto cliente')
-        # self.treeview1.column(2, width=90, stretch=NO)
         self.treeview1.heading('prodotto', text='Prodotto')
-        # self.treeview1.column(3, width=150, stretch=YES)
         self.treeview1.heading('difettoProdotto', text='Difetto riscontrato')
-        # self.treeview1.column(4, width=350, stretch=YES)
         self.treeview1.heading('dataConsegna', text='Data di consegna')
         self.treeview1.column(5, width=100, stretch=NO)
         self.treeview1.heading('note', text='Note')
-        # self.treeview1.column(4, width=300, stretch=NO)
         self.treeview1.heading('statoPratica', text='Stato pratica')
-        # self.treeview1.column(4, width=60, stretch=NO)
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -199,7 +186,7 @@ class AssistenzaWidget(tk.Toplevel):
             self.treeview1.insert("", END, values=ordine)
 
 
-# FINESTRA ORDINI########################################################################################################
+# FINESTRA ORDINI#######################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
 
@@ -244,7 +231,7 @@ class OrdiniWidget(tk.Toplevel):
         self.lfNuovoOrdine.pack(expand='false', fill='x', padx='5', pady='5', side='top')
         self.lfNuoviOrdini = ttk.Labelframe(self)
 
-        # TABELLA ORDINI DA EVADERE E DEFINIZIONI########################################################################
+        # TABELLA ORDINI DA EVADERE E DEFINIZIONI#######################################################################
         self.tblOrdiniDaEvadere = ttk.Treeview(self.lfNuoviOrdini, columns=columnsOrdini, show='headings')
         self.tblOrdiniDaEvadere.pack(expand='true', fill='both', side='top')
         self.tblOrdiniDaEvadere.heading('numOrdine', text='Prog.')
@@ -262,7 +249,7 @@ class OrdiniWidget(tk.Toplevel):
         self.lfNuoviOrdini.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.lfOrdiniEvasi = ttk.Labelframe(self)
 
-        # TABELLA ORDINI EVASI###########################################################################################
+        # TABELLA ORDINI EVASI##########################################################################################
         self.tblOrdiniEvasi = ttk.Treeview(self.lfOrdiniEvasi, columns=columnsOrdini, show='headings')
         self.tblOrdiniEvasi.pack(expand='true', fill='both', side='top')
         self.tblOrdiniEvasi.heading('numOrdine', text='Prog.')
@@ -369,7 +356,7 @@ class OrdiniWidget(tk.Toplevel):
             self.tblOrdiniEvasi.insert("", END, values=ordine)
 
 
-# FINESTRA STAMPE########################################################################################################
+# FINESTRA STAMPE#######################################################################################################
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(StampeWidget, self).__init__(master, **kw)
