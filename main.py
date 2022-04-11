@@ -19,6 +19,8 @@ import main
 
 columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
+columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
+                     'note', 'statoPratica')
 
 #FINESTRA ASSISTENZA####################################################################################################
 class AssistenzaWidget(tk.Toplevel):
@@ -79,8 +81,24 @@ class AssistenzaWidget(tk.Toplevel):
         self.lfNuovaPratica.configure(height='200', text='Nuova Pratica Assistenza', width='200')
         self.lfNuovaPratica.pack(expand='false', fill='x', padx='5', pady='5', side='top')
         self.lfPraticheInCorso = ttk.Labelframe(self)
-        self.treeview1 = ttk.Treeview(self.lfPraticheInCorso)
+        self.treeview1 = ttk.Treeview(self.lfPraticheInCorso, columns=columnsAssistenza, show='headings')
         self.treeview1.pack(expand='true', fill='both', side='top')
+        self.treeview1.heading('numAssistenza', text='Prog.')
+        self.treeview1.column(0, width=40, stretch=NO)
+        self.treeview1.heading('nomeCliente', text='Nome cliente')
+        #self.treeview1.column(1, width=70, stretch=YES)
+        self.treeview1.heading('contattoCliente', text='Contatto cliente')
+        #self.treeview1.column(2, width=90, stretch=NO)
+        self.treeview1.heading('prodotto', text='Prodotto')
+        #self.treeview1.column(3, width=150, stretch=YES)
+        self.treeview1.heading('difettoProdotto', text='Difetto riscontrato')
+        #self.treeview1.column(4, width=350, stretch=YES)
+        self.treeview1.heading('dataConsegna', text='Data di consegna')
+        self.treeview1.column(5, width=100, stretch=NO)
+        self.treeview1.heading('note', text='Note')
+        #self.treeview1.column(4, width=300, stretch=NO)
+        self.treeview1.heading('statoPratica', text='Stato pratica')
+        #self.treeview1.column(4, width=60, stretch=NO)
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -96,17 +114,26 @@ class AssistenzaWidget(tk.Toplevel):
         self.btnPraticaRestituita.configure(text='Pratica restituita')
         self.btnPraticaRestituita.pack(expand='true', fill='x', side='left')
         self.btnPraticaRestituita.configure(command=self.praticaRestituita)
+        if operatore == 'manager' or 'master':
+            self.btnEliminaPratica = ttk.Button(self.frame3)
+            self.btnEliminaPratica.configure(text='Elimina pratica')
+            self.btnEliminaPratica.pack(expand='true', fill='x', side='left')
+            self.btnEliminaPratica.configure(command=self.eliminaPratica)
         self.frame3.configure(height='200', width='200')
         self.frame3.pack(fill='x', padx='5', side='top')
         self.sizegrip3 = ttk.Sizegrip(self)
         self.sizegrip3.pack(anchor='se', side='top')
         self.configure(height='200', width='200')
         self.geometry('800x600')
-        self.minsize(1024, 680)
+        self.minsize(1360, 680)
+        #self.state('zoomed')
         self.title('Gestione Assistenza | AB Informatica - StockIt Manager')
+
+        self.aggiornamentoOrdini()
 
     def nuovaAssistenza(self):
         self.nomeCliente = self.entryAssNomeCliente.get()
+        self.nomeCliente = self.nomeCliente + " - P. vendita: " + puntoVendita
         self.contattoCliente = self.entryAssContattoCliente.get()
         self.prodotto = self.entryAssProdotto.get()
         self.difettoProdotto = self.entryAssDifetto.get()
@@ -122,19 +149,60 @@ class AssistenzaWidget(tk.Toplevel):
         self.aggiornamentoOrdini()
 
         # AZZERA I CAMPI
-        self.entryNomeProdotto.delete(0, END)
-        self.entryQuantita.delete(0, END)
-        self.entryNoteProdotto.delete(0, END)
-        self.entryNomeCliente.delete(0, END)
+        self.entryAssNomeCliente.delete(0, END)
+        self.entryAssContattoCliente.delete(0, END)
+        self.entryAssProdotto.delete(0, END)
+        self.entryAssDifetto.delete(0, END)
+        self.textAssNote.delete(1.0,END)
 
     def praticaLavorazione(self):
-        pass
+        indice = self.treeview1.focus()
+        idx = self.treeview1.item(indice)
+        valore = idx['values'][0]
+        databaseOperations.GestioneAssistenza(1, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.aggiornamentoOrdini()
 
     def praticaLavorata(self):
-        pass
+        indice = self.treeview1.focus()
+        idx = self.treeview1.item(indice)
+        valore = idx['values'][0]
+        databaseOperations.GestioneAssistenza(2, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.aggiornamentoOrdini()
 
     def praticaRestituita(self):
-        pass
+        indice = self.treeview1.focus()
+        idx = self.treeview1.item(indice)
+        valore = idx['values'][0]
+        databaseOperations.GestioneAssistenza(3, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.aggiornamentoOrdini()
+
+    def eliminaPratica(self):
+        indice = self.treeview1.focus()
+        idx = self.treeview1.item(indice)
+        valore = idx['values'][0]
+        databaseOperations.GestioneAssistenza(4, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.aggiornamentoOrdini()
+
+    def aggiornamentoOrdini(self):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        self.cursor.execute("SELECT * FROM assistenzaProdotti")
+        ordini = self.cursor.fetchall()
+
+        #PULISCE TABELLA
+        self.treeview1.delete(*self.treeview1.get_children())
+
+        for ordine in ordini:
+            self.treeview1.insert("", END, values=ordine)
+
 
 #FINESTRA ORDINI########################################################################################################
 class OrdiniWidget(tk.Toplevel):
@@ -467,8 +535,15 @@ class StockItApp:
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
         #TABELLA COMUNICAZIONI E DEFINIZIONI############################################################################
-        self.tblComunicazioni = ttk.Treeview(self.lfComunicazioni)
+        self.tblComunicazioni = ttk.Treeview(self.lfComunicazioni, columns=columnsComunicazioni, show='headings')
         self.tblComunicazioni.pack(expand='true', fill='both', padx='4', pady='4', side='top')
+        self.tblComunicazioni.heading('numComunicazione', text='Prog.')
+        self.tblComunicazioni.column(0, width=40, stretch=NO)
+        self.tblComunicazioni.heading('autore', text='Autore')
+        self.tblComunicazioni.column(1, width=120, stretch=NO)
+        self.tblComunicazioni.heading('messaggio', text='Messaggio')
+
+
         ################################################################################################################
 
         self.lfComunicazioni.configure(height='200', text='Comunicazioni', width='200') #LABELFRAME COMUNICAZIONI
@@ -596,45 +671,22 @@ if __name__ == '__main__':
     root.title('AB Informatica - StockIt Manager')
     root.iconbitmap('barcode.ico')
 
-    #try:
-    password = tkinter.simpledialog.askstring('Password', 'Inserisci password', show='*')
-    mydb = mysql.connector.connect(option_files='connector.cnf')
-    cursor = mydb.cursor()
-    cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
-    users = cursor.fetchall()
-    user = users[0]
-    nomeUtente = user[1]
-    passwordUtente = user[2]
-    operatore = user[3]
-    puntoVendita = user[4]
-    print(nomeUtente)
-    """except:
-        tkinter.messagebox.showerror()
-        exit()"""
-    '''
-    for user in users:
-        print(user)
-        #########################################funziona solo una password
-        if password == user[2] and user[3] == 'manager':
-            operatore = 1
-            puntoVendita = user[4]
-            print(user[1])
-
-
-        elif password == user[2] and user[3] == 'master':
-            operatore = 0
-            puntoVendita = user[4]
-            print(user[1])
-
-        elif password == user[2] and user[3] != 'manager':
-            operatore = 2
-            puntoVendita = user[4]
-            print(user[1])
-            break
-
-        else:
-            tkinter.messagebox.showerror()
-            exit()'''
+    try:
+        password = tkinter.simpledialog.askstring('Password', 'Inserisci password\t\t\t', show='*')
+        mydb = mysql.connector.connect(option_files='connector.cnf')
+        cursor = mydb.cursor()
+        cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
+        users = cursor.fetchall()
+        user = users[0]
+        nomeUtente = user[1]
+        passwordUtente = user[2]
+        operatore = user[3]
+        puntoVendita = user[4]
+        print(nomeUtente)
+    except:
+        tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
+                                                                     "Password errata o database irraggiungibile")
+        exit()
 
     app = StockItApp(root)
     app.run()

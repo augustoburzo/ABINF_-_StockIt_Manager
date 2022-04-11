@@ -1,5 +1,5 @@
 import tkinter.messagebox
-
+from datetime import date
 import mysql.connector
 
 
@@ -58,52 +58,61 @@ class VerificaDatabase():
 
 class GestioneAssistenza():
     def __init__(self, switch, idx, nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note):
-        if switch == 0: #INSERIMENTO ORDINE
+        if switch == 0: #PRODOTTO RITIRATO
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             sql = ("""INSERT
                         INTO
                         `assistenzaProdotti`(`nomeCliente`, `contattoCliente`, `prodotto`, `difettoProdotto`, 
                         `dataConsegna`, `note`, `statoPratica`)
-                        VALUES(%s, %s, %s, %s)""")
+                        VALUES(%s, %s, %s, %s, %s, %s, %s)""")
             val = (nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note, 'inserita')
             self.cursor.execute(sql, val)
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 1: #ORDINE IN CONSEGNA
+        elif switch == 1: #PRATICA IN LAVORAZIONE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
-            _SQLMove = "INSERT INTO orders_shipped SELECT * FROM orders_to_ship WHERE idx = '%s';"
-            _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
-            print(idx)
+            _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'in lavorazione' WHERE " \
+                       "idx = '%s';"
 
             self.cursor.execute(_SQLMove, (idx,))
-            self.cursor.execute(_SQLDel, (idx,))
 
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 2: #ORDINE IN CONSEGNA
+        elif switch == 2: #PRATICA LAVORATA
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
-            _SQLMove = "INSERT INTO orders_received SELECT * FROM orders_shipped WHERE idx = '%s';"
-            _SQLDel = "DELETE FROM orders_shipped WHERE idx = '%s';"
-            print(idx)
+            _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'lavorata' WHERE " \
+                       "idx = '%s';"
 
             self.cursor.execute(_SQLMove, (idx,))
-            self.cursor.execute(_SQLDel, (idx,))
 
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 3: #ELIMINA ORDINE
+        elif switch == 3: #PRATICA RESTITUITA
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = %s WHERE " \
+                       "idx = '%s';"
+            oggi = str(date.today())
+            oggi = "Restituita il " + oggi
+            self.cursor.execute(_SQLMove, (oggi, idx))
+
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 4: #ELIMINA ORDINE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')
             self.cursor = self.mydb.cursor()
-            _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
+            _SQLDel = "DELETE FROM assistenzaProdotti WHERE idx = '%s';"
             self.cursor.execute(_SQLDel, (idx,))
             self.mydb.commit()
 
