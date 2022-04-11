@@ -241,7 +241,11 @@ class OrdiniWidget(tk.Toplevel):
     def eliminaOrdine(self):
         indice = self.tblOrdiniDaEvadere.focus()
         idx = self.tblOrdiniDaEvadere.item(indice)
+        valore = idx['values'][0]
 
+        databaseOperations.GestioneOrdini(3, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+
+        self.aggiornamentoOrdini()
 
     def evadiOrdine(self):
         indice = self.tblOrdiniDaEvadere.focus()
@@ -426,12 +430,18 @@ class StockItApp:
         self.btnBuoni.configure(image=self.img_creditcard, text='Cassa')
         self.btnBuoni.pack(expand='false', padx='5', side='left')
         self.btnBuoni.configure(command=self.finestraFidelity)
-        if operatore == False:
+        if operatore == 'manager' or 'master':
             self.btnSettings = ttk.Button(self.frmPulsantiSup)
             self.img_settings = tk.PhotoImage(file='settings.png')
             self.btnSettings.configure(image=self.img_settings, text='Cassa')
             self.btnSettings.pack(expand='false', padx='5', side='left')
             self.btnSettings.configure(command=self.finestraFidelity)
+        if operatore == 'master':
+            self.btnUsers = ttk.Button(self.frmPulsantiSup)
+            self.img_users = tk.PhotoImage(file='user.png')
+            self.btnUsers.configure(image=self.img_users, text='Cassa')
+            self.btnUsers.pack(expand='false', padx='5', side='left')
+            self.btnUsers.configure(command=self.finestraFidelity)
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
@@ -551,22 +561,10 @@ class StockItApp:
         for ordine in ordini:
             self.tblOrdiniDaEvadere.insert("", END, values=ordine)
 
-operatore = False
+operatore = 0
+
 
 if __name__ == '__main__':
-
-
-    def getPassword(prompt='Inserisci password', confirm=1):
-        try1 = tkinter.simpledialog.askstring('Password', prompt, show='*')
-
-        if try1 == '3791464824':
-            operatore = False
-        elif try1 == 'operatore':
-            operatore = True
-            return operatore
-        else:
-            tkinter.messagebox.showerror()
-            exit()
 
     databaseOperations.VerificaDatabase()
 
@@ -576,6 +574,46 @@ if __name__ == '__main__':
     root.state('zoomed')
     root.title('AB Informatica - StockIt Manager')
     root.iconbitmap('barcode.ico')
-    #operatore = getPassword()
+
+    #try:
+    password = tkinter.simpledialog.askstring('Password', 'Inserisci password', show='*')
+    mydb = mysql.connector.connect(option_files='connector.cnf')
+    cursor = mydb.cursor()
+    cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
+    users = cursor.fetchall()
+    user = users[0]
+    nomeUtente = user[1]
+    passwordUtente = user[2]
+    operatore = user[3]
+    puntoVendita = user[4]
+    print(nomeUtente)
+    """except:
+        tkinter.messagebox.showerror()
+        exit()"""
+    '''
+    for user in users:
+        print(user)
+        #########################################funziona solo una password
+        if password == user[2] and user[3] == 'manager':
+            operatore = 1
+            puntoVendita = user[4]
+            print(user[1])
+
+
+        elif password == user[2] and user[3] == 'master':
+            operatore = 0
+            puntoVendita = user[4]
+            print(user[1])
+
+        elif password == user[2] and user[3] != 'manager':
+            operatore = 2
+            puntoVendita = user[4]
+            print(user[1])
+            break
+
+        else:
+            tkinter.messagebox.showerror()
+            exit()'''
+
     app = StockItApp(root)
     app.run()

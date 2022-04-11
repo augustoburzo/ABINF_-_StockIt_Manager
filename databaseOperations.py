@@ -45,7 +45,7 @@ class VerificaDatabase():
         self.cursor.execute('CREATE TABLE IF NOT EXISTS users('
                             'idx INT AUTO_INCREMENT PRIMARY KEY,'
                             'nomeUtente VARCHAR(40),'
-                            'contattoCliente VARCHAR(40),'
+                            'password VARCHAR(40),'
                             'manager VARCHAR(60),'
                             'puntoVendita VARCHAR(40));')
 
@@ -98,3 +98,10 @@ class GestioneOrdini():
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
+
+        elif switch == 3: #ELIMINA ORDINE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')
+            self.cursor = self.mydb.cursor()
+            _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
+            self.cursor.execute(_SQLDel, (idx,))
+            self.mydb.commit()
