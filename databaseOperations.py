@@ -56,6 +56,58 @@ class VerificaDatabase():
         #    tkinter.messagebox.showerror(title='Impossibile collegare', message='Impossibile collegarsi al database\n'
         #                                                                        'Controllare le impostazioni')
 
+class GestioneAssistenza():
+    def __init__(self, switch, idx, nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note):
+        if switch == 0: #INSERIMENTO ORDINE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            sql = ("""INSERT
+                        INTO
+                        `assistenzaProdotti`(`nomeCliente`, `contattoCliente`, `prodotto`, `difettoProdotto`, 
+                        `dataConsegna`, `note`, `statoPratica`)
+                        VALUES(%s, %s, %s, %s)""")
+            val = (nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note, 'inserita')
+            self.cursor.execute(sql, val)
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 1: #ORDINE IN CONSEGNA
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            _SQLMove = "INSERT INTO orders_shipped SELECT * FROM orders_to_ship WHERE idx = '%s';"
+            _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
+            print(idx)
+
+            self.cursor.execute(_SQLMove, (idx,))
+            self.cursor.execute(_SQLDel, (idx,))
+
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 2: #ORDINE IN CONSEGNA
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            _SQLMove = "INSERT INTO orders_received SELECT * FROM orders_shipped WHERE idx = '%s';"
+            _SQLDel = "DELETE FROM orders_shipped WHERE idx = '%s';"
+            print(idx)
+
+            self.cursor.execute(_SQLMove, (idx,))
+            self.cursor.execute(_SQLDel, (idx,))
+
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 3: #ELIMINA ORDINE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')
+            self.cursor = self.mydb.cursor()
+            _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
+            self.cursor.execute(_SQLDel, (idx,))
+            self.mydb.commit()
+
+
 class GestioneOrdini():
     def __init__(self, switch, idx, nomeProdotto, quantity, note, nomeCliente):
         if switch == 0: #INSERIMENTO ORDINE

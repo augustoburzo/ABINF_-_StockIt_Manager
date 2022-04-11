@@ -11,6 +11,8 @@ from fpdf import FPDF
 import threading
 import tkinter.simpledialog
 import tkinter.messagebox
+from datetime import date
+
 
 import databaseOperations
 import main
@@ -104,7 +106,26 @@ class AssistenzaWidget(tk.Toplevel):
         self.title('Gestione Assistenza | AB Informatica - StockIt Manager')
 
     def nuovaAssistenza(self):
-        pass
+        self.nomeCliente = self.entryAssNomeCliente.get()
+        self.contattoCliente = self.entryAssContattoCliente.get()
+        self.prodotto = self.entryAssProdotto.get()
+        self.difettoProdotto = self.entryAssDifetto.get()
+        self.note = self.textAssNote.get(1.0, END)
+        self.data = date.today()
+
+        # INSERISCE I DATI NEL DATABASE
+        databaseOperations.GestioneAssistenza(0, 0,nomeCliente=self.nomeCliente,contattoCliente=self.contattoCliente,
+                                              prodotto=self.prodotto,difettoProdotto=self.difettoProdotto,note=self.note,
+                                              dataConsegna=self.data)
+
+        # AGGIORNA LA TABELLA ORDINI
+        self.aggiornamentoOrdini()
+
+        # AZZERA I CAMPI
+        self.entryNomeProdotto.delete(0, END)
+        self.entryQuantita.delete(0, END)
+        self.entryNoteProdotto.delete(0, END)
+        self.entryNomeCliente.delete(0, END)
 
     def praticaLavorazione(self):
         pass
