@@ -10,7 +10,7 @@ from datetime import date
 import databaseOperations
 
 columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
-columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio')
+columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
@@ -527,8 +527,10 @@ class StockItApp:
         self.tblComunicazioni.heading('numComunicazione', text='Prog.')
         self.tblComunicazioni.column(0, width=40, stretch=NO)
         self.tblComunicazioni.heading('autore', text='Autore')
-        self.tblComunicazioni.column(1, width=120, stretch=NO)
+        self.tblComunicazioni.column(1, width=250, stretch=NO)
         self.tblComunicazioni.heading('messaggio', text='Messaggio')
+        self.tblComunicazioni.heading('data', text='Data')
+        self.tblComunicazioni.column(3, width=180, stretch=NO)
 
         ################################################################################################################
 

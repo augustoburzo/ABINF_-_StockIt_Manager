@@ -61,6 +61,12 @@ class StrutturaDatabase:
                                 'manager VARCHAR(60),'
                                 'puntoVendita VARCHAR(40));')
             print('Tabella utenti creata')
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS comunicazioni('
+                                'idx INT AUTO_INCREMENT PRIMARY KEY,'
+                                'autore VARCHAR(40),'
+                                'messaggio VARCHAR(120),'
+                                'data VARCHAR(40));')
             self.mydb.commit()
 
             self.cursor.execute("""INSERT

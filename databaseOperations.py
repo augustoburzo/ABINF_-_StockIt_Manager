@@ -164,3 +164,27 @@ class GestioneOrdini:
             _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
             self.cursor.execute(_SQLDel, (idx,))
             self.mydb.commit()
+
+class Comunicazioni:
+    def __init__(self,switch, idx, autore, messaggio, data):
+        if switch == 0:
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            sql = ("""INSERT
+                                    INTO
+                                    `comunicazioni`(`autore`, `messaggio`, `data`)
+                                    VALUES(%s, %s, %s)""")
+            val = (autore, messaggio, data)
+            self.cursor.execute(sql, val)
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 1:  #ELIMINA ORDINE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')
+            self.cursor = self.mydb.cursor()
+            _SQLDel = "DELETE FROM comunicazioni WHERE idx = '%s';"
+            self.cursor.execute(_SQLDel, (idx,))
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
