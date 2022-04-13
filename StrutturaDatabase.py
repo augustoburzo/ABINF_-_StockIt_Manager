@@ -65,8 +65,17 @@ class StrutturaDatabase:
             self.cursor.execute('CREATE TABLE IF NOT EXISTS comunicazioni('
                                 'idx INT AUTO_INCREMENT PRIMARY KEY,'
                                 'autore VARCHAR(40),'
-                                'messaggio VARCHAR(120),'
+                                'messaggio VARCHAR(1000),'
                                 'data VARCHAR(40));')
+            print('Tabella comunicazioni creata')
+            self.mydb.commit()
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS chat('
+                                'idx INT AUTO_INCREMENT PRIMARY KEY,'
+                                'autore VARCHAR(40),'
+                                'messaggio VARCHAR(1000),'
+                                'destinatario VARCHAR(40));')
+            print('Tabella chat creata')
             self.mydb.commit()
 
             self.cursor.execute("""INSERT

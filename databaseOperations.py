@@ -116,15 +116,15 @@ class GestioneAssistenza:
 
 
 class GestioneOrdini:
-    def __init__(self, switch, idx, nomeProdotto, quantity, note, nomeCliente):
+    def __init__(self, switch, idx, nomeProdotto, quantity, note, nomeCliente, puntoVendita):
         if switch == 0:  #INSERIMENTO ORDINE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             sql = ("""INSERT
                         INTO
-                        `orders_to_ship`(`nomeProdotto`, `quantity`, `note`, `nomeCliente`)
-                        VALUES(%s, %s, %s, %s)""")
-            val = (nomeProdotto, quantity, note, nomeCliente)
+                        `orders_to_ship`(`nomeProdotto`, `quantity`, `note`, nomeCliente, `puntoVendita`)
+                        VALUES(%s, %s, %s, %s, %s)""")
+            val = (nomeProdotto, quantity, note, nomeCliente, puntoVendita)
             self.cursor.execute(sql, val)
             self.mydb.commit()
             self.cursor.close()
@@ -166,7 +166,7 @@ class GestioneOrdini:
             self.mydb.commit()
 
 class Comunicazioni:
-    def __init__(self,switch, idx, autore, messaggio, data):
+    def __init__(self, switch, idx, autore, messaggio, data):
         if switch == 0:
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
@@ -180,10 +180,35 @@ class Comunicazioni:
             self.cursor.close()
             self.mydb.close()
 
-        elif switch == 1:  #ELIMINA ORDINE
+        elif switch == 1:  #ELIMINA COMUNICAZIONE
             self.mydb = mysql.connector.connect(option_files='connector.cnf')
             self.cursor = self.mydb.cursor()
             _SQLDel = "DELETE FROM comunicazioni WHERE idx = '%s';"
+            self.cursor.execute(_SQLDel, (idx,))
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+
+class Utenti:
+    def __init__(self, switch, idx, nomeUtente, password, ruolo, puntoVendita):
+        if switch == 0:
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+            self.cursor = self.mydb.cursor()
+            sql = ("""INSERT
+                                    INTO
+                                    `users`(`nomeUtente`, `password`, `manager`, `puntoVendita`)
+                                    VALUES(%s, %s, %s, %s)""")
+            val = (nomeUtente, password, ruolo, puntoVendita)
+            self.cursor.execute(sql, val)
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 1:  #ELIMINA COMUNICAZIONE
+            self.mydb = mysql.connector.connect(option_files='connector.cnf')
+            self.cursor = self.mydb.cursor()
+            _SQLDel = "DELETE FROM users WHERE idx = '%s';"
             self.cursor.execute(_SQLDel, (idx,))
             self.mydb.commit()
             self.cursor.close()

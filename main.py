@@ -1,3 +1,4 @@
+import threading
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import END, NO, YES
@@ -9,10 +10,218 @@ from datetime import date
 
 import databaseOperations
 
-columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente')
+columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente', 'puntoVendita')
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
+
+#FINESTRA CHAT#########################################################################################################
+
+class ChatWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(ChatWidget, self).__init__(master, **kw)
+        self.lfChat = ttk.Labelframe(self)
+        self.lbChat = tk.Listbox(self.lfChat)
+        self.lbChat.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.lbChat.bind('<Double-1>', self.rispondi, add='')
+        self.lfChat.configure(height='200', text='Chat utenti', width='200')
+        self.lfChat.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frmNuovoMessaggio = ttk.Frame(self)
+        self.frmBoxTesto = ttk.Frame(self.frmNuovoMessaggio)
+        self.textMessaggio = tk.Text(self.frmBoxTesto)
+        self.textMessaggio.configure(height='6', width='50')
+        self.textMessaggio.pack(expand='true', fill='x', pady='5', side='top')
+        self.textMessaggio.bind('<Return>', self.inviaMessaggio, add='')
+        self.frmBoxTesto.configure(height='100', width='200')
+        self.frmBoxTesto.pack(expand='true', fill='x', side='left')
+        self.frmButton = ttk.Frame(self.frmNuovoMessaggio)
+        self.btnInviaMessaggio = ttk.Button(self.frmButton)
+        self.img_send = tk.PhotoImage(file='send.png')
+        self.btnInviaMessaggio.configure(image=self.img_send, text='Invia')
+        self.btnInviaMessaggio.pack(expand='true', fill='y', pady='5', side='top')
+        self.btnInviaMessaggio.configure(command=self.inviaMessaggio)
+        self.frmButton.configure(height='100', width='100')
+        self.frmButton.pack(expand='true', fill='y', side='top')
+        self.frmNuovoMessaggio.configure(height='100', width='200')
+        self.frmNuovoMessaggio.pack(fill='x', padx='5', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('800x600')
+
+    def rispondi(self, event=None):
+        pass
+
+    def inviaMessaggio(self, event=None):
+        pass
+
+
+#FINESTRA UTENTI#######################################################################################################
+
+class UtentiWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(UtentiWidget, self).__init__(master, **kw)
+        self.lfInserisciUtente = ttk.Labelframe(self)
+        self.frmLbl = ttk.Frame(self.lfInserisciUtente)
+        self.lblNomeUtente = ttk.Label(self.frmLbl)
+        self.lblNomeUtente.configure(text='Nome utente:')
+        self.lblNomeUtente.pack(anchor='e', side='top')
+        self.lblPassword = ttk.Label(self.frmLbl)
+        self.lblPassword.configure(text='Password:')
+        self.lblPassword.pack(anchor='e', pady='1', side='top')
+        self.lblRuolo = ttk.Label(self.frmLbl)
+        self.lblRuolo.configure(text='Ruolo:')
+        self.lblRuolo.pack(anchor='e', pady='1', side='top')
+        self.lblPuntoVendita = ttk.Label(self.frmLbl)
+        self.lblPuntoVendita.configure(text='Punto vendita:')
+        self.lblPuntoVendita.pack(anchor='e', pady='1', side='top')
+        self.frmLbl.configure(height='200', width='200')
+        self.frmLbl.pack(fill='y', padx='5', pady='5', side='left')
+        self.frmEntry = ttk.Frame(self.lfInserisciUtente)
+        self.entryNomeUtente = ttk.Entry(self.frmEntry)
+        self.entryNomeUtente.pack(fill='x', side='top')
+        self.entryPassword = ttk.Entry(self.frmEntry)
+        self.entryPassword.pack(fill='x', side='top')
+        self.comboRuolo = ttk.Combobox(self.frmEntry)
+        self.comboRuolo.configure(values='operatore manager master')
+        self.comboRuolo.pack(fill='x', side='top')
+        self.entryPuntoVendita = ttk.Entry(self.frmEntry)
+        self.entryPuntoVendita.pack(fill='x', side='top')
+        self.frmEntry.configure(height='200', width='200')
+        self.frmEntry.pack(fill='both', padx='5', pady='5', side='top')
+        self.lfInserisciUtente.configure(height='200', text='Inserisci o modifica utente', width='200')
+        self.lfInserisciUtente.pack(anchor='n', expand='false', fill='x', padx='5', pady='5', side='top')
+        self.lfUtenti = ttk.Labelframe(self)
+        self.tblUtenti_cols = ['idx', 'nomeUtente', 'password', 'ruolo', 'puntoVendita']
+        self.tblUtenti_dcols = ['idx', 'nomeUtente', 'password', 'ruolo', 'puntoVendita']
+        self.tblUtenti = ttk.Treeview(self.lfUtenti, columns=self.tblUtenti_cols, show='headings')
+        self.tblUtenti.column('idx', anchor='w',stretch='false',width='67',minwidth='20')
+        self.tblUtenti.column('nomeUtente', anchor='w',stretch='true',width='200',minwidth='20')
+        self.tblUtenti.column('password', anchor='w',stretch='true',width='200',minwidth='20')
+        self.tblUtenti.column('ruolo', anchor='w',stretch='false',width='100',minwidth='20')
+        self.tblUtenti.column('puntoVendita', anchor='w',stretch='false',width='200',minwidth='20')
+        self.tblUtenti.heading('idx', anchor='w',text='Prog.')
+        self.tblUtenti.heading('nomeUtente', anchor='w',text='Nome utente')
+        self.tblUtenti.heading('password', anchor='w',text='Password')
+        self.tblUtenti.heading('ruolo', anchor='w',text='Ruolo')
+        self.tblUtenti.heading('puntoVendita', anchor='w',text='Punto Vendita')
+        self.tblUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.tblUtenti.bind('<Double-1>', self.OnClickTbl, add='')
+        self.lfUtenti.configure(height='200', text='Utenti', width='200')
+        self.lfUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frame7 = ttk.Frame(self)
+        self.button1 = ttk.Button(self.frame7)
+        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.button1.configure(image=self.img_plus, text='button1', command=self.inserisciUtente)
+        self.button1.pack(padx='5', pady='5', side='right')
+        self.button3 = ttk.Button(self.frame7)
+        self.img_clean = tk.PhotoImage(file='clean.png')
+        self.button3.configure(image=self.img_clean, text='button1', command=self.svuotaCampi)
+        self.button3.pack(padx='5', pady='5', side='right')
+        self.button4 = ttk.Button(self.frame7)
+        self.img_delete = tk.PhotoImage(file='delete.png')
+        self.button4.configure(image=self.img_delete, text='button1', command=self.eliminaUtente)
+        self.button4.pack(padx='5', pady='5', side='right')
+        self.frame7.configure(height='200', width='200')
+        self.frame7.pack(fill='x', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('800x600')
+
+        self.aggiornaUtenti()
+
+    def inserisciUtente(self):
+        utenteNomeUtente = self.entryNomeUtente.get()
+        utentePassword = self.entryPassword.get()
+        utenteRuolo = self.comboRuolo.get()
+        utentePuntoVendita = self.entryPuntoVendita.get()
+
+        databaseOperations.Utenti(0, 0, utenteNomeUtente, utentePassword, utenteRuolo, utentePuntoVendita)
+
+        self.entryNomeUtente.delete(0, END)
+        self.entryPassword.delete(0, END)
+        self.comboRuolo.delete(0, END)
+        self.entryPuntoVendita.delete(0, END)
+
+        self.aggiornaUtenti()
+
+    def svuotaCampi(self):
+        self.entryNomeUtente.delete(0, END)
+        self.entryPassword.delete(0, END)
+        self.comboRuolo.delete(0, END)
+        self.entryPuntoVendita.delete(0, END)
+
+    def eliminaUtente(self):
+        indice = self.tblUtenti.focus()
+        idx = self.tblUtenti.item(indice)
+        valore = idx['values'][0]
+        databaseOperations.Utenti(1, valore, nomeUtente='', password='', ruolo='', puntoVendita='')
+        self.aggiornaUtenti()
+
+    def OnClickTbl(self, event):
+        indice = self.tblUtenti.focus()
+        idx = self.tblUtenti.item(indice)
+        valore = idx['values'][0]
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        _searchSQL = "SELECT * FROM users WHERE idx = '%s';"
+        self.cursor.execute(_searchSQL, (valore,))
+        utente = self.cursor.fetchone()
+
+        self.entryNomeUtente.delete(0, END)
+        self.entryPassword.delete(0, END)
+        self.comboRuolo.delete(0, END)
+        self.entryPuntoVendita.delete(0, END)
+
+        self.entryNomeUtente.insert(0, utente[1])
+        self.entryPassword.insert(0, utente[2])
+        self.comboRuolo.insert(0, utente[3])
+        self.entryPuntoVendita.insert(0, utente[4])
+
+    def aggiornaUtenti(self):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        self.cursor.execute("SELECT * FROM users")
+        utenti = self.cursor.fetchall()
+
+        self.tblUtenti.delete(*self.tblUtenti.get_children())
+
+        for utente in utenti:
+            self.tblUtenti.insert("", END, values=utente)
+
+#FINESTRA NUOVA COMUNICAZIONE##########################################################################################
+
+class NuovaComunicazioneWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(NuovaComunicazioneWidget, self).__init__(master, **kw)
+        self.lfNuovaComunicazione = ttk.Labelframe(self)
+        self.text1 = tk.Text(self.lfNuovaComunicazione)
+        self.text1.configure(height='10', state='normal', width='50')
+        self.text1.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.lfNuovaComunicazione.configure(height='200', text='Nuova comunicazione', width='200')
+        self.lfNuovaComunicazione.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frmPulsanti = ttk.Frame(self)
+        self.btnComInserisciComunicazione = ttk.Button(self.frmPulsanti)
+        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.btnComInserisciComunicazione.configure(image=self.img_plus, text='Inserisci comunicazione')
+        self.btnComInserisciComunicazione.pack(padx='5', pady='5', side='right')
+        self.btnComInserisciComunicazione.configure(command=self.inserisciComunicazione)
+        self.btnComSvuotaCampi = ttk.Button(self.frmPulsanti)
+        self.img_clean = tk.PhotoImage(file='clean.png')
+        self.btnComSvuotaCampi.configure(image=self.img_clean, text='Svuota campi')
+        self.btnComSvuotaCampi.pack(padx='5', pady='5', side='right')
+        self.btnComSvuotaCampi.configure(command=self.svuotaCampi)
+        self.frmPulsanti.configure(height='70', width='200')
+        self.frmPulsanti.pack(expand='false', fill='x', side='top')
+        self.configure(height='200', takefocus=True, width='200')
+        self.geometry('800x600')
+
+    def inserisciComunicazione(self):
+        messaggio = self.text1.get(1.0, END)
+        data = str(date.today())
+        databaseOperations.Comunicazioni(0,0,nomeUtente,messaggio,data)
+        self.svuotaCampi()
+        self.destroy()
+
+    def svuotaCampi(self):
+        self.text1.delete(1.0, END)
 
 
 # FINESTRA ASSISTENZA###################################################################################################
@@ -127,7 +336,7 @@ class AssistenzaWidget(tk.Toplevel):
                                               prodotto=self.prodotto, difettoProdotto=self.difettoProdotto,
                                               note=self.note, dataConsegna=self.data)
 
-        # AGGIORNA LA TABELLA ORDINI
+        # AGGIORNA LA TABELLA ASSISTENZE
         self.aggiornamentoOrdini()
 
         # AZZERA I CAMPI
@@ -243,6 +452,8 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniDaEvadere.column(3, width=100, stretch=YES)
         self.tblOrdiniDaEvadere.heading('nomeCliente', text='Nome cliente')
         self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('puntoVendita', text='Punto Vendita')
+        self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
         ################################################################################################################
 
         self.lfNuoviOrdini.configure(height='200', text='Ordini da evadere', width='200')
@@ -261,6 +472,8 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniEvasi.column(3, width=100, stretch=YES)
         self.tblOrdiniEvasi.heading('nomeCliente', text='Nome cliente')
         self.tblOrdiniEvasi.column(4, width=300, stretch=NO)
+        self.tblOrdiniEvasi.heading('puntoVendita', text='Punto Vendita')
+        self.tblOrdiniEvasi.column(5, width=300, stretch=NO)
         ################################################################################################################
 
         self.lfOrdiniEvasi.configure(height='200', text='Ordini evasi', width='200')
@@ -296,7 +509,7 @@ class OrdiniWidget(tk.Toplevel):
         self.nomeCliente = self.entryNomeCliente.get()
 
         # INSERISCE I DATI NEL DATABASE
-        databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente)
+        databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente, puntoVendita)
 
         # AGGIORNA LA TABELLA ORDINI
         self.aggiornamentoOrdini()
@@ -312,7 +525,7 @@ class OrdiniWidget(tk.Toplevel):
         idx = self.tblOrdiniDaEvadere.item(indice)
         valore = idx['values'][0]
 
-        databaseOperations.GestioneOrdini(3, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+        databaseOperations.GestioneOrdini(3, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
 
         self.aggiornamentoOrdini()
 
@@ -321,7 +534,7 @@ class OrdiniWidget(tk.Toplevel):
         idx = self.tblOrdiniDaEvadere.item(indice)
         valore = idx['values'][0]
 
-        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
 
         self.aggiornamentoOrdini()
 
@@ -330,7 +543,7 @@ class OrdiniWidget(tk.Toplevel):
         idx = self.tblOrdiniEvasi.item(indice)
         valore = idx['values'][0]
 
-        databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='')
+        databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
 
         self.aggiornamentoOrdini()
 
@@ -474,7 +687,16 @@ def finestraStampe():
 class StockItApp:
     def __init__(self, master=None):
         # build ui
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        self.cursor.execute("SELECT * FROM orders_to_ship")
+        self.orders_to_ship = self.cursor.fetchall()
+        self.cursor.execute("SELECT * FROM comunicazioni")
+        self.comunicazioni = self.cursor.fetchall()
+
         self.masterFrame = ttk.Frame(master)
+        self.style = ttk.Style(master)
+
         self.frmPulsantiSup = ttk.Frame(self.masterFrame)
         self.btnStampa = ttk.Button(self.frmPulsantiSup)
         self.img_printer = tk.PhotoImage(file='printer.png')
@@ -498,7 +720,8 @@ class StockItApp:
         self.btnCassa.configure(command=self.finestraCassa)
         self.btnChat = ttk.Button(self.frmPulsantiSup)
         self.img_chat = tk.PhotoImage(file='chat.png')
-        self.btnChat.configure(image=self.img_chat, text='Cassa')
+        self.btnChat.configure(image=self.img_chat, text='Cassa', style='')
+        self.style.configure('Die.TButton', background='#f00')
         self.btnChat.pack(expand='false', padx='5', side='left')
         self.btnChat.configure(command=self.finestraChat)
         self.btnBuoni = ttk.Button(self.frmPulsantiSup)
@@ -517,7 +740,7 @@ class StockItApp:
             self.img_users = tk.PhotoImage(file='user.png')
             self.btnUsers.configure(image=self.img_users, text='Cassa')
             self.btnUsers.pack(expand='false', padx='5', side='left')
-            self.btnUsers.configure(command=self.finestraFidelity)
+            self.btnUsers.configure(command=self.finestraUtenti)
         self.frmPulsantiSup.configure(height='40', width='1024')
         self.frmPulsantiSup.pack(expand='false', fill='x', side='top')
         self.lfComunicazioni = ttk.Labelframe(self.masterFrame)
@@ -531,6 +754,8 @@ class StockItApp:
         self.tblComunicazioni.heading('messaggio', text='Messaggio')
         self.tblComunicazioni.heading('data', text='Data')
         self.tblComunicazioni.column(3, width=180, stretch=NO)
+        self.tblComunicazioni.bind("<Double-1>", self.OnDoubleClickComunicazioni)
+
 
         ################################################################################################################
 
@@ -548,8 +773,10 @@ class StockItApp:
         self.tblOrdiniDaEvadere.column(2, width=67, stretch=NO)
         self.tblOrdiniDaEvadere.heading('note', text='Note')
         self.tblOrdiniDaEvadere.column(3, width=100, stretch=YES)
-        self.tblOrdiniDaEvadere.heading('nomeCliente', text='Nome cliente')
+        self.tblOrdiniDaEvadere.heading('nomeCliente', text='Nome Cliente')
         self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
+        self.tblOrdiniDaEvadere.heading('puntoVendita', text='Punto Vendita')
+        self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
         ################################################################################################################
 
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
@@ -570,7 +797,7 @@ class StockItApp:
         self.btnOrdineEvaso.pack(expand='false', ipadx='10', ipady='6', side='left')
         self.btnOrdineEvaso.configure(command=self.ordineEvaso)
         self.btnAggiornaOrdini = ttk.Button(self.frmPulsantiInf)
-        self.btnAggiornaOrdini.configure(text='Aggiorna ordini')
+        self.btnAggiornaOrdini.configure(text='Invia & Ricevi')
         self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
         self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
         self.btnInserisciComunicazione = ttk.Button(self.frmPulsantiInf)
@@ -587,6 +814,8 @@ class StockItApp:
         self.masterFrame.pack(expand='true', fill='both', side='top')
 
         self.aggiornamentoOrdini()
+        self.autoAggiornamentoDaemon()
+
 
         # Main widget
         self.mainwindow = self.masterFrame
@@ -602,11 +831,16 @@ class StockItApp:
     def finestraAssistenza():
         AssistenzaWidget(root)
 
+    @staticmethod
+    def finestraUtenti():
+        UtentiWidget(root)
+
     def finestraCassa(self):
         pass
 
     def finestraChat(self):
-        pass
+        self.btnChat.configure(style='')
+        ChatWidget(root)
 
     def finestraFidelity(self):
         pass
@@ -614,8 +848,9 @@ class StockItApp:
     def stampaOrdini(self):
         pass
 
-    def finestraInserisciOrdine(self):
-        pass
+    @staticmethod
+    def finestraInserisciOrdine():
+        OrdiniWidget(root)
 
     def ordineEvaso(self):
         indice = self.tblOrdiniDaEvadere.focus()
@@ -626,11 +861,34 @@ class StockItApp:
 
         self.aggiornamentoOrdini()
 
+    def OnDoubleClickComunicazioni(self, event):
+        item = self.tblComunicazioni.identify('item', event.x, event.y)
+        indice = self.tblComunicazioni.focus()
+        idx = self.tblComunicazioni.item(indice)
+        valore = idx['values'][0]
+        autore = idx['values'][1]
+        messaggio = idx['values'][2]
+        title = str(valore) + " - " + str(autore)
+        tkinter.messagebox.showinfo(title="Comunicazione n."+title, message=messaggio + "\nAutore: " + autore, icon=None)
+
+
     def inserisciComunicazione(self):
-        pass
+        NuovaComunicazioneWidget()
 
     def eliminaComunicazione(self):
-        pass
+        indice = self.tblComunicazioni.focus()
+        idx = self.tblComunicazioni.item(indice)
+        valore = idx['values'][0]
+        autore = idx['values'][1]
+
+        if autore == nomeUtente or operatore == 'master':
+            databaseOperations.Comunicazioni(1, valore, 0, 0, 0)
+            self.aggiornamentoOrdini()
+            tkinter.messagebox.showinfo(title='Comunicazione eliminata', message='Comunicazione eliminata con successo')
+
+        else:
+            tkinter.messagebox.showerror(title='Impossibile eliminare', message="Non puoi eliminare comunicazioni di "
+                                                                                "cui non sei l'autore")
 
     def aggiornamentoOrdini(self):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
@@ -642,6 +900,69 @@ class StockItApp:
 
         for ordine in ordini:
             self.tblOrdiniDaEvadere.insert("", END, values=ordine)
+
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+        self.cursor.execute("SELECT * FROM comunicazioni")
+        comunicazioni = self.cursor.fetchall()
+
+        self.tblComunicazioni.delete(*self.tblComunicazioni.get_children())
+
+        for comunicazione in comunicazioni:
+            messaggio = comunicazione[2].replace("\n", " ")
+            nuovaComunicazione = [comunicazione[0], comunicazione[1], messaggio, comunicazione[3]]
+            self.tblComunicazioni.insert("", END, values=nuovaComunicazione)
+
+        self.cursor.close()
+        self.mydb.close()
+
+    def ricercaAggiornamenti(self):
+        while 1:
+            try:
+                #time.sleep(1)
+                mydb = mysql.connector.connect(option_files='connector.cnf')
+                cursor = mydb.cursor()
+                file1changed = False
+                file2changed = False
+                cursor.execute("SELECT * FROM orders_to_ship")
+                NEWorders_to_ship = cursor.fetchall()
+                cursor.execute("SELECT * FROM comunicazioni")
+                NEWcomunicazioni = cursor.fetchall()
+                cursor.close()
+                mydb.close()
+                if NEWorders_to_ship != self.orders_to_ship:
+                    file1changed = True
+                    # time.sleep(1)
+                elif NEWcomunicazioni != self.comunicazioni:
+                    file2changed = True
+                    # time.sleep(1)
+                else:
+                    file1changed = False
+                    file2changed = False
+
+                if (file1changed or file2changed) == True:
+                    self.orders_to_ship = NEWorders_to_ship
+                    self.comunicazioni = NEWcomunicazioni
+
+                    self.btnChat.configure(style='Die.TButton')
+                    self.aggiornamentoOrdini()
+
+                else:
+                    pass
+            except:
+                print("error")
+
+    @staticmethod
+    def aggiornamentoInterfacce():
+        UtentiWidget.aggiornaUtenti()
+        AssistenzaWidget.aggiornamentoOrdini()
+        OrdiniWidget.aggiornamentoOrdini()
+
+    def autoAggiornamentoDaemon(self):
+        newthread = threading.Thread(target=self.ricercaAggiornamenti)
+        newthread.daemon = True
+        newthread.start()
+        print("Daemon STARTED\n")
 
 
 operatore = 0
