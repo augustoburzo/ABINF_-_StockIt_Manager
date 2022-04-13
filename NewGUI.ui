@@ -1248,4 +1248,104 @@
       </object>
     </child>
   </object>
+  <object class="tk.Toplevel" id="ToplevelChat">
+    <property name="geometry">800x600</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="lfChat">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Chat utenti</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Listbox" id="lbChat">
+            <bind sequence="&lt;Double-1&gt;" handler="rispondi" add="" />
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frmNuovoMessaggio">
+        <property name="height">100</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="frmBoxTesto">
+            <property name="height">100</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="frame5">
+                <property name="height">20</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Text" id="textMessaggio">
+                <property name="height">6</property>
+                <property name="width">50</property>
+                <bind sequence="&lt;Return&gt;" handler="inviaMessaggio" add="" />
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frmButton">
+            <property name="height">100</property>
+            <property name="width">100</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="btnInviaMessaggio">
+                <property name="command" type="command" cbtype="simple">inviaMessaggio</property>
+                <property name="image">send.png</property>
+                <property name="text" translatable="yes">Invia</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">y</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
