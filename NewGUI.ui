@@ -1294,6 +1294,7 @@
             <layout manager="pack">
               <property name="expand">true</property>
               <property name="fill">x</property>
+              <property name="pady">5</property>
               <property name="side">left</property>
             </layout>
             <child>
@@ -1304,6 +1305,14 @@
                   <property name="fill">x</property>
                   <property name="side">top</property>
                 </layout>
+                <child>
+                  <object class="ttk.Combobox" id="comboDestinatario">
+                    <layout manager="pack">
+                      <property name="fill">x</property>
+                      <property name="side">top</property>
+                    </layout>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -1314,7 +1323,6 @@
                 <layout manager="pack">
                   <property name="expand">true</property>
                   <property name="fill">x</property>
-                  <property name="pady">5</property>
                   <property name="side">top</property>
                 </layout>
               </object>
@@ -1343,6 +1351,126 @@
                 </layout>
               </object>
             </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="SelezioneData">
+    <property name="geometry">320x200</property>
+    <property name="height">200</property>
+    <property name="resizable">none</property>
+    <property name="title" translatable="yes">Inserisci data</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="frame1">
+        <property name="height">200</property>
+        <property name="width">100</property>
+        <layout manager="pack">
+          <property name="fill">y</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">left</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="label1">
+            <property name="text" translatable="yes">Giorno:</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="pady">20</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="label2">
+            <property name="text" translatable="yes">Mese:</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="pady">20</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="label3">
+            <property name="text" translatable="yes">Anno:</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="pady">20</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame2">
+        <property name="height">200</property>
+        <property name="width">160</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">left</property>
+        </layout>
+        <child>
+          <object class="ttk.Combobox" id="combobox1">
+            <property name="state">disabled</property>
+            <property name="values">1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="pady">18</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="combobox2">
+            <property name="state">disabled</property>
+            <property name="values">1 2 3 4 5 6 7 8 9 10 11 12</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="pady">18</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="entry1">
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="pady">19</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame4">
+        <property name="height">200</property>
+        <property name="width">60</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">y</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="button5">
+            <property name="image">printer.png</property>
+            <property name="text" translatable="yes">Stampa</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="side">bottom</property>
+            </layout>
           </object>
         </child>
       </object>

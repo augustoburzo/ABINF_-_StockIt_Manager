@@ -9,7 +9,7 @@ class StrutturaDatabase:
         if risposta == 'S' or risposta == 's':
             self.mydb = mysql.connector.connect(option_files='VerifyConnector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
-            self.cursor.execute('DROP DATABASE IF EXISTS stockit;')
+            #self.cursor.execute('DROP DATABASE IF EXISTS stockit;')
             self.cursor.execute('CREATE DATABASE IF NOT EXISTS stockit;')
             print('Database creato')
             self.cursor.close()
@@ -65,7 +65,7 @@ class StrutturaDatabase:
             self.cursor.execute('CREATE TABLE IF NOT EXISTS comunicazioni('
                                 'idx INT AUTO_INCREMENT PRIMARY KEY,'
                                 'autore VARCHAR(40),'
-                                'messaggio VARCHAR(1000),'
+                                'messaggio VARCHAR(10000),'
                                 'data VARCHAR(40));')
             print('Tabella comunicazioni creata')
             self.mydb.commit()
@@ -76,6 +76,23 @@ class StrutturaDatabase:
                                 'messaggio VARCHAR(1000),'
                                 'destinatario VARCHAR(40));')
             print('Tabella chat creata')
+            self.mydb.commit()
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS cassa('
+                                'idx INT AUTO_INCREMENT PRIMARY KEY,'
+                                'incassoTotale FLOAT(40),'
+                                'corrispettivo FLOAT(40),'
+                                'fatturato FLOAT(40),'
+                                'contanti FLOAT(40),'
+                                'pos FLOAT(40),'
+                                'finanziamenti FLOAT(40),'
+                                'bonifici FLOAT(40),'
+                                'assegni FLOAT(40),'
+                                'acconti FLOAT(40),'
+                                'preincassato FLOAT(40),'
+                                'data VARCHAR(40),'
+                                'puntoVendita VARCHAR(40));')
+            print('Tabella cassa creata')
             self.mydb.commit()
 
             self.cursor.execute("""INSERT

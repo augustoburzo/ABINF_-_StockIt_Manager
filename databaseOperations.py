@@ -6,7 +6,7 @@ class VerificaDatabase:
     def __init__(self):
         self.mydb = mysql.connector.connect(option_files='VerifyConnector.cnf')  # CONNESSIONE DATABASE
         self.cursor = self.mydb.cursor()
-        self.cursor.execute('CREATE DATABASE IF NOT EXISTS stockit;')
+        self.cursor.execute('CREATE DATABASE IF NOT EXISTS StockitManager;')
         self.cursor.close()
         self.mydb.close()
         self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
@@ -210,6 +210,47 @@ class Utenti:
             self.cursor = self.mydb.cursor()
             _SQLDel = "DELETE FROM users WHERE idx = '%s';"
             self.cursor.execute(_SQLDel, (idx,))
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+class Chat:
+    def __init__(self, autore, messaggio, destinatario):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+        self.cursor = self.mydb.cursor()
+        sql = ("""INSERT
+                                            INTO
+                                            `chat`(`autore`, `messaggio`, `destinatario`)
+                                            VALUES(%s, %s, %s)""")
+        val = (autore, messaggio, destinatario)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+class Cassa:
+    def __init__(self, switch, incassoTotale, corrispettivo, fatturato, contanti, pos, finanziamenti,
+                 bonifici, assegni, acconti, preincassato, data, puntoVendita):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+        self.cursor = self.mydb.cursor()
+
+        if switch == 0:
+            sql = ("""INSERT
+                                                INTO
+                                                `cassa`(`incassoTotale`, `corrispettivo`, `fatturato`, `contanti`,
+                                                `pos`, `finanziamenti`, `bonifici`, `assegni`, `acconti`, `preincassato`,
+                                                `data`, `puntoVendita`)
+                                                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""")
+            val = (incassoTotale, corrispettivo, fatturato, contanti, pos, finanziamenti, bonifici, assegni, acconti,
+                   preincassato, data, puntoVendita)
+            self.cursor.execute(sql, val)
+            self.mydb.commit()
+            self.cursor.close()
+            self.mydb.close()
+
+        elif switch == 1:
+            _SQLDel = "DELETE FROM cassa WHERE data = %s AND puntoVendita = %s;"
+            self.cursor.execute(_SQLDel, (data, puntoVendita))
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
