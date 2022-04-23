@@ -1,11 +1,8 @@
-import datetime
-import re
 import threading
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import END, NO, YES, ANCHOR
 import mysql.connector
-from fpdf import FPDF
 import tkinter.simpledialog
 import tkinter.messagebox
 from datetime import date
@@ -105,8 +102,6 @@ class CassaWidget(tk.Toplevel):
         self.btnQuadratura.configure(text='Quadratura')
         self.btnQuadratura.pack(fill='x', padx='5', pady='10', side='top')
         self.btnQuadratura.configure(command=self.quadratura)
-        #self.entryQuadratura = ttk.Entry(self.frame8)
-        #self.entryQuadratura.pack(side='top')
         self.lblQuadratura = ttk.Label(self.frame8, text='0,00')
         self.lblQuadratura.pack(side='top')
 
@@ -966,22 +961,22 @@ class OrdiniWidget(tk.Toplevel):
                                                                          "ordini inevasi")
 
     def evadiOrdine(self):
-        indice = self.tblOrdiniDaEvadere.focus()
-        idx = self.tblOrdiniDaEvadere.item(indice)
-        valore = idx['values'][0]
-
-        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
-                                          puntoVendita='')
+        curItems = self.tblOrdiniDaEvadere.selection()
+        for idx in curItems:
+            index = self.tblOrdiniDaEvadere.item(idx)
+            valore = index['values'][0]
+            databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
+                                              puntoVendita='')
 
         self.aggiornamentoOrdini()
 
     def ordineConsegnato(self):
-        indice = self.tblOrdiniEvasi.focus()
-        idx = self.tblOrdiniEvasi.item(indice)
-        valore = idx['values'][0]
-
-        databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
-                                          puntoVendita='')
+        curItems = self.tblOrdiniEvasi.selection()
+        for idx in curItems:
+            index = self.tblOrdiniEvasi.item(idx)
+            valore = index['values'][0]
+            databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
+                                              puntoVendita='')
 
         self.aggiornamentoOrdini()
 
@@ -1308,11 +1303,11 @@ class StockItApp:
         OrdiniWidget(root)
 
     def ordineEvaso(self):
-        indice = self.tblOrdiniDaEvadere.focus()
-        idx = self.tblOrdiniDaEvadere.item(indice)
-        valore = idx['values'][0]
-
-        databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
+        curItems = self.tblOrdiniDaEvadere.selection()
+        for idx in curItems:
+            index = self.tblOrdiniDaEvadere.item(idx)
+            valore = index['values'][0]
+            databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
 
         self.aggiornamentoOrdini()
 
