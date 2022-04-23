@@ -65,7 +65,7 @@ class StampaOrdine():
             pdf.cell(80, 4, str(ordine[1][0:34]), 1, align='l')
             pdf.cell(10, 4, str(ordine[2]), 1, align='l')
             pdf.cell(33, 4, str(ordine[3]), 1, align='l')
-            pdf.cell(30, 4, str(ordine[4]), 1, align='l')
+            pdf.cell(30, 4, str(ordine[4][0:12]), 1, align='l')
             pdf.cell(30, 4, str(ordine[5]), 1, align='l')
             pdf.ln()
 
@@ -116,12 +116,12 @@ class StampaAssistenza():
         pdf.ln()
         for ordine in ordiniDaStampare:
             pdf.cell(10, 4, str(ordine[0]), 1, align='L')
-            pdf.cell(77.5, 4, str(ordine[1]), 1, align='l')
+            pdf.cell(77.5, 4, str(ordine[1][0:33]), 1, align='l')
             pdf.cell(22.5, 4, str(ordine[2]), 1, align='l')
-            pdf.cell(44.5, 4, str(ordine[3]), 1, align='l')
-            pdf.cell(44.5, 4, str(ordine[4]), 1, align='l')
+            pdf.cell(44.5, 4, str(ordine[3][0:25]), 1, align='l')
+            pdf.cell(44.5, 4, str(ordine[4][0:25]), 1, align='l')
             pdf.cell(22.5, 4, str(ordine[5]), 1, align='l')
-            pdf.cell(55.5, 4, str(ordine[6]), 1, align='l')
+            pdf.cell(55.5, 4, str(ordine[6][0:28]), 1, align='l')
             pdf.ln()
 
         try:
@@ -273,3 +273,5 @@ class InserisciDataWidget(tk.Toplevel):
                                message="Report generato correttamente")
         except:
             tk.messagebox.showerror(title="Impossibile salvare", message='Impossibile salvare il report')
+
+        self.destroy()

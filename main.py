@@ -1,3 +1,4 @@
+import _tkinter
 import threading
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -238,7 +239,7 @@ class CassaWidget(tk.Toplevel):
                 ErrorePV = tkinter.messagebox.showerror(parent=self, title="Errore Punto Vendita",
                                                         message="Non puoi eliminare i record degli altri Punti Vendita")
 
-        except Exception:
+        except IndexError:
             ErroreIDX = tkinter.messagebox.showerror(parent=self, title="Nessuna selezione",
                                                      message="Seleziona una voce dalla tabella!")
 
@@ -389,7 +390,6 @@ class ChatWidget(tk.Toplevel):
     def aggiornamentoChat(self):
         mydb = mysql.connector.connect(option_files='connector.cnf')
         cursor = mydb.cursor()
-        #cursor.execute("SELECT * FROM chat")
         cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 30) sub ORDER BY idx ASC")
         messaggi = cursor.fetchall()
 
@@ -866,6 +866,9 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
         self.tblOrdiniDaEvadere.heading('puntoVendita', text='Punto Vendita')
         self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
+
+        self.tblOrdiniDaEvadere.bind("d", lambda event: self.eliminaOrdine())
+        self.tblOrdiniDaEvadere.bind("e", lambda event: self.evadiOrdine())
         ################################################################################################################
 
         self.lfNuoviOrdini.configure(height='200', text='Ordini da evadere', width='200')
@@ -886,6 +889,8 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniEvasi.column(4, width=300, stretch=NO)
         self.tblOrdiniEvasi.heading('puntoVendita', text='Punto Vendita')
         self.tblOrdiniEvasi.column(5, width=300, stretch=NO)
+
+        self.tblOrdiniEvasi.bind("r", lambda event: self.ordineConsegnato())
         ################################################################################################################
 
         self.lfOrdiniEvasi.configure(height='200', text='Ordini evasi', width='200')
@@ -954,7 +959,7 @@ class OrdiniWidget(tk.Toplevel):
 
             self.aggiornamentoOrdini()
 
-        except:
+        except IndexError:
             ErroreSelezioneOrdine = tkinter.messagebox.showerror(parent=self, title="Seleziona ordine da eliminare",
                                                                  message="Seleziona l'ordine da eliminare.\n"
                                                                          "È possibile eliminare solo gli "
@@ -1079,38 +1084,43 @@ class StampeWidget(tk.Toplevel):
         self.iconphoto(False, iconaStampe)
         self.resizable(False, False)
 
-    @staticmethod
-    def stampaOrdini():
+
+    def stampaOrdini(self):
         PDFOperations.StampaOrdine(switch=0)
+        self.destroy()
 
-    @staticmethod
-    def stampaEvasi():
+    def stampaEvasi(self):
         PDFOperations.StampaOrdine(switch=1)
+        self.destroy()
 
-    @staticmethod
-    def stampaConsegnati():
+    def stampaConsegnati(self):
         PDFOperations.StampaOrdine(switch=2)
+        self.destroy()
 
-    @staticmethod
-    def stampaNuovePratiche():
+
+    def stampaNuovePratiche(self):
         PDFOperations.StampaAssistenza(switch=0)
+        self.destroy()
 
-    @staticmethod
-    def stampaPraticheLavorazione():
+    def stampaPraticheLavorazione(self):
         PDFOperations.StampaAssistenza(switch=1)
+        self.destroy()
 
-    @staticmethod
-    def stampaPraticheLavorate():
+    def stampaPraticheLavorate(self):
         PDFOperations.StampaAssistenza(switch=2)
+        self.destroy()
 
     def stampaReportData(self):
-        PDFOperations.InserisciDataWidget(switch=2, operatore=operatore, puntoVendita=puntoVendita)
+        self.destroy()
+        PDFOperations.InserisciDataWidget(root, switch=2, operatore=operatore, puntoVendita=puntoVendita)
 
     def stampaReportMese(self):
-        PDFOperations.InserisciDataWidget(switch=1, operatore=operatore, puntoVendita=puntoVendita)
+        self.destroy()
+        PDFOperations.InserisciDataWidget(root, switch=1, operatore=operatore, puntoVendita=puntoVendita)
 
     def stampaReportAnno(self):
-        PDFOperations.InserisciDataWidget(switch=0, operatore=operatore, puntoVendita=puntoVendita)
+        self.destroy()
+        PDFOperations.InserisciDataWidget(root, switch=0, operatore=operatore, puntoVendita=puntoVendita)
 
     def stampaReportBuoni(self):
         pass
@@ -1218,6 +1228,8 @@ class StockItApp:
         self.tblOrdiniDaEvadere.column(4, width=300, stretch=NO)
         self.tblOrdiniDaEvadere.heading('puntoVendita', text='Punto Vendita')
         self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
+
+        self.tblOrdiniDaEvadere.bind("Control-e", lambda event: self.ordineEvaso())
         ################################################################################################################
 
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
@@ -1312,14 +1324,18 @@ class StockItApp:
         self.aggiornamentoOrdini()
 
     def OnDoubleClickComunicazioni(self, event):
-        item = self.tblComunicazioni.identify('item', event.x, event.y)
-        indice = self.tblComunicazioni.focus()
-        idx = self.tblComunicazioni.item(indice)
-        valore = idx['values'][0]
-        autore = idx['values'][1]
-        messaggio = idx['values'][2]
-        title = str(valore) + " - " + str(autore)
-        tkinter.messagebox.showinfo(title="Comunicazione n."+title, message=messaggio + "\nAutore: " + autore)
+        try:
+            item = self.tblComunicazioni.identify('item', event.x, event.y)
+            indice = self.tblComunicazioni.focus()
+            idx = self.tblComunicazioni.item(indice)
+            valore = idx['values'][0]
+            autore = idx['values'][1]
+            messaggio = idx['values'][2]
+            title = str(valore) + " - " + str(autore)
+            tkinter.messagebox.showinfo(title="Comunicazione n."+title, message=messaggio + "\nAutore: " + autore)
+        except IndexError:
+            pass
+            #tkinter.messagebox.showwarning(title="Nessuna selezione", message="Selezionare una voce per visualizzarla")
 
 
     def inserisciComunicazione(self):
@@ -1411,11 +1427,11 @@ class StockItApp:
             #except:
              #   print("error")
 
-    @staticmethod
-    def aggiornamentoInterfacce():
-        UtentiWidget.aggiornaUtenti()
-        AssistenzaWidget.aggiornamentoOrdini()
-        OrdiniWidget.aggiornamentoOrdini()
+
+    def aggiornamentoInterfacce(self):
+        UtentiWidget.aggiornaUtenti(self)
+        AssistenzaWidget.aggiornamentoOrdini(self)
+        OrdiniWidget.aggiornamentoOrdini(self)
 
     def eliminaNotificaChat(self):
         self.btnChat.configure(style='')
@@ -1450,6 +1466,8 @@ if __name__ == '__main__':
     root.state('zoomed')
     root.title('AB Informatica - StockIt Manager')
     root.iconbitmap('barcode.ico')
+    nomeUtente = "TestUser"
+    puntoVendita = "TestStore"
 
     try:
         password = StringDialog.ask_string('Password Utente', 'Inserisci password:\t\t\t\t\n\n\n', show='*')
@@ -1463,12 +1481,16 @@ if __name__ == '__main__':
         operatore = user[3]
         puntoVendita = user[4]
         print(nomeUtente)
-    except:
+    except IndexError:
         tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
                                                                      "Password errata o database irraggiungibile")
         root.destroy()
 
     header = "AB Informatica - StockIt Manager | Operatore: "+nomeUtente+" - Punto vendita: "+puntoVendita
-    root.title(header)
-    app = StockItApp(root)
-    app.run()
+    try:
+        root.title(header)
+        app = StockItApp(root)
+        app.run()
+    except _tkinter.TclError:
+        pass
+
