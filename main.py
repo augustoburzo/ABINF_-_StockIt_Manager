@@ -17,7 +17,8 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-#FINESTRA CASSA########################################################################################################
+
+# FINESTRA CASSA########################################################################################################
 class CassaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         self.incassoTotale = tk.StringVar()
@@ -91,7 +92,7 @@ class CassaWidget(tk.Toplevel):
         self.entryPOS.pack(pady='9', side='top')
         self.entryFinanziamenti = ttk.Entry(self.frame8, textvariable=self.finanziamenti)
         self.entryFinanziamenti.pack(pady='9', side='top')
-        self.entryBonifici = ttk.Entry(self.frame8, textvariable= self.bonifici)
+        self.entryBonifici = ttk.Entry(self.frame8, textvariable=self.bonifici)
         self.entryBonifici.pack(pady='9', side='top')
         self.entryAssegni = ttk.Entry(self.frame8, textvariable=self.assegni)
         self.entryAssegni.pack(pady='9', side='top')
@@ -172,7 +173,6 @@ class CassaWidget(tk.Toplevel):
         self.iconphoto(False, iconaCassa)
         self.title('Gestione Cassa | AB Informatica - StockIt Manager')
 
-
         _default_ = 0.00
 
         self.entry.insert(0, _default_)
@@ -187,10 +187,9 @@ class CassaWidget(tk.Toplevel):
 
         self.aggiornaCasse()
 
-
     def quadratura(self):
         self.entryIncassoTot.delete(0, END)
-        #incassoTotale = float(self.incassoTotale.get())
+        # incassoTotale = float(self.incassoTotale.get())
         corrispettivo = float(self.corrispettivo.get())
         fatturato = float(self.fatturato.get())
         contanti = float(self.contanti.get())
@@ -200,19 +199,19 @@ class CassaWidget(tk.Toplevel):
         assegni = float(self.assegni.get())
         acconti = float(self.acconti.get())
         preincassato = float(self.preincassato.get())
-        sommaCorrispettivi = corrispettivo+fatturato
+        sommaCorrispettivi = corrispettivo + fatturato
         self.entryIncassoTot.insert(0, str(sommaCorrispettivi))
 
         incassoTotale = float(self.incassoTotale.get())
-        totale = contanti+pos+finanziamenti+bonifici+assegni-acconti+preincassato
-        quadratura = totale-incassoTotale
+        totale = contanti + pos + finanziamenti + bonifici + assegni - acconti + preincassato
+        quadratura = totale - incassoTotale
         quadratura = round(quadratura, 2)
-        #self.entryQuadratura.insert(0, str(quadratura))
+        # self.entryQuadratura.insert(0, str(quadratura))
         self.lblQuadratura.configure(text=quadratura)
 
         if quadratura != 0:
             tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura negativa",
-                                         message="È stata riscontrata una squadratura di €"+str(quadratura))
+                                         message="È stata riscontrata una squadratura di €" + str(quadratura))
 
         print(incassoTotale)
         print(corrispettivo)
@@ -303,7 +302,8 @@ class CassaWidget(tk.Toplevel):
             giornata = giornata[1:]
             self.tblStoricoGiornate.insert("", END, values=giornata)
 
-#FINESTRA CHAT#########################################################################################################
+
+# FINESTRA CHAT#########################################################################################################
 
 class ChatWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
@@ -407,7 +407,7 @@ class ChatWidget(tk.Toplevel):
 
     def ricercaAggiornamenti(self):
         while 1:
-            #try:
+            # try:
             time.sleep(1)
             mydb = mysql.connector.connect(option_files='connector.cnf')
             cursor = mydb.cursor()
@@ -429,11 +429,10 @@ class ChatWidget(tk.Toplevel):
 
             else:
                 pass
-            #except:
-             #   print("error")
+            # except:
+            #   print("error")
 
-
-    #def aggiornamentoInterfacce():
+    # def aggiornamentoInterfacce():
     #    UtentiWidget.aggiornaUtenti()
     #    AssistenzaWidget.aggiornamentoOrdini()
     #    OrdiniWidget.aggiornamentoOrdini()
@@ -445,12 +444,10 @@ class ChatWidget(tk.Toplevel):
         print("Chat Daemon STARTED\n")
 
 
-
-#FINESTRA UTENTI#######################################################################################################
+# FINESTRA UTENTI#######################################################################################################
 
 class UtentiWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-
         iconaUser = tk.PhotoImage(file='user.png')
 
         super(UtentiWidget, self).__init__(master, **kw)
@@ -488,16 +485,16 @@ class UtentiWidget(tk.Toplevel):
         self.tblUtenti_cols = ['idx', 'nomeUtente', 'password', 'ruolo', 'puntoVendita']
         self.tblUtenti_dcols = ['idx', 'nomeUtente', 'password', 'ruolo', 'puntoVendita']
         self.tblUtenti = ttk.Treeview(self.lfUtenti, columns=self.tblUtenti_cols, show='headings')
-        self.tblUtenti.column('idx', anchor='w',stretch='false',width='67',minwidth='20')
-        self.tblUtenti.column('nomeUtente', anchor='w',stretch='true',width='200',minwidth='20')
-        self.tblUtenti.column('password', anchor='w',stretch='true',width='200',minwidth='20')
-        self.tblUtenti.column('ruolo', anchor='w',stretch='false',width='100',minwidth='20')
-        self.tblUtenti.column('puntoVendita', anchor='w',stretch='false',width='200',minwidth='20')
-        self.tblUtenti.heading('idx', anchor='w',text='Prog.')
-        self.tblUtenti.heading('nomeUtente', anchor='w',text='Nome utente')
-        self.tblUtenti.heading('password', anchor='w',text='Password')
-        self.tblUtenti.heading('ruolo', anchor='w',text='Ruolo')
-        self.tblUtenti.heading('puntoVendita', anchor='w',text='Punto Vendita')
+        self.tblUtenti.column('idx', anchor='w', stretch='false', width='67', minwidth='20')
+        self.tblUtenti.column('nomeUtente', anchor='w', stretch='true', width='200', minwidth='20')
+        self.tblUtenti.column('password', anchor='w', stretch='true', width='200', minwidth='20')
+        self.tblUtenti.column('ruolo', anchor='w', stretch='false', width='100', minwidth='20')
+        self.tblUtenti.column('puntoVendita', anchor='w', stretch='false', width='200', minwidth='20')
+        self.tblUtenti.heading('idx', anchor='w', text='Prog.')
+        self.tblUtenti.heading('nomeUtente', anchor='w', text='Nome utente')
+        self.tblUtenti.heading('password', anchor='w', text='Password')
+        self.tblUtenti.heading('ruolo', anchor='w', text='Ruolo')
+        self.tblUtenti.heading('puntoVendita', anchor='w', text='Punto Vendita')
         self.tblUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.tblUtenti.bind('<Double-1>', self.OnClickTbl, add='')
         self.lfUtenti.configure(height='200', text='Utenti', width='200')
@@ -521,7 +518,6 @@ class UtentiWidget(tk.Toplevel):
         self.geometry('800x600')
         self.iconphoto(False, iconaUser)
         self.title('Gestione Utenti | AB Informatica - StockIt Manager')
-
 
         self.aggiornaUtenti()
 
@@ -584,7 +580,8 @@ class UtentiWidget(tk.Toplevel):
         for utente in utenti:
             self.tblUtenti.insert("", END, values=utente)
 
-#FINESTRA NUOVA COMUNICAZIONE##########################################################################################
+
+# FINESTRA NUOVA COMUNICAZIONE##########################################################################################
 
 class NuovaComunicazioneWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
@@ -613,11 +610,10 @@ class NuovaComunicazioneWidget(tk.Toplevel):
         self.iconbitmap("chat.ico")
         self.title('Inserisci comunicazione | AB Informatica - StockIt Manager')
 
-
     def inserisciComunicazione(self):
         messaggio = self.text1.get(1.0, END)
         data = str(date.today())
-        databaseOperations.Comunicazioni(0,0,nomeUtente,messaggio,data)
+        databaseOperations.Comunicazioni(0, 0, nomeUtente, messaggio, data)
         self.svuotaCampi()
         self.destroy()
 
@@ -807,7 +803,6 @@ class AssistenzaWidget(tk.Toplevel):
 # FINESTRA ORDINI#######################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-
         iconaOrdini = tk.PhotoImage(file='box1.png')
 
         super(OrdiniWidget, self).__init__(master, **kw)  # INIZIO BUILD INTERFACCIA ORDINI
@@ -815,26 +810,26 @@ class OrdiniWidget(tk.Toplevel):
         self.frameLabelOrdine = ttk.Frame(self.lfNuovoOrdine)
         self.lblOrdNomeProdotto = ttk.Label(self.frameLabelOrdine)
         self.lblOrdNomeProdotto.configure(text='Nome prodotto:')
-        self.lblOrdNomeProdotto.pack(anchor='e', expand='true', side='top')
+        self.lblOrdNomeProdotto.pack(anchor='e', expand=True, side='top')
         self.lblOrdQuantita = ttk.Label(self.frameLabelOrdine)
         self.lblOrdQuantita.configure(text='Quantità:')
-        self.lblOrdQuantita.pack(anchor='e', expand='true', side='top')
+        self.lblOrdQuantita.pack(anchor='e', expand=True, side='top')
         self.lblOrdNote = ttk.Label(self.frameLabelOrdine)
         self.lblOrdNote.configure(text='Note:')
-        self.lblOrdNote.pack(anchor='e', expand='true', side='top')
+        self.lblOrdNote.pack(anchor='e', expand=True, side='top')
         self.lblNomeCliente = ttk.Label(self.frameLabelOrdine)
         self.lblNomeCliente.configure(text='Nome cliente:')
-        self.lblNomeCliente.pack(anchor='e', expand='true', side='top')
+        self.lblNomeCliente.pack(anchor='e', expand=True, side='top')
         self.frameLabelOrdine.configure(width='200')
-        self.frameLabelOrdine.pack(expand='false', fill='y', padx='5', pady='5', side='left')
+        self.frameLabelOrdine.pack(expand=False, fill='y', padx='5', pady='5', side='left')
         self.frameEntryOrdine = ttk.Frame(self.lfNuovoOrdine)
         self.entryNomeProdotto = ttk.Entry(self.frameEntryOrdine)
-        self.entryNomeProdotto.configure(width='60')
+        self.entryNomeProdotto.configure(width=60)
         self.entryNomeProdotto.pack(expand='true', fill='x', side='top')
         self.entryQuantita = ttk.Entry(self.frameEntryOrdine)
         self.entryQuantita.configure(width='60')
         self.entryQuantita.pack(expand='true', fill='x', side='top')
-        self.entryQuantita.insert(0,"0")
+        self.entryQuantita.insert(0, "0")
         self.entryNoteProdotto = ttk.Entry(self.frameEntryOrdine)
         self.entryNoteProdotto.configure(width='60')
         self.entryNoteProdotto.pack(expand='true', fill='x', side='top')
@@ -1007,10 +1002,107 @@ class OrdiniWidget(tk.Toplevel):
             self.tblOrdiniEvasi.insert("", END, values=ordine)
 
 
-#FINESTRA STAMPE########################################################################################################
+# FINESTRA NUOVO ORDINE##################################################################################################
+class InserisciOrdineWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(InserisciOrdineWidget, self).__init__(master, **kw)
+
+        iconaOrdini = tk.PhotoImage(file='box1.png')
+
+        self.labelframe5 = ttk.Labelframe(self)
+        self.frame18 = ttk.Frame(self.labelframe5)
+        self.label14 = ttk.Label(self.frame18)
+        self.label14.configure(text='Nome prodotto:')
+        self.label14.pack(anchor='e', expand='true', side='top')
+        self.label16 = ttk.Label(self.frame18)
+        self.label16.configure(text='Quantità:')
+        self.label16.pack(anchor='e', expand='true', side='top')
+        self.label18 = ttk.Label(self.frame18)
+        self.label18.configure(text='Note:')
+        self.label18.pack(anchor='e', expand='true', side='top')
+        self.label19 = ttk.Label(self.frame18)
+        self.label19.configure(text='Nome cliente:')
+        self.label19.pack(anchor='e', expand='true', side='top')
+        self.frame18.configure(width='200')
+        self.frame18.pack(expand='false', fill='y', padx='5', pady='5', side='left')
+        self.frame19 = ttk.Frame(self.labelframe5)
+        self.entryNomeProdotto1 = ttk.Entry(self.frame19)
+        self.entryNomeProdotto1.configure(width='60')
+        self.entryNomeProdotto1.pack(expand='true', fill='x', side='top')
+        self.entryQuantita1 = ttk.Entry(self.frame19)
+        self.entryQuantita1.configure(width='60')
+        self.entryQuantita1.pack(expand='true', fill='x', side='top')
+        self.entryNote1 = ttk.Entry(self.frame19)
+        self.entryNote1.configure(width='60')
+        self.entryNote1.pack(expand='true', fill='x', side='top')
+        self.entryNomeCliente1 = ttk.Entry(self.frame19)
+        self.entryNomeCliente1.configure(width='60')
+        self.entryNomeCliente1.pack(expand='true', fill='x', side='top')
+        self.frame19.configure(height='200', width='200')
+        self.frame19.pack(expand='true', fill='both', padx='5', pady='5', side='left')
+        self.button7 = ttk.Button(self.labelframe5)
+        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.button7.configure(image=self.img_plus, text='Inserisci')
+        self.button7.pack(expand='true', fill='y', padx='5', pady='5', side='top')
+        self.button7.configure(command=self.nuovoOrdine)
+        self.labelframe5.configure(height='200', text='Nuovo Ordine', width='200')
+        self.labelframe5.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('640x200')
+        self.resizable(False, False)
+        self.iconphoto(False, iconaOrdini)
+        self.title('Inserisci ordine | AB Informatica - StockIt Manager')
+
+    def nuovoOrdine(self):
+        self.nomeProdotto = self.entryNomeProdotto1.get()
+        self.quantita = self.entryQuantita1.get()
+        self.note = self.entryNote1.get()
+        self.nomeCliente = self.entryNomeCliente1.get()
+
+        self.nomeProdotto = self.nomeProdotto.upper()
+        self.note = self.note.upper()
+        self.nomeCliente = self.nomeCliente.upper()
+
+        if self.nomeProdotto != '' and self.quantita != "0":
+            # INSERISCE I DATI NEL DATABASE
+            databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente,
+                                              puntoVendita)
+
+            # AZZERA I CAMPI
+            self.entryNomeProdotto1.delete(0, END)
+            self.entryQuantita1.delete(0, END)
+            self.entryNote1.delete(0, END)
+            self.entryNomeCliente1.delete(0, END)
+
+        else:
+            ErroreOrdine = tkinter.messagebox.showerror(parent=self, title="Compilare i campi",
+                                                        message="Assicurati di aver compilato almeno i campi richiesti")
+
+            self.destroy()
+
+
+# FINESTRA LEGGI COMUNICAZIONE###########################################################################################
+class LeggiComunicazioneWidget(tk.Toplevel):
+    def __init__(self, master=None, text="", **kw):
+        super(LeggiComunicazioneWidget, self).__init__(master, **kw)
+        self.labelframe6 = ttk.Labelframe(self)
+        self.text = tk.Text(self.labelframe6)
+        self.text.configure(height='10', state='normal', width='50')
+        self.text.insert(1.0, text)
+        self.text.configure(state='disabled')
+        self.text.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.labelframe6.configure(height='200', text='Comunicazione', width='200')
+        self.labelframe6.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.configure(height='200', width='200')
+        self.iconbitmap('chat.ico')
+        self.title('Leggi comunicazione | AB Informatica - StockIt Manager')
+        self.geometry('800x600')
+
+
+# FINESTRA STAMPE########################################################################################################
+
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-
         iconaStampe = tk.PhotoImage(file='printer.png')
 
         super(StampeWidget, self).__init__(master, **kw)
@@ -1084,7 +1176,6 @@ class StampeWidget(tk.Toplevel):
         self.iconphoto(False, iconaStampe)
         self.resizable(False, False)
 
-
     def stampaOrdini(self):
         PDFOperations.StampaOrdine(switch=0)
         self.destroy()
@@ -1096,7 +1187,6 @@ class StampeWidget(tk.Toplevel):
     def stampaConsegnati(self):
         PDFOperations.StampaOrdine(switch=2)
         self.destroy()
-
 
     def stampaNuovePratiche(self):
         PDFOperations.StampaAssistenza(switch=0)
@@ -1130,6 +1220,7 @@ class StampeWidget(tk.Toplevel):
 
     def stampaComunicazione(self):
         pass
+
 
 # FINESTRA PRINCIPALE###################################################################################################
 
@@ -1229,7 +1320,7 @@ class StockItApp:
         self.tblOrdiniDaEvadere.heading('puntoVendita', text='Punto Vendita')
         self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
 
-        self.tblOrdiniDaEvadere.bind("Control-e", lambda event: self.ordineEvaso())
+        self.tblOrdiniDaEvadere.bind("<Double-1>", lambda event: self.ordineEvaso())
         ################################################################################################################
 
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
@@ -1244,7 +1335,7 @@ class StockItApp:
         self.btnInserisciOrdine = ttk.Button(self.frmPulsantiInf)
         self.btnInserisciOrdine.configure(text='Inserisci ordine')
         self.btnInserisciOrdine.pack(expand='false', ipadx='10', ipady='6', side='left')
-        self.btnInserisciOrdine.configure(command=self.finestraInserisciOrdine)
+        self.btnInserisciOrdine.configure(command=self.widgetInserisciOrdine)
         self.btnOrdineEvaso = ttk.Button(self.frmPulsantiInf)
         self.btnOrdineEvaso.configure(text='Ordine evaso')
         self.btnOrdineEvaso.pack(expand='false', ipadx='10', ipady='6', side='left')
@@ -1269,12 +1360,14 @@ class StockItApp:
         self.aggiornamentoOrdini()
         self.autoAggiornamentoDaemon()
 
-
         # Main widget
         self.mainwindow = self.masterFrame
 
     def run(self):
         self.mainwindow.mainloop()
+
+    def widgetInserisciOrdine(self):
+        InserisciOrdineWidget(root)
 
     @staticmethod
     def finestraStampe():
@@ -1308,7 +1401,7 @@ class StockItApp:
         pass
 
     def stampaOrdini(self):
-        pass
+        PDFOperations.StampaOrdine(switch=0)
 
     @staticmethod
     def finestraInserisciOrdine():
@@ -1319,7 +1412,8 @@ class StockItApp:
         for idx in curItems:
             index = self.tblOrdiniDaEvadere.item(idx)
             valore = index['values'][0]
-            databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='', puntoVendita='')
+            databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
+                                              puntoVendita='')
 
         self.aggiornamentoOrdini()
 
@@ -1332,11 +1426,11 @@ class StockItApp:
             autore = idx['values'][1]
             messaggio = idx['values'][2]
             title = str(valore) + " - " + str(autore)
-            tkinter.messagebox.showinfo(title="Comunicazione n."+title, message=messaggio + "\nAutore: " + autore)
+            #tkinter.messagebox.showinfo(title="Comunicazione n." + title, message=messaggio + "\nAutore: " + autore)
+            LeggiComunicazioneWidget(root, text=messaggio)
         except IndexError:
             pass
-            #tkinter.messagebox.showwarning(title="Nessuna selezione", message="Selezionare una voce per visualizzarla")
-
+            # tkinter.messagebox.showwarning(title="Nessuna selezione", message="Selezionare una voce per visualizzarla")
 
     def inserisciComunicazione(self):
         NuovaComunicazioneWidget()
@@ -1384,7 +1478,7 @@ class StockItApp:
 
     def ricercaAggiornamenti(self):
         while 1:
-            #try:
+            # try:
             time.sleep(1)
             mydb = mysql.connector.connect(option_files='connector.cnf')
             cursor = mydb.cursor()
@@ -1424,9 +1518,8 @@ class StockItApp:
 
             else:
                 pass
-            #except:
-             #   print("error")
-
+            # except:
+            #   print("error")
 
     def aggiornamentoInterfacce(self):
         UtentiWidget.aggiornaUtenti(self)
@@ -1451,10 +1544,10 @@ class StringDialog(tkinter.simpledialog._QueryString):
         super().body(master)
         self.iconbitmap('barcode.ico')
 
-
     def ask_string(title, prompt, **kargs):
         d = StringDialog(title, prompt, **kargs)
         return d.result
+
 
 if __name__ == '__main__':
 
@@ -1466,6 +1559,9 @@ if __name__ == '__main__':
     root.state('zoomed')
     root.title('AB Informatica - StockIt Manager')
     root.iconbitmap('barcode.ico')
+    splash = tk.PhotoImage(file='Splash.png')
+    splashImage = tk.Label(root, image=splash)
+    splashImage.pack(expand=True, fill='both')
     nomeUtente = "TestUser"
     puntoVendita = "TestStore"
 
@@ -1486,11 +1582,10 @@ if __name__ == '__main__':
                                                                      "Password errata o database irraggiungibile")
         root.destroy()
 
-    header = "AB Informatica - StockIt Manager | Operatore: "+nomeUtente+" - Punto vendita: "+puntoVendita
+    header = "AB Informatica - StockIt Manager | Operatore: " + nomeUtente + " - Punto vendita: " + puntoVendita
     try:
         root.title(header)
         app = StockItApp(root)
         app.run()
     except _tkinter.TclError:
         pass
-

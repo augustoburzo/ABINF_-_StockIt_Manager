@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{34a51fa5-a089-4789-ba01-ea986e085990}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>main.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="barcode.ico" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\altgraph-0.17.2.dist-info\top_level.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\barcode.ico" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\box1.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\call-center.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\cffi-1.15.0.dist-info\entry_points.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\cffi-1.15.0.dist-info\top_level.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\chat.ico" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\chat.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\clean.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\credit-card.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\delete.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\money.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\plus.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\printer.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\pyinstaller-4.10.dist-info\COPYING.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\pyinstaller-4.10.dist-info\entry_points.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\pyinstaller-4.10.dist-info\top_level.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\search.ico" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\send.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\settings.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\setuptools-58.1.0.dist-info\entry_points.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\setuptools-58.1.0.dist-info\top_level.txt" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\Splash.png" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\logo100.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\logo64.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\logoLarge.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\logoMed.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\pwrdLogo100.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\pwrdLogo150.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\pwrdLogo175.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\pwrdLogo200.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\pwrdLogo75.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images\tai-ku.gif" />
+    <Content Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\user.png" />
+    <Content Include="box1.png" />
+    <Content Include="call-center.png" />
+    <Content Include="chat.ico" />
+    <Content Include="chat.png" />
+    <Content Include="clean.png" />
+    <Content Include="credit-card.png" />
+    <Content Include="delete.png" />
+    <Content Include="money.png" />
+    <Content Include="plus.png" />
+    <Content Include="printer.png" />
+    <Content Include="search.ico" />
+    <Content Include="send.png" />
+    <Content Include="settings.png" />
+    <Content Include="Splash.png" />
+    <Content Include="user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="databaseOperations.py" />
+    <Compile Include="main.py" />
+    <Compile Include="PDFOperations.py" />
+    <Compile Include="StrutturaDatabase.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BIN\" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\altgraph-0.17.2.dist-info" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\cffi-1.15.0.dist-info" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\pyinstaller-4.10.dist-info" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\setuptools-58.1.0.dist-info" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\" />
+    <Folder Include="BIN\AB Informatica - StockIt Manager\AB Informatica - StockIt Manager 1.0.0.0\tk\images" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
