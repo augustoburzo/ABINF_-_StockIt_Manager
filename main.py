@@ -8,6 +8,8 @@ import tkinter.simpledialog
 import tkinter.messagebox
 from datetime import date
 import time
+import ctypes
+from PIL import ImageTk, Image
 
 import PDFOperations
 import databaseOperations
@@ -1221,6 +1223,31 @@ class StampeWidget(tk.Toplevel):
     def stampaComunicazione(self):
         pass
 
+#CREDITS################################################################################################################
+class CreditsWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(CreditsWidget, self).__init__(master, **kw)
+        self.label20 = ttk.Label(self)
+        self.label20.configure(font='{Consolas} 20 {bold}', text='AB Informatica')
+        self.label20.pack(pady='10', side='top')
+        self.label21 = ttk.Label(self)
+        self.label21.configure(font='{Consolas} 24 {bold}', justify='center', text='StockIt Manager')
+        self.label21.pack(expand='false', pady='10', side='top')
+        self.label22 = ttk.Label(self)
+        self.label22.configure(anchor='center', font='{Arial} 16 {}', justify='center', text='''Augusto Burzo
+info@augustoburzo.com
++39 379 146 48 24
+
+-------------------------------------------------------------
+
+Icone:
+Flaticon
+Vecteezy''')
+        self.label22.pack(expand='true', fill='both', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('640x480')
+        self.iconbitmap('icon.ico')
+        self.title('Credits')
 
 # FINESTRA PRINCIPALE###################################################################################################
 
@@ -1542,7 +1569,7 @@ operatore = 0
 class StringDialog(tkinter.simpledialog._QueryString):
     def body(self, master):
         super().body(master)
-        self.iconbitmap('barcode.ico')
+        self.iconbitmap('icon.ico')
 
     def ask_string(title, prompt, **kargs):
         d = StringDialog(title, prompt, **kargs)
@@ -1558,8 +1585,13 @@ if __name__ == '__main__':
     root.geometry('1024x650')
     root.state('zoomed')
     root.title('AB Informatica - StockIt Manager')
-    root.iconbitmap('barcode.ico')
-    splash = tk.PhotoImage(file='Splash.png')
+    root.iconbitmap('icon.ico')
+    user32 = ctypes.windll.user32
+    width = user32.GetSystemMetrics(0)
+    height = user32.GetSystemMetrics(1)
+    splashTiny = Image.open("StockIt.png")
+    splashResized = splashTiny.resize((width, height), Image.ANTIALIAS)
+    splash = ImageTk.PhotoImage(splashTiny)
     splashImage = tk.Label(root, image=splash)
     splashImage.pack(expand=True, fill='both')
     nomeUtente = "TestUser"
@@ -1577,6 +1609,7 @@ if __name__ == '__main__':
         operatore = user[3]
         puntoVendita = user[4]
         print(nomeUtente)
+        splashImage.destroy()
     except IndexError:
         tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
                                                                      "Password errata o database irraggiungibile")
@@ -1585,6 +1618,18 @@ if __name__ == '__main__':
     header = "AB Informatica - StockIt Manager | Operatore: " + nomeUtente + " - Punto vendita: " + puntoVendita
     try:
         root.title(header)
+        menubar = tk.Menu(root)
+        filemenu = tk.Menu(menubar, tearoff=False)
+        filemenu.add_command(label='Stampa...', command=StampeWidget)
+        filemenu.add_separator()
+        filemenu.add_command(label='Esci', command=root.destroy)
+
+        infomenu = tk.Menu(menubar, tearoff=False)
+        infomenu.add_command(label='Credits', command=CreditsWidget, underline=0)
+
+        menubar.add(tk.CASCADE, menu=filemenu, label='File', underline=0)
+        menubar.add(tk.CASCADE, menu=infomenu, label='Info', underline=0)
+        root.configure(menu=menubar)
         app = StockItApp(root)
         app.run()
     except _tkinter.TclError:
