@@ -1,15 +1,20 @@
+from tkinter.ttk import Label
+
 import _tkinter
 import threading
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import END, NO, YES, ANCHOR
+import cv2
 import mysql.connector
 import tkinter.simpledialog
 import tkinter.messagebox
 from datetime import date
 import time
 import ctypes
+import numpy as np
 from PIL import ImageTk, Image
+from pyzbar.pyzbar import decode
 
 import PDFOperations
 import databaseOperations
@@ -19,8 +24,102 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
+#FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
 
-# FINESTRA CASSA########################################################################################################
+
+class RicercaFidClienteWidget(tk.Toplevel):
+
+    def __init__(self, master=None, **kw):
+        super(RicercaFidClienteWidget, self).__init__(master, **kw)
+        self.labelframe1 = ttk.Labelframe(self)
+        self.frame6 = ttk.Frame(self.labelframe1)
+        self.labelNomeClienteFid = ttk.Label(self.frame6)
+        self.labelNomeClienteFid.configure(text='Nome cliente:')
+        self.labelNomeClienteFid.pack(anchor='e', expand=True, padx=5, pady=5, side='top')
+        self.labelNumeroCartaFid = ttk.Label(self.frame6)
+        self.labelNumeroCartaFid.configure(text='Numero carta:')
+        self.labelNumeroCartaFid.pack(anchor='e', expand=True, padx='5', pady='5', side='top')
+        self.frame6.configure(height='70', width='200')
+        self.frame6.pack(expand=False, side='left')
+        self.frame8 = ttk.Frame(self.labelframe1)
+        self.entry2 = ttk.Entry(self.frame8)
+        self.entry2.pack(expand=True, fill='x', padx='5', pady='5', side='top')
+        self.entry3 = ttk.Entry(self.frame8)
+        self.entry3.pack(expand=True, fill='x', padx='5', pady='5', side='top')
+        self.frame8.configure(height='60', width='200')
+        self.frame8.pack(expand=True, fill='x', pady='5', side='left')
+        self.frame13 = ttk.Frame(self.labelframe1)
+        self.buttonCamera = ttk.Button(self.frame13)
+        self.img_qrcode = tk.PhotoImage(file='qr-code.png')
+        self.buttonCamera.configure(image=self.img_qrcode, text='Camera')
+        self.buttonCamera.pack(padx='5', pady='5', side='top')
+        self.buttonCamera.configure(command=self.scanTessera)
+        self.frame13.configure(height='200', width='200')
+        self.frame13.pack(side='left')
+        self.labelframe1.configure(height='80', text='Ricerca cliente', width='200')
+        self.labelframe1.pack(fill='x', padx='5', pady='5', side='top')
+        self.button11 = ttk.Button(self)
+        self.button11.configure(text='Ricerca cliente')
+        self.button11.pack(fill='x', padx='5', side='top')
+        self.button11.configure(command=self.ricercaCliente)
+        self.frame9 = ttk.Frame(self)
+        self.treeview2 = ttk.Treeview(self.frame9)
+        self.treeview2_cols = ['columnCarta', 'columnNomeCliente', 'columnIndirizzo', 'columnContatto', 'columnCredito']
+        self.treeview2_dcols = ['columnCarta', 'columnNomeCliente', 'columnIndirizzo', 'columnContatto',
+                                'columnCredito']
+        self.treeview2.configure(columns=self.treeview2_cols, show='headings')
+        self.treeview2.column('columnCarta', anchor='w', stretch=True, width=200, minwidth=20)
+        self.treeview2.column('columnNomeCliente', anchor='w', stretch=True, width=200, minwidth=20)
+        self.treeview2.column('columnIndirizzo', anchor='w', stretch=True, width=200, minwidth=20)
+        self.treeview2.column('columnContatto', anchor='w', stretch=True, width=200, minwidth=20)
+        self.treeview2.column('columnCredito', anchor='w', stretch=True, width=200, minwidth=20)
+        self.treeview2.heading('columnCarta', anchor='w', text='Numero carta')
+        self.treeview2.heading('columnNomeCliente', anchor='w', text='Nome cliente')
+        self.treeview2.heading('columnIndirizzo', anchor='w', text='Indirizzo')
+        self.treeview2.heading('columnContatto', anchor='w', text='Contatto')
+        self.treeview2.heading('columnCredito', anchor='w', text='Credito')
+        self.treeview2.pack(expand=True, fill='both', side='top')
+        self.treeview2.bind('<Double-1>', self.callback, add='')
+        self.frame9.configure(height=200, width=200)
+        self.frame9.pack(expand=True, fill='both', padx=5, pady=5, side='top')
+        self.img_creditcard = tk.PhotoImage(file='credit-card.png')
+        self.configure(height=600, width=800)
+        self.geometry('1024x600')
+        self.iconphoto(True, self.img_creditcard)
+
+    def scanTessera(self):
+        self.entry3.delete(0, END)
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap.set(3, 1024)
+        cap.set(4, 768)
+
+        code = 0
+
+        while code == 0:
+
+            success, img = cap.read()
+            for barcode in decode(img):
+                myData = barcode.data.decode('utf-8')
+                if myData != code:
+                    self.entry3.insert(END, myData)
+                    code = myData
+                pts = np.array([barcode.polygon], np.int32)
+                pts = pts.reshape((-1, 1, 2))
+                cv2.polylines(img, [pts], True, (255, 0, 255), 5)
+                pts2 = barcode.rect
+                cv2.putText(img, myData, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 255), 2)
+
+        self.ricercaCliente()
+
+    def ricercaCliente(self):
+        pass
+
+    def callback(self, event=None):
+        pass
+
+
+
+#FINESTRA CASSA#########################################################################################################
 class CassaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         self.incassoTotale = tk.StringVar()
@@ -42,26 +141,26 @@ class CassaWidget(tk.Toplevel):
         self.frame1 = ttk.Frame(self.lfTotali)
         self.lblIncassoTotale = ttk.Label(self.frame1)
         self.lblIncassoTotale.configure(text='Incasso totale:')
-        self.lblIncassoTotale.pack(anchor='e', pady='5', side='top')
+        self.lblIncassoTotale.pack(anchor='e', pady=5, side='top')
         self.label3 = ttk.Label(self.frame1)
         self.label3.configure(text='Corrispettivo:')
-        self.label3.pack(anchor='e', pady='5', side='top')
+        self.label3.pack(anchor='e', pady=5, side='top')
         self.label4 = ttk.Label(self.frame1)
         self.label4.configure(text='Fatturato:')
-        self.label4.pack(anchor='e', pady='5', side='top')
-        self.frame1.configure(height='200', width='150')
-        self.frame1.pack(padx='5', side='left')
+        self.label4.pack(anchor='e', pady=5, side='top')
+        self.frame1.configure(height=200, width=150)
+        self.frame1.pack(padx=5, side='left')
         self.frame4 = ttk.Frame(self.lfTotali)
         self.entryIncassoTot = ttk.Entry(self.frame4, textvariable=self.incassoTotale)
-        self.entryIncassoTot.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryIncassoTot.pack(expand=True, fill='x', pady=4, side='top')
         self.entryCorrispettivo = ttk.Entry(self.frame4, textvariable=self.corrispettivo)
-        self.entryCorrispettivo.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryCorrispettivo.pack(expand=True, fill='x', pady='4', side='top')
         self.entryFatturato = ttk.Entry(self.frame4, textvariable=self.fatturato)
         self.entryFatturato.pack(expand=True, fill='x', pady='4', side='top')
         self.frame4.configure(height='80', width='200')
         self.frame4.pack(expand=True, fill='x', padx='5', side='left')
         self.lfTotali.configure(height='200', text='Totali Giornata', width='200')
-        self.lfTotali.pack(expand='false', fill='x', padx='5', pady='5', side='top')
+        self.lfTotali.pack(expand=False, fill='x', padx='5', pady='5', side='top')
         self.lfDettaglio = ttk.Labelframe(self.lfReportGiornata)
         self.frame6 = ttk.Frame(self.lfDettaglio)
         self.label5 = ttk.Label(self.frame6)
@@ -85,6 +184,9 @@ class CassaWidget(tk.Toplevel):
         self.label11 = ttk.Label(self.frame6)
         self.label11.configure(text='Già incassato:')
         self.label11.pack(anchor='e', pady='10', side='top')
+        self.label12 = ttk.Label(self.frame6)
+        self.label12.configure(text='Data:')
+        self.label12.pack(anchor='e', pady=10, side='top')
         self.frame6.configure(height='200', width='100')
         self.frame6.pack(expand='true', fill='both', side='left')
         self.frame8 = ttk.Frame(self.lfDettaglio)
@@ -102,6 +204,9 @@ class CassaWidget(tk.Toplevel):
         self.entryAcconti.pack(pady='9', side='top')
         self.entry = ttk.Entry(self.frame8, textvariable=self.preincassato)
         self.entry.pack(pady='9', side='top')
+        self.entryData = ttk.Entry(self.frame8)
+        self.entryData.pack(pady=9, side='top')
+        self.entryData.insert(END, str(date.today()))
         self.btnQuadratura = ttk.Button(self.frame8)
         self.btnQuadratura.configure(text='Quadratura')
         self.btnQuadratura.pack(fill='x', padx='5', pady='10', side='top')
@@ -175,17 +280,17 @@ class CassaWidget(tk.Toplevel):
         self.iconphoto(False, iconaCassa)
         self.title('Gestione Cassa | AB Informatica - StockIt Manager')
 
-        _default_ = 0.00
+        self._default_ = 0.00
 
-        self.entry.insert(0, _default_)
-        self.entryContanti.insert(0, _default_)
-        self.entryPOS.insert(0, _default_)
-        self.entryBonifici.insert(0, _default_)
-        self.entryAssegni.insert(0, _default_)
-        self.entryAcconti.insert(0, _default_)
-        self.entryFinanziamenti.insert(0, _default_)
-        self.entryFatturato.insert(0, _default_)
-        self.entryCorrispettivo.insert(0, _default_)
+        self.entry.insert(0, self._default_)
+        self.entryContanti.insert(0, self._default_)
+        self.entryPOS.insert(0, self._default_)
+        self.entryBonifici.insert(0, self._default_)
+        self.entryAssegni.insert(0, self._default_)
+        self.entryAcconti.insert(0, self._default_)
+        self.entryFinanziamenti.insert(0, self._default_)
+        self.entryFatturato.insert(0, self._default_)
+        self.entryCorrispettivo.insert(0, self._default_)
 
         self.aggiornaCasse()
 
@@ -234,7 +339,10 @@ class CassaWidget(tk.Toplevel):
             data = selezione['values'][10]
             negozio = selezione['values'][11]
             if negozio == puntoVendita:
-                databaseOperations.Cassa(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, data=data, puntoVendita=puntoVendita)
+                eliminaVoce = tkinter.messagebox.askyesno(parent=self.frame8, title='Eliminare voce?',
+                                                       message='Sei sicuro di voler eliminare la voce selezionata?')
+                if eliminaVoce:
+                    databaseOperations.Cassa(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, data=data, puntoVendita=puntoVendita)
 
             else:
                 ErrorePV = tkinter.messagebox.showerror(parent=self, title="Errore Punto Vendita",
@@ -258,7 +366,7 @@ class CassaWidget(tk.Toplevel):
             acconti = float(self.acconti.get())
             preincassato = float(self.preincassato.get())
             incassoTotale = float(self.incassoTotale.get())
-            data = str(date.today())
+            data = self.entryData.get()
 
             if incassoTotale > 0:
                 databaseOperations.Cassa(0, incassoTotale=incassoTotale, corrispettivo=corrispettivo,
@@ -280,6 +388,27 @@ class CassaWidget(tk.Toplevel):
                                              puntoVendita=puntoVendita)
 
             self.aggiornaCasse()
+            self.entryIncassoTot.delete(0, END)
+            self.entryCorrispettivo.delete(0, END)
+            self.entryFatturato.delete(0, END)
+            self.entryContanti.delete(0, END)
+            self.entryPOS.delete(0, END)
+            self.entryFinanziamenti.delete(0, END)
+            self.entryAssegni.delete(0, END)
+            self.entryBonifici.delete(0, END)
+            self.entryAcconti.delete(0, END)
+            self.entry.delete(0, END)
+            ####
+            self.entry.insert(0, self._default_)
+            self.entryContanti.insert(0, self._default_)
+            self.entryPOS.insert(0, self._default_)
+            self.entryBonifici.insert(0, self._default_)
+            self.entryAssegni.insert(0, self._default_)
+            self.entryAcconti.insert(0, self._default_)
+            self.entryFinanziamenti.insert(0, self._default_)
+            self.entryFatturato.insert(0, self._default_)
+            self.entryCorrispettivo.insert(0, self._default_)
+
         else:
             erroreQuadratura = tkinter.messagebox.showerror(parent=self.frame8, title='Verificare quadratura',
                                                             message="Assicurarsi di aver verificato la quadratura "
@@ -364,10 +493,12 @@ class ChatWidget(tk.Toplevel):
         self.cursor.execute("SELECT * FROM users")
         self.users = self.cursor.fetchall()
 
-        self.utentiChat = ""
+        self.utentiChat = (
+            ''
+        )
 
         for user in self.users:
-            utenteChat = str(user[1]) + " "
+            utenteChat = str(user[1]).replace(" ", "_")+" "
             self.utentiChat = self.utentiChat + utenteChat
 
         print(self.utentiChat)
@@ -382,7 +513,7 @@ class ChatWidget(tk.Toplevel):
     def inviaMessaggio(self, event=None):
         autore = nomeUtente
         messaggio = self.textMessaggio.get(1.0, END)
-        destinatario = self.comboDestinatario.get()
+        destinatario = self.comboDestinatario.get().replace("_", " ")
 
         if messaggio != "" or messaggio != "\n":
             databaseOperations.Chat(autore, messaggio, destinatario)
@@ -1295,11 +1426,11 @@ class StockItApp:
         self.style.configure('Die.TButton', background='#f00')
         self.btnChat.pack(expand='false', padx='5', side='left')
         self.btnChat.configure(command=self.finestraChat)
-        '''self.btnBuoni = ttk.Button(self.frmPulsantiSup)
+        self.btnBuoni = ttk.Button(self.frmPulsantiSup)
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
         self.btnBuoni.configure(image=self.img_creditcard, text='Cassa')
         self.btnBuoni.pack(expand='false', padx='5', side='left')
-        self.btnBuoni.configure(command=self.finestraFidelity)'''
+        self.btnBuoni.configure(command=self.finestraFidelity)
         '''if operatore == 'manager' or 'master':
             self.btnSettings = ttk.Button(self.frmPulsantiSup)
             self.img_settings = tk.PhotoImage(file='settings.png')
@@ -1369,9 +1500,9 @@ class StockItApp:
         self.btnOrdineEvaso.pack(expand='false', ipadx='10', ipady='6', side='left')
         self.btnOrdineEvaso.configure(command=self.ordineEvaso)
         self.btnAggiornaOrdini = ttk.Button(self.frmPulsantiInf)
-        self.btnAggiornaOrdini.configure(text='Invia & Ricevi')
-        self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
-        self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
+        #self.btnAggiornaOrdini.configure(text='Invia & Ricevi')
+        #self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
+        #self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
         self.btnInserisciComunicazione = ttk.Button(self.frmPulsantiInf)
         self.btnInserisciComunicazione.configure(text='Inserisci comunicazione')
         self.btnInserisciComunicazione.pack(expand='false', ipadx='10', ipady='6', side='right')
@@ -1426,7 +1557,7 @@ class StockItApp:
         ChatWidget(root)
 
     def finestraFidelity(self):
-        pass
+        RicercaFidClienteWidget(root)
 
     def stampaOrdini(self):
         PDFOperations.StampaOrdine(switch=0)
@@ -1619,8 +1750,10 @@ if __name__ == '__main__':
     header = "AB Informatica - StockIt Manager | Operatore: " + nomeUtente + " - Punto vendita: " + puntoVendita
     try:
         root.title(header)
+        app = StockItApp(root)
         menubar = tk.Menu(root)
         filemenu = tk.Menu(menubar, tearoff=False)
+        filemenu.add_command(label='Invia/Ricevi', command=app.aggiornamentoOrdini)
         filemenu.add_command(label='Stampa...', command=StampeWidget)
         filemenu.add_separator()
         filemenu.add_command(label='Esci', command=root.destroy)
@@ -1631,7 +1764,7 @@ if __name__ == '__main__':
         menubar.add(tk.CASCADE, menu=filemenu, label='File', underline=0)
         menubar.add(tk.CASCADE, menu=infomenu, label='Info', underline=0)
         root.configure(menu=menubar)
-        app = StockItApp(root)
+
         app.run()
     except _tkinter.TclError:
         pass
