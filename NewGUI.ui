@@ -1846,4 +1846,245 @@
       </object>
     </child>
   </object>
+  <object class="tk.Toplevel" id="toplevelInserisciOrdine">
+    <property name="geometry">640x200</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="labelframe5">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Nuovo Ordine</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="frame18">
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="fill">y</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="label14">
+                <property name="text" translatable="yes">Nome prodotto:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label16">
+                <property name="text" translatable="yes">Quantità:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label18">
+                <property name="text" translatable="yes">Note:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label19">
+                <property name="text" translatable="yes">Nome cliente:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frame19">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Entry" id="entryNomeProdotto1">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryQuantita1">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryNote1">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryNomeCliente1">
+                <property name="width">60</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button7">
+            <property name="command" type="command" cbtype="simple">nuovoOrdine</property>
+            <property name="image">plus.png</property>
+            <property name="text" translatable="yes">Inserisci</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="toplevelLeggiComunicazione">
+    <property name="geometry">800x600</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="labelframe6">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Comunicazione</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Text" id="text">
+            <property name="height">10</property>
+            <property name="state">normal</property>
+            <property name="width">50</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="toplevelCredits">
+    <property name="geometry">640x480</property>
+    <property name="height">200</property>
+    <property name="iconbitmap">icon.ico</property>
+    <property name="title" translatable="yes">Credits</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Label" id="label20">
+        <property name="font">{Consolas} 20 {bold}</property>
+        <property name="text" translatable="yes">AB Informatica</property>
+        <layout manager="pack">
+          <property name="pady">10</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="label21">
+        <property name="font">{Consolas} 24 {bold}</property>
+        <property name="justify">center</property>
+        <property name="text" translatable="yes">StockIt Manager</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="pady">10</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="label22">
+        <property name="anchor">center</property>
+        <property name="font">{Arial} 16 {}</property>
+        <property name="justify">center</property>
+        <property name="text" translatable="yes">Augusto Burzo
+info@augustoburzo.com
++39 379 146 48 24
+
+-------------------------------------------------------------
+
+Icone:
+Flaticon
+Vecteezy</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="pygubu.builder.widgets.toplevelmenu" id="toplevelmenu1">
+        <child>
+          <object class="tk.Menu" id="menu1">
+            <child>
+              <object class="tk.Menuitem.Submenu" id="filemenu">
+                <property name="label" translatable="yes">File</property>
+                <property name="tearoff">false</property>
+                <property name="underline">0</property>
+                <child>
+                  <object class="tk.Menuitem.Command" id="command2">
+                    <property name="label" translatable="yes">command2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>

@@ -1247,6 +1247,7 @@ Vecteezy''')
         self.configure(height='200', width='200')
         self.geometry('640x480')
         self.iconbitmap('icon.ico')
+        self.resizable(False, False)
         self.title('Credits')
 
 # FINESTRA PRINCIPALE###################################################################################################
@@ -1591,7 +1592,7 @@ if __name__ == '__main__':
     height = user32.GetSystemMetrics(1)
     splashTiny = Image.open("StockIt.png")
     splashResized = splashTiny.resize((width, height), Image.ANTIALIAS)
-    splash = ImageTk.PhotoImage(splashTiny)
+    splash = ImageTk.PhotoImage(splashResized)
     splashImage = tk.Label(root, image=splash)
     splashImage.pack(expand=True, fill='both')
     nomeUtente = "TestUser"
