@@ -13,6 +13,7 @@ from datetime import date
 import time
 import ctypes
 import numpy as np
+from playsound import playsound
 from PIL import ImageTk, Image
 from pyzbar.pyzbar import decode
 
@@ -24,8 +25,108 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-#FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
+#FINESTRA FIDELITY GESTIONE CLIENTE#####################################################################################
 
+class FidClienteWidget(tk.Toplevel):
+    def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, creditoCliente, master=None, **kw):
+        super(FidClienteWidget, self).__init__(master, **kw)
+        self.labelframe2 = ttk.Labelframe(self)
+        self.frame10 = ttk.Frame(self.labelframe2)
+        self.label6 = ttk.Label(self.frame10)
+        self.label6.configure(text='Nome cliente:')
+        self.label6.pack(anchor='e', expand='true', padx='5', pady='5', side='top')
+        self.label7 = ttk.Label(self.frame10)
+        self.label7.configure(text='Numero carta:')
+        self.label7.pack(anchor='e', expand='true', padx='5', pady='5', side='top')
+        self.frame10.configure(height='70', width='200')
+        self.frame10.pack(expand='false', padx='10', side='left')
+        self.frame11 = ttk.Frame(self.labelframe2)
+        self.labelNomeCliente = ttk.Label(self.frame11)
+        self.labelNomeCliente.configure(text=nomeCliente)
+        self.labelNomeCliente.pack(anchor='w', padx='5', pady='5', side='top')
+        self.labelNumeroCarta = ttk.Label(self.frame11)
+        self.labelNumeroCarta.configure(text=numeroCarta)
+        self.labelNumeroCarta.pack(anchor='w', padx='5', pady='5', side='top')
+        self.frame11.configure(height='60', width='250')
+        self.frame11.pack(fill='x', pady='5', side='left')
+        self.frame14 = ttk.Frame(self.labelframe2)
+        self.label10 = ttk.Label(self.frame14)
+        self.label10.configure(text='Indirizzo:')
+        self.label10.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label11 = ttk.Label(self.frame14)
+        self.label11.configure(text='Contatto:')
+        self.label11.pack(anchor='e', padx='5', pady='5', side='top')
+        self.frame14.configure(height='60', width='200')
+        self.frame14.pack(fill='x', padx='10', pady='5', side='left')
+        self.frame15 = ttk.Frame(self.labelframe2)
+        self.labelIndirizzo = ttk.Label(self.frame15)
+        self.labelIndirizzo.configure(text=indirizzoCliente)
+        self.labelIndirizzo.pack(anchor='w', padx='5', pady='5', side='top')
+        self.labelContatto = ttk.Label(self.frame15)
+        self.labelContatto.configure(text=contattoCliente)
+        self.labelContatto.pack(anchor='w', padx='5', pady='5', side='top')
+        self.frame15.configure(height='60', width='250')
+        self.frame15.pack(fill='x', pady='5', side='left')
+        self.frame17 = ttk.Frame(self.labelframe2)
+        self.labelCredito = ttk.Label(self.frame17)
+        self.labelCredito.configure(font='{Arial} 20 {bold}', text=creditoCliente)
+        self.labelCredito.pack(anchor='w', padx='5', pady='5', side='top')
+        self.frame17.configure(height='60', width='250')
+        self.frame17.pack(fill='x', pady='5', side='right')
+        self.frame16 = ttk.Frame(self.labelframe2)
+        self.label15 = ttk.Label(self.frame16)
+        self.label15.configure(text='Credito:')
+        self.label15.pack(anchor='e', padx='5', pady='5', side='top')
+        self.frame16.configure(height='60', width='250')
+        self.frame16.pack(fill='x', padx='10', pady='5', side='right')
+        self.labelframe2.configure(height='80', text='Cliente', width='200')
+        self.labelframe2.pack(fill='x', padx='5', pady='5', side='top')
+        self.frame12 = ttk.Frame(self)
+        self.lfAggiungiCredito = ttk.Labelframe(self.frame12)
+        self.entryAggiungiCredito = ttk.Entry(self.lfAggiungiCredito)
+        self.aggiungi = tk.DoubleVar(value=0.00)
+        self.entryAggiungiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.aggiungi, width='4')
+        _text_ = '''0.00'''
+        self.entryAggiungiCredito.delete('0', 'end')
+        self.entryAggiungiCredito.insert('0', _text_)
+        self.entryAggiungiCredito.pack(expand='true', fill='both', side='top')
+        self.buttonAggiungi = ttk.Button(self.lfAggiungiCredito)
+        self.img_income = tk.PhotoImage(file='income.png')
+        self.buttonAggiungi.configure(image=self.img_income, text='button6')
+        self.buttonAggiungi.pack(expand='true', fill='both', side='top')
+        self.buttonAggiungi.configure(command=self.aggiungiCredito)
+        self.lfAggiungiCredito.configure(height='200', text='Aggiungi credito', width='200')
+        self.lfAggiungiCredito.pack(expand='true', fill='both', side='left')
+        self.lfSottraiCredito = ttk.Labelframe(self.frame12)
+        self.entrySottraiCredito = ttk.Entry(self.lfSottraiCredito)
+        self.sottrai = tk.DoubleVar(value=0.00)
+        self.entrySottraiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.sottrai, width='4')
+        _text_ = '''0.00'''
+        self.entrySottraiCredito.delete('0', 'end')
+        self.entrySottraiCredito.insert('0', _text_)
+        self.entrySottraiCredito.pack(expand='true', fill='both', side='top')
+        self.buttonSottrai = ttk.Button(self.lfSottraiCredito)
+        self.img_outcome = tk.PhotoImage(file='outcome.png')
+        self.buttonSottrai.configure(image=self.img_outcome, text='button6')
+        self.buttonSottrai.pack(expand='true', fill='both', side='top')
+        self.buttonSottrai.configure(command=self.sottraiCredito)
+        self.lfSottraiCredito.configure(height='200', text='Sottrai credito', width='200')
+        self.lfSottraiCredito.pack(expand='true', fill='both', side='left')
+        self.frame12.configure(height='200', width='200')
+        self.frame12.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.img_creditcard = tk.PhotoImage(file='credit-card.png')
+        self.configure(height='600', width='800')
+        self.geometry('800x600')
+        self.iconphoto(True, self.img_creditcard)
+
+    def aggiungiCredito(self):
+        pass
+
+    def sottraiCredito(self):
+        pass
+
+
+#FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
 
 class RicercaFidClienteWidget(tk.Toplevel):
 
@@ -109,6 +210,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
                 pts2 = barcode.rect
                 cv2.putText(img, myData, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 255), 2)
 
+        #playsound("beep.wav")
         self.ricercaCliente()
 
     def ricercaCliente(self):
@@ -1702,6 +1804,8 @@ class StringDialog(tkinter.simpledialog._QueryString):
     def body(self, master):
         super().body(master)
         self.iconbitmap('icon.ico')
+        self.resizable(False, False)
+        self.overrideredirect(True)
 
     def ask_string(title, prompt, **kargs):
         d = StringDialog(title, prompt, **kargs)
@@ -1721,16 +1825,17 @@ if __name__ == '__main__':
     user32 = ctypes.windll.user32
     width = user32.GetSystemMetrics(0)
     height = user32.GetSystemMetrics(1)
-    splashTiny = Image.open("StockIt.png")
-    splashResized = splashTiny.resize((width, height), Image.ANTIALIAS)
+    splashTiny = Image.open("icon.png")
+    splashResized = splashTiny.resize((height, height), Image.ANTIALIAS)
     splash = ImageTk.PhotoImage(splashResized)
     splashImage = tk.Label(root, image=splash)
+    splashImage.configure(background='#124282')
     splashImage.pack(expand=True, fill='both')
     nomeUtente = "TestUser"
     puntoVendita = "TestStore"
 
     try:
-        password = StringDialog.ask_string('Password Utente', 'Inserisci password:\t\t\t\t\n\n\n', show='*')
+        password = StringDialog.ask_string('Password Utente', 'Inserisci password:\t\t\t\t\t\t\n\n\n', show='*')
         mydb = mysql.connector.connect(option_files='connector.cnf')
         cursor = mydb.cursor()
         cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
@@ -1751,6 +1856,8 @@ if __name__ == '__main__':
     try:
         root.title(header)
         app = StockItApp(root)
+        ordini = OrdiniWidget
+        inserisciOrdine = InserisciOrdineWidget
         menubar = tk.Menu(root)
         filemenu = tk.Menu(menubar, tearoff=False)
         filemenu.add_command(label='Invia/Ricevi', command=app.aggiornamentoOrdini)
@@ -1758,10 +1865,15 @@ if __name__ == '__main__':
         filemenu.add_separator()
         filemenu.add_command(label='Esci', command=root.destroy)
 
+        ordinimenu = tk.Menu(menubar, tearoff=False)
+        ordinimenu.add_command(label='Inserisci ordine', command=inserisciOrdine)
+        ordinimenu.add_command(label='Apri finestra ordini', command=ordini)
+
         infomenu = tk.Menu(menubar, tearoff=False)
         infomenu.add_command(label='Credits', command=CreditsWidget, underline=0)
 
         menubar.add(tk.CASCADE, menu=filemenu, label='File', underline=0)
+        menubar.add(tk.CASCADE, menu=ordinimenu, label='Ordini', underline=0)
         menubar.add(tk.CASCADE, menu=infomenu, label='Info', underline=0)
         root.configure(menu=menubar)
 

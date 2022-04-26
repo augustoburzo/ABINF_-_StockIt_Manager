@@ -95,6 +95,15 @@ class StrutturaDatabase:
             print('Tabella cassa creata')
             self.mydb.commit()
 
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS fidelity('
+                                'numeroCarta INT PRIMARY KEY,'
+                                'nomeCliente VARCHAR(40),'
+                                'indirizzoCliente VARCHAR(40),'
+                                'contattoCliente VARCHAR(40),'
+                                'credito FLOAT(40));')
+            print('Tabella fidelity creata')
+            self.mydb.commit()
+
             self.cursor.execute("""INSERT
                         INTO
                         `users`(`nomeUtente`, `password`, `manager`, `puntoVendita`)
