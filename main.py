@@ -25,7 +25,8 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-#FINESTRA FIDELITY GESTIONE CLIENTE#####################################################################################
+
+# FINESTRA FIDELITY GESTIONE CLIENTE#####################################################################################
 
 class FidClienteWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, creditoCliente, master=None, **kw):
@@ -85,7 +86,8 @@ class FidClienteWidget(tk.Toplevel):
         self.lfAggiungiCredito = ttk.Labelframe(self.frame12)
         self.entryAggiungiCredito = ttk.Entry(self.lfAggiungiCredito)
         self.aggiungi = tk.DoubleVar(value=0.00)
-        self.entryAggiungiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.aggiungi, width='4')
+        self.entryAggiungiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.aggiungi,
+                                            width='4')
         _text_ = '''0.00'''
         self.entryAggiungiCredito.delete('0', 'end')
         self.entryAggiungiCredito.insert('0', _text_)
@@ -126,7 +128,7 @@ class FidClienteWidget(tk.Toplevel):
         pass
 
 
-#FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
+# FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
 
 class RicercaFidClienteWidget(tk.Toplevel):
 
@@ -188,6 +190,8 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.geometry('1024x600')
         self.iconphoto(True, self.img_creditcard)
 
+        self.aggiornamentoCarte()
+
     def scanTessera(self):
         self.entry3.delete(0, END)
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -210,18 +214,47 @@ class RicercaFidClienteWidget(tk.Toplevel):
                 pts2 = barcode.rect
                 cv2.putText(img, myData, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 255), 2)
 
-        #playsound("beep.wav")
+        # playsound("beep.wav")
         self.ricercaCliente()
 
     def ricercaCliente(self):
-        pass
+        nomeUtente = self.entry2.get()
+        numeroCarta = self.entry3.get()
+        self.treeview2.delete(*self.treeview2.get_children())
+        ordini = databaseOperations.Fidelity(0, nomeUtente=nomeUtente, numeroCarta=numeroCarta).ricercaCliente()
+
+        if self.is_empty(ordini):
+            nuovaCarta = tkinter.messagebox.askyesno(parent=self.frame6, title='Card non presente',
+                                                     message='La card inserita non è presente a sistema, inserire?')
+
+            if nuovaCarta:
+                tkinter.messagebox.showinfo()
+            else:
+                pass
+
+        else:
+            for ordine in ordini:
+                self.treeview2.insert("", END, values=ordine)
 
     def callback(self, event=None):
-        pass
+        FidClienteWidget(nomeCliente='Mario Rossi', numeroCarta='0000', indirizzoCliente='Via Verdi, 0',
+                         contattoCliente='3791464824', creditoCliente=150)
+
+    def is_empty(self, any_structure):
+        if any_structure:
+            return False
+        else:
+            return True
+
+    def aggiornamentoCarte(self):
+        self.treeview2.delete(*self.treeview2.get_children())
+        ordini = databaseOperations.Fidelity(0).selezionaClienti()
+
+        for ordine in ordini:
+            self.treeview2.insert("", END, values=ordine)
 
 
-
-#FINESTRA CASSA#########################################################################################################
+# FINESTRA CASSA#########################################################################################################
 class CassaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         self.incassoTotale = tk.StringVar()
@@ -442,7 +475,7 @@ class CassaWidget(tk.Toplevel):
             negozio = selezione['values'][11]
             if negozio == puntoVendita:
                 eliminaVoce = tkinter.messagebox.askyesno(parent=self.frame8, title='Eliminare voce?',
-                                                       message='Sei sicuro di voler eliminare la voce selezionata?')
+                                                          message='Sei sicuro di voler eliminare la voce selezionata?')
                 if eliminaVoce:
                     databaseOperations.Cassa(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, data=data, puntoVendita=puntoVendita)
 
@@ -600,7 +633,7 @@ class ChatWidget(tk.Toplevel):
         )
 
         for user in self.users:
-            utenteChat = str(user[1]).replace(" ", "_")+" "
+            utenteChat = str(user[1]).replace(" ", "_") + " "
             self.utentiChat = self.utentiChat + utenteChat
 
         print(self.utentiChat)
@@ -1456,7 +1489,8 @@ class StampeWidget(tk.Toplevel):
     def stampaComunicazione(self):
         pass
 
-#CREDITS################################################################################################################
+
+# CREDITS################################################################################################################
 class CreditsWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(CreditsWidget, self).__init__(master, **kw)
@@ -1482,6 +1516,7 @@ Vecteezy''')
         self.iconbitmap('icon.ico')
         self.resizable(False, False)
         self.title('Credits')
+
 
 # FINESTRA PRINCIPALE###################################################################################################
 
@@ -1602,9 +1637,9 @@ class StockItApp:
         self.btnOrdineEvaso.pack(expand='false', ipadx='10', ipady='6', side='left')
         self.btnOrdineEvaso.configure(command=self.ordineEvaso)
         self.btnAggiornaOrdini = ttk.Button(self.frmPulsantiInf)
-        #self.btnAggiornaOrdini.configure(text='Invia & Ricevi')
-        #self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
-        #self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
+        # self.btnAggiornaOrdini.configure(text='Invia & Ricevi')
+        # self.btnAggiornaOrdini.pack(expand='false', ipadx='10', ipady='6', side='left')
+        # self.btnAggiornaOrdini.configure(command=self.aggiornamentoOrdini)
         self.btnInserisciComunicazione = ttk.Button(self.frmPulsantiInf)
         self.btnInserisciComunicazione.configure(text='Inserisci comunicazione')
         self.btnInserisciComunicazione.pack(expand='false', ipadx='10', ipady='6', side='right')
@@ -1687,7 +1722,7 @@ class StockItApp:
             autore = idx['values'][1]
             messaggio = idx['values'][2]
             title = str(valore) + " - " + str(autore)
-            #tkinter.messagebox.showinfo(title="Comunicazione n." + title, message=messaggio + "\nAutore: " + autore)
+            # tkinter.messagebox.showinfo(title="Comunicazione n." + title, message=messaggio + "\nAutore: " + autore)
             LeggiComunicazioneWidget(root, text=messaggio)
         except IndexError:
             pass

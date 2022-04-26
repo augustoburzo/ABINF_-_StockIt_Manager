@@ -236,11 +236,11 @@ class Cassa:
 
         if switch == 0:
             sql = ("""INSERT
-                                                INTO
-                                                `cassa`(`incassoTotale`, `corrispettivo`, `fatturato`, `contanti`,
-                                                `pos`, `finanziamenti`, `bonifici`, `assegni`, `acconti`, `preincassato`,
-                                                `data`, `puntoVendita`)
-                                                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""")
+                    INTO
+                    `cassa`(`incassoTotale`, `corrispettivo`, `fatturato`, `contanti`,
+                    `pos`, `finanziamenti`, `bonifici`, `assegni`, `acconti`, `preincassato`,
+                    `data`, `puntoVendita`)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""")
             val = (incassoTotale, corrispettivo, fatturato, contanti, pos, finanziamenti, bonifici, assegni, acconti,
                    preincassato, data, puntoVendita)
             self.cursor.execute(sql, val)
@@ -254,3 +254,40 @@ class Cassa:
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
+
+
+class Fidelity:
+    def __init__(self, switch=0, numeroCarta = "", nomeUtente = ""):
+        global utenti
+        global utente
+        utente = nomeUtente
+        global carta
+        carta = numeroCarta
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+
+    def ricercaCliente(self):
+        if carta == '':
+            _SQLDel = "SELECT * FROM fidelity WHERE nomeCliente = %s;"
+            self.cursor.execute(_SQLDel, (utente,))
+            utenti = self.cursor.fetchall()
+
+        elif utente == '':
+            _SQLDel = "SELECT * FROM fidelity WHERE numeroCarta = %s;"
+            self.cursor.execute(_SQLDel, (carta,))
+            utenti = self.cursor.fetchall()
+
+        else:
+            _SQLDel = "SELECT * FROM fidelity WHERE nomeCliente = %s or numeroCarta = %s;"
+            self.cursor.execute(_SQLDel, (utente, carta))
+            utenti = self.cursor.fetchall()
+
+        return utenti
+
+
+    def selezionaClienti(self):
+        _SQLSel = "SELECT * FROM fidelity;"
+        self.cursor.execute(_SQLSel)
+        #self.mydb.commit()
+        utenti = self.cursor.fetchall()
+        return utenti

@@ -96,7 +96,7 @@ class StrutturaDatabase:
             self.mydb.commit()
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS fidelity('
-                                'numeroCarta INT PRIMARY KEY,'
+                                'numeroCarta VARCHAR(40) PRIMARY KEY,'
                                 'nomeCliente VARCHAR(40),'
                                 'indirizzoCliente VARCHAR(40),'
                                 'contattoCliente VARCHAR(40),'
