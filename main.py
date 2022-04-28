@@ -1,4 +1,4 @@
-from tkinter.ttk import Label
+import sys
 
 import _tkinter
 import threading
@@ -13,7 +13,7 @@ from datetime import date
 import time
 import ctypes
 import numpy as np
-from playsound import playsound
+import pyautogui as pyautogui
 from PIL import ImageTk, Image
 from pyzbar.pyzbar import decode
 
@@ -26,11 +26,87 @@ columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodott
                      'note', 'statoPratica')
 
 
+# FINESTRA INSERISCI FIDELITY############################################################################################
+class InserisciFidWidget(tk.Toplevel):
+    def __init__(self, nomeCliente, numeroCarta, master=None, **kw):
+        super(InserisciFidWidget, self).__init__(master, **kw)
+        self.labelframe3 = ttk.Labelframe(self)
+        self.frame20 = ttk.Frame(self.labelframe3)
+        self.label8 = ttk.Label(self.frame20)
+        self.label8.configure(text='Nome cliente:')
+        self.label8.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label9 = ttk.Label(self.frame20)
+        self.label9.configure(text='Numero carta:')
+        self.label9.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label12 = ttk.Label(self.frame20)
+        self.label12.configure(text='Indirizzo:')
+        self.label12.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label17 = ttk.Label(self.frame20)
+        self.label17.configure(text='Contatto:')
+        self.label17.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label13 = ttk.Label(self.frame20)
+        self.label13.configure(text='Credito iniziale:')
+        self.label13.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.frame20.configure(height='70', width='200')
+        self.frame20.pack(expand='false', fill='y', side='left')
+        self.frame21 = ttk.Frame(self.labelframe3)
+        self.entry7 = ttk.Entry(self.frame21)
+        self.entry7.pack(expand='true', fill='x', padx='5', pady='0', side='top')
+        self.entry7.insert(0, nomeCliente)
+        self.entryNumeroCarta = ttk.Entry(self.frame21)
+        self.entryNumeroCarta.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entryNumeroCarta.insert(0, numeroCarta)
+        self.entryIndirizzo = ttk.Entry(self.frame21)
+        self.entryIndirizzo.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entryContatto = ttk.Entry(self.frame21)
+        self.entryContatto.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entry11 = ttk.Entry(self.frame21)
+        self.entry11.pack(expand='true', fill='x', padx='5', pady='0', side='top')
+        self.frame21.configure(height='60', width='200')
+        self.frame21.pack(expand='true', fill='both', pady='5', side='left')
+        self.frame26 = ttk.Frame(self.labelframe3)
+        self.btnInserisciCarta = ttk.Button(self.frame26)
+        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.btnInserisciCarta.configure(image=self.img_plus, text='button13')
+        self.btnInserisciCarta.pack(expand='true', fill='y', padx='5', pady='5', side='top')
+        self.btnInserisciCarta.configure(command=self.inserisciCarta)
+        self.frame26.configure(height='200', width='200')
+        self.frame26.pack(expand='true', fill='both', side='top')
+        self.labelframe3.configure(height='80', text='Inserisci cliente', width='200')
+        self.labelframe3.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('640x200')
+
+    def inserisciCarta(self):
+        numeroCarta = self.entryNumeroCarta.get()
+        nomeCliente = self.entry7.get()
+        indirizzoCliente = self.entryIndirizzo.get()
+        contattoCliente = self.entryContatto.get()
+        credito = self.entry11.get()
+
+        databaseOperations.Fidelity(0, numeroCarta=numeroCarta, nomeUtente=nomeCliente,
+                                    indirizzoCliente=indirizzoCliente, creditoCliente=credito,
+                                    contattoCliente=contattoCliente).inserisciCliente()
+        self.destroy()
+        RicercaFidClienteWidget(root).aggiornamentoCarte()
+
+
 # FINESTRA FIDELITY GESTIONE CLIENTE#####################################################################################
 
 class FidClienteWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, creditoCliente, master=None, **kw):
         super(FidClienteWidget, self).__init__(master, **kw)
+
+        global carta
+        carta = str(numeroCarta)
+        global credito
+        credito = creditoCliente
+        aggiungiCredito = tk.DoubleVar()
+        sottraiCredito = tk.DoubleVar()
+
+        print(numeroCarta)
+        print(carta)
+
         self.labelframe2 = ttk.Labelframe(self)
         self.frame10 = ttk.Frame(self.labelframe2)
         self.label6 = ttk.Label(self.frame10)
@@ -84,14 +160,14 @@ class FidClienteWidget(tk.Toplevel):
         self.labelframe2.pack(fill='x', padx='5', pady='5', side='top')
         self.frame12 = ttk.Frame(self)
         self.lfAggiungiCredito = ttk.Labelframe(self.frame12)
-        self.entryAggiungiCredito = ttk.Entry(self.lfAggiungiCredito)
+        self.entryAggiungiCredito = ttk.Entry(self.lfAggiungiCredito, textvariable=aggiungiCredito)
         self.aggiungi = tk.DoubleVar(value=0.00)
         self.entryAggiungiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.aggiungi,
                                             width='4')
         _text_ = '''0.00'''
         self.entryAggiungiCredito.delete('0', 'end')
-        self.entryAggiungiCredito.insert('0', _text_)
         self.entryAggiungiCredito.pack(expand='true', fill='both', side='top')
+        self.entryAggiungiCredito.bind('<Return>', lambda a: self.aggiungiCredito())
         self.buttonAggiungi = ttk.Button(self.lfAggiungiCredito)
         self.img_income = tk.PhotoImage(file='income.png')
         self.buttonAggiungi.configure(image=self.img_income, text='button6')
@@ -100,12 +176,12 @@ class FidClienteWidget(tk.Toplevel):
         self.lfAggiungiCredito.configure(height='200', text='Aggiungi credito', width='200')
         self.lfAggiungiCredito.pack(expand='true', fill='both', side='left')
         self.lfSottraiCredito = ttk.Labelframe(self.frame12)
-        self.entrySottraiCredito = ttk.Entry(self.lfSottraiCredito)
+        self.entrySottraiCredito = ttk.Entry(self.lfSottraiCredito, textvariable=sottraiCredito)
+        self.entrySottraiCredito.bind('<Return>', lambda a: self.sottraiCredito())
         self.sottrai = tk.DoubleVar(value=0.00)
         self.entrySottraiCredito.configure(font='{Arial} 36 {}', justify='center', textvariable=self.sottrai, width='4')
         _text_ = '''0.00'''
         self.entrySottraiCredito.delete('0', 'end')
-        self.entrySottraiCredito.insert('0', _text_)
         self.entrySottraiCredito.pack(expand='true', fill='both', side='top')
         self.buttonSottrai = ttk.Button(self.lfSottraiCredito)
         self.img_outcome = tk.PhotoImage(file='outcome.png')
@@ -122,10 +198,22 @@ class FidClienteWidget(tk.Toplevel):
         self.iconphoto(True, self.img_creditcard)
 
     def aggiungiCredito(self):
-        pass
+        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        nuovoCredito = float(creditoAggiornato) + float(self.entryAggiungiCredito.get())
+        databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
+        databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        self.entryAggiungiCredito.delete(0, END)
+        self.labelCredito.configure(text=creditoAggiornato)
 
     def sottraiCredito(self):
-        pass
+        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        nuovoCredito = float(creditoAggiornato) - float(self.entrySottraiCredito.get())
+        databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
+        databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+        self.entrySottraiCredito.delete(0, END)
+        self.labelCredito.configure(text=creditoAggiornato)
 
 
 # FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
@@ -149,6 +237,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.entry2.pack(expand=True, fill='x', padx='5', pady='5', side='top')
         self.entry3 = ttk.Entry(self.frame8)
         self.entry3.pack(expand=True, fill='x', padx='5', pady='5', side='top')
+        self.entry3.focus_force()
         self.frame8.configure(height='60', width='200')
         self.frame8.pack(expand=True, fill='x', pady='5', side='left')
         self.frame13 = ttk.Frame(self.labelframe1)
@@ -183,6 +272,8 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.treeview2.heading('columnCredito', anchor='w', text='Credito')
         self.treeview2.pack(expand=True, fill='both', side='top')
         self.treeview2.bind('<Double-1>', self.callback, add='')
+        self.treeview2.bind('<Button-3>', self.popup)
+        self.treeview2.yview(1)
         self.frame9.configure(height=200, width=200)
         self.frame9.pack(expand=True, fill='both', padx=5, pady=5, side='top')
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
@@ -191,6 +282,40 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.iconphoto(True, self.img_creditcard)
 
         self.aggiornamentoCarte()
+
+    def eliminaCliente(self):
+        elimina = tkinter.messagebox.askyesno(parent=self, title='Eliminare card?', message='Intendi eliminare '
+                                                                                            'definitivamente la card?')
+
+        if elimina:
+
+            curItems = self.treeview2.selection()
+            for idx in curItems:
+                index = self.treeview2.item(idx)
+                valore = index['values'][0]
+                databaseOperations.Fidelity(numeroCarta=valore).eliminaCliente()
+
+            self.aggiornamentoCarte()
+
+        else:
+            pass
+
+    def popup(self, event):
+        m = tk.Menu(self, tearoff=0)
+        m.add_command(label="Elimina", command=self.eliminaCliente)
+        m.add_command(label="Modifica")
+
+        iid = self.treeview2.identify_row(event.y)
+        if iid:
+            # mouse pointer over item
+            self.treeview2.selection_set(iid)
+            try:
+                m.tk_popup(event.x_root, event.y_root)
+            finally:
+                m.grab_release()
+
+        else:
+            pass
 
     def scanTessera(self):
         self.entry3.delete(0, END)
@@ -220,6 +345,8 @@ class RicercaFidClienteWidget(tk.Toplevel):
     def ricercaCliente(self):
         nomeUtente = self.entry2.get()
         numeroCarta = self.entry3.get()
+        self.entry2.delete(0, END)
+        self.entry3.delete(0, END)
         self.treeview2.delete(*self.treeview2.get_children())
         ordini = databaseOperations.Fidelity(0, nomeUtente=nomeUtente, numeroCarta=numeroCarta).ricercaCliente()
 
@@ -228,7 +355,9 @@ class RicercaFidClienteWidget(tk.Toplevel):
                                                      message='La card inserita non è presente a sistema, inserire?')
 
             if nuovaCarta:
-                tkinter.messagebox.showinfo()
+                self.destroy()
+                InserisciFidWidget(nomeCliente=nomeUtente, numeroCarta=numeroCarta, master=root)
+
             else:
                 pass
 
@@ -237,8 +366,18 @@ class RicercaFidClienteWidget(tk.Toplevel):
                 self.treeview2.insert("", END, values=ordine)
 
     def callback(self, event=None):
-        FidClienteWidget(nomeCliente='Mario Rossi', numeroCarta='0000', indirizzoCliente='Via Verdi, 0',
-                         contattoCliente='3791464824', creditoCliente=150)
+        indice = self.treeview2.focus()
+        idx = self.treeview2.item(indice)
+        numeroCarta = '0' + str(idx['values'][0])
+        nomeCliente = idx['values'][1]
+        indirizzoCliente = idx['values'][2]
+        contattoCliente = idx['values'][3]
+        creditoCliente = idx['values'][4]
+
+        print(numeroCarta)
+
+        FidClienteWidget(nomeCliente=nomeCliente, numeroCarta=str(numeroCarta), indirizzoCliente=indirizzoCliente,
+                         contattoCliente=contattoCliente, creditoCliente=creditoCliente)
 
     def is_empty(self, any_structure):
         if any_structure:
@@ -402,6 +541,7 @@ class CassaWidget(tk.Toplevel):
         self.tblStoricoGiornate.heading('data', anchor='w', text='Data')
         self.tblStoricoGiornate.heading('cassaPuntoVendita', anchor='w', text='Punto vendita')
         self.tblStoricoGiornate.pack(expand='true', fill='both', side='top')
+        self.tblStoricoGiornate.yview(1)
         self.frame9 = ttk.Frame(self.lfStorico)
         self.frame9.configure(height='70', width='200')
         self.frame9.pack(fill='x', side='top')
@@ -765,6 +905,7 @@ class UtentiWidget(tk.Toplevel):
         self.tblUtenti.heading('puntoVendita', anchor='w', text='Punto Vendita')
         self.tblUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.tblUtenti.bind('<Double-1>', self.OnClickTbl, add='')
+        self.tblUtenti.yview(1)
         self.lfUtenti.configure(height='200', text='Utenti', width='200')
         self.lfUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame7 = ttk.Frame(self)
@@ -958,6 +1099,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.column(5, width=100, stretch=NO)
         self.treeview1.heading('note', text='Note')
         self.treeview1.heading('statoPratica', text='Stato pratica')
+        self.treeview1.yview(1)
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -1132,6 +1274,7 @@ class OrdiniWidget(tk.Toplevel):
 
         self.tblOrdiniDaEvadere.bind("d", lambda event: self.eliminaOrdine())
         self.tblOrdiniDaEvadere.bind("e", lambda event: self.evadiOrdine())
+        self.tblOrdiniDaEvadere.yview(1)
         ################################################################################################################
 
         self.lfNuoviOrdini.configure(height='200', text='Ordini da evadere', width='200')
@@ -1154,6 +1297,7 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniEvasi.column(5, width=300, stretch=NO)
 
         self.tblOrdiniEvasi.bind("r", lambda event: self.ordineConsegnato())
+        self.tblOrdiniEvasi.yview(1)
         ################################################################################################################
 
         self.lfOrdiniEvasi.configure(height='200', text='Ordini evasi', width='200')
@@ -1509,7 +1653,7 @@ info@augustoburzo.com
 
 Icone:
 Flaticon
-Vecteezy''')
+Freepik''')
         self.label22.pack(expand='true', fill='both', side='top')
         self.configure(height='200', width='200')
         self.geometry('640x480')
@@ -1594,6 +1738,7 @@ class StockItApp:
         self.tblComunicazioni.heading('data', text='Data')
         self.tblComunicazioni.column(3, width=180, stretch=NO)
         self.tblComunicazioni.bind("<Double-1>", self.OnDoubleClickComunicazioni)
+        self.tblComunicazioni.yview(1)
 
         ################################################################################################################
 
@@ -1617,6 +1762,7 @@ class StockItApp:
         self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
 
         self.tblOrdiniDaEvadere.bind("<Double-1>", lambda event: self.ordineEvaso())
+        self.tblOrdiniDaEvadere.yview(1)
         ################################################################################################################
 
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
@@ -1726,7 +1872,6 @@ class StockItApp:
             LeggiComunicazioneWidget(root, text=messaggio)
         except IndexError:
             pass
-            # tkinter.messagebox.showwarning(title="Nessuna selezione", message="Selezionare una voce per visualizzarla")
 
     def inserisciComunicazione(self):
         NuovaComunicazioneWidget()
@@ -1849,8 +1994,6 @@ class StringDialog(tkinter.simpledialog._QueryString):
 
 if __name__ == '__main__':
 
-    databaseOperations.VerificaDatabase()
-
     root = tk.Tk()
     root.minsize(width=700, height=650)
     root.geometry('1024x650')
@@ -1868,24 +2011,33 @@ if __name__ == '__main__':
     splashImage.pack(expand=True, fill='both')
     nomeUtente = "TestUser"
     puntoVendita = "TestStore"
-
-    try:
-        password = StringDialog.ask_string('Password Utente', 'Inserisci password:\t\t\t\t\t\t\n\n\n', show='*')
-        mydb = mysql.connector.connect(option_files='connector.cnf')
-        cursor = mydb.cursor()
-        cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
-        users = cursor.fetchall()
-        user = users[0]
-        nomeUtente = user[1]
-        passwordUtente = user[2]
-        operatore = user[3]
-        puntoVendita = user[4]
-        print(nomeUtente)
-        splashImage.destroy()
-    except IndexError:
-        tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
-                                                                     "Password errata o database irraggiungibile")
-        root.destroy()
+    loop = 0
+    accesso = False
+    while accesso == False:
+        if loop < 3:
+            try:
+                password = StringDialog.ask_string('Password Utente', 'Inserisci password:\t\t\t\t\t\t\n\n\n', show='*')
+                mydb = mysql.connector.connect(option_files='connector.cnf')
+                cursor = mydb.cursor()
+                cursor.execute("SELECT * FROM users WHERE password = %s", (password,))
+                users = cursor.fetchall()
+                user = users[0]
+                nomeUtente = user[1]
+                passwordUtente = user[2]
+                operatore = user[3]
+                puntoVendita = user[4]
+                print(nomeUtente)
+                splashImage.destroy()
+                accesso = True
+            except IndexError:
+                tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
+                                                                             "Password errata o database irraggiungibile")
+            loop = loop + 1
+        else:
+            try:
+                root.destroy()
+            except _tkinter.TclError:
+                sys.exit()
 
     header = "AB Informatica - StockIt Manager | Operatore: " + nomeUtente + " - Punto vendita: " + puntoVendita
     try:

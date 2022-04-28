@@ -257,14 +257,40 @@ class Cassa:
 
 
 class Fidelity:
-    def __init__(self, switch=0, numeroCarta = "", nomeUtente = ""):
+    def __init__(self, switch=0, numeroCarta = "", nomeUtente = "", indirizzoCliente = "", contattoCliente = "",
+                 creditoCliente = 0):
         global utenti
         global utente
         utente = nomeUtente
         global carta
         carta = numeroCarta
+        global indirizzo
+        indirizzo = indirizzoCliente
+        global contatto
+        contatto = contattoCliente
+        global credito
+        credito = creditoCliente
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
         self.cursor = self.mydb.cursor()
+
+    def eliminaCliente(self):
+        _SQLDel = "DELETE FROM fidelity WHERE numeroCarta = %s;"
+        self.cursor.execute(_SQLDel, (carta,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def inserisciCliente(self):
+        sql = ("""INSERT
+                        INTO
+                        `fidelity`(`numeroCarta`, `nomeCliente`, `indirizzoCliente`, `contattoCliente`,
+                        `credito`)
+                        VALUES(%s, %s, %s, %s, %s)""")
+        val = (carta, utente, indirizzo, contatto, credito)
+        self.cursor.execute(sql, val)
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
 
     def ricercaCliente(self):
         if carta == '':
@@ -288,6 +314,21 @@ class Fidelity:
     def selezionaClienti(self):
         _SQLSel = "SELECT * FROM fidelity;"
         self.cursor.execute(_SQLSel)
-        #self.mydb.commit()
         utenti = self.cursor.fetchall()
         return utenti
+
+    def aggiornaCredito(self):
+        _SQLMove = "UPDATE fidelity SET credito = %s WHERE numeroCarta = %s;"
+        self.cursor.execute(_SQLMove, (credito, carta))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def verificaCredito(self):
+        _SQLSel = "SELECT * FROM fidelity WHERE numeroCarta = %s;"
+        self.cursor.execute(_SQLSel, (carta,))
+        utenti = self.cursor.fetchall()
+        print(utenti)
+        for utente in utenti:
+            nuovoCredito = utente[4]
+        return nuovoCredito
