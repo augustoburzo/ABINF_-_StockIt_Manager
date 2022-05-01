@@ -29,6 +29,71 @@ columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodott
 global chatWin
 chatWin = 0
 
+class ModificaFidWidget(tk.Toplevel):
+    def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, master=None, **kw):
+        super(ModificaFidWidget, self).__init__(master, **kw)
+        self.labelframe3 = ttk.Labelframe(self)
+        self.frame20 = ttk.Frame(self.labelframe3)
+        self.label8 = ttk.Label(self.frame20)
+        self.label8.configure(text='Nome cliente:')
+        self.label8.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label9 = ttk.Label(self.frame20)
+        self.label9.configure(text='Numero carta:')
+        self.label9.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label12 = ttk.Label(self.frame20)
+        self.label12.configure(text='Indirizzo:')
+        self.label12.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.label17 = ttk.Label(self.frame20)
+        self.label17.configure(text='Contatto:')
+        self.label17.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        #self.label13 = ttk.Label(self.frame20)
+        #self.label13.configure(text='Credito iniziale:')
+        #self.label13.pack(anchor='e', expand='true', padx='5', pady='4', side='top')
+        self.frame20.configure(height='70', width='200')
+        self.frame20.pack(expand='false', fill='y', side='left')
+        self.frame21 = ttk.Frame(self.labelframe3)
+        self.entry7 = ttk.Entry(self.frame21)
+        self.entry7.pack(expand='true', fill='x', padx='5', pady='0', side='top')
+        self.entry7.insert(0, nomeCliente)
+        self.entryNumeroCarta = ttk.Entry(self.frame21)
+        self.entryNumeroCarta.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entryNumeroCarta.insert(0, numeroCarta)
+        self.entryIndirizzo = ttk.Entry(self.frame21)
+        self.entryIndirizzo.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entryIndirizzo.insert(0, indirizzoCliente)
+        self.entryContatto = ttk.Entry(self.frame21)
+        self.entryContatto.pack(expand='true', fill='x', padx='5', pady='5', side='top')
+        self.entryContatto.insert(0, contattoCliente)
+        #self.entry11 = ttk.Entry(self.frame21)
+        #self.entry11.pack(expand='true', fill='x', padx='5', pady='0', side='top')
+        self.frame21.configure(height='60', width='200')
+        self.frame21.pack(expand='true', fill='both', pady='5', side='left')
+        self.frame26 = ttk.Frame(self.labelframe3)
+        self.btnInserisciCarta = ttk.Button(self.frame26)
+        self.img_refresh = tk.PhotoImage(file='refresh.png')
+        self.btnInserisciCarta.configure(image=self.img_refresh, text='button13')
+        self.btnInserisciCarta.pack(expand='true', fill='y', padx='5', pady='5', side='top')
+        self.btnInserisciCarta.configure(command=self.inserisciCarta)
+        self.frame26.configure(height='200', width='200')
+        self.frame26.pack(expand='true', fill='both', side='top')
+        self.labelframe3.configure(height='80', text='Modifica cliente', width='200')
+        self.labelframe3.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('640x200')
+        self.title('Modifica cliente | AB Informatica - StockIt Manager')
+
+    def inserisciCarta(self):
+        numeroCarta = self.entryNumeroCarta.get()
+        nomeCliente = self.entry7.get()
+        indirizzoCliente = self.entryIndirizzo.get()
+        contattoCliente = self.entryContatto.get()
+
+        databaseOperations.Fidelity(numeroCarta=numeroCarta, nomeUtente=nomeCliente,
+                                    indirizzoCliente=indirizzoCliente,
+                                    contattoCliente=contattoCliente).aggiornaCliente()
+        self.destroy()
+        RicercaFidClienteWidget(root).aggiornamentoCarte()
+
 # FINESTRA INSERISCI FIDELITY############################################################################################
 class InserisciFidWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, master=None, **kw):
@@ -199,26 +264,38 @@ class FidClienteWidget(tk.Toplevel):
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
         self.configure(height='600', width='800')
         self.geometry('800x600')
-        self.title('Gestione cliente | AB Informatica - StockIt Manager')
+        title = 'Gestione cliente: '+nomeCliente+' | AB Informatica - StockIt Manager'
+        self.title(title)
         self.iconphoto(True, self.img_creditcard)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def on_closing(self):
+        RicercaFidClienteWidget(root)
+        self.destroy()
 
     def aggiungiCredito(self):
-        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        nuovoCredito = float(creditoAggiornato) + float(self.entryAggiungiCredito.get())
-        databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
-        databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        self.entryAggiungiCredito.delete(0, END)
-        self.labelCredito.configure(text=creditoAggiornato)
+        try:
+            creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            nuovoCredito = float(creditoAggiornato) + float(self.entryAggiungiCredito.get())
+            databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
+            databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            self.entryAggiungiCredito.delete(0, END)
+            self.labelCredito.configure(text=creditoAggiornato)
+        except ValueError:
+            pass
 
     def sottraiCredito(self):
-        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        nuovoCredito = float(creditoAggiornato) - float(self.entrySottraiCredito.get())
-        databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
-        databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
-        self.entrySottraiCredito.delete(0, END)
-        self.labelCredito.configure(text=creditoAggiornato)
+        try:
+            creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            nuovoCredito = float(creditoAggiornato) - float(self.entrySottraiCredito.get())
+            databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
+            databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
+            self.entrySottraiCredito.delete(0, END)
+            self.labelCredito.configure(text=creditoAggiornato)
+        except ValueError:
+            pass
 
 
 # FINESTRA FIDELITY RICERCA CLIENTE######################################################################################
@@ -308,12 +385,11 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
     def popup(self, event):
         m = tk.Menu(self, tearoff=0)
+        m.add_command(label="Modifica", command=self.modificaCliente)
         m.add_command(label="Elimina", command=self.eliminaCliente)
-        m.add_command(label="Modifica")
 
         iid = self.treeview2.identify_row(event.y)
         if iid:
-            # mouse pointer over item
             self.treeview2.selection_set(iid)
             try:
                 m.tk_popup(event.x_root, event.y_root)
@@ -322,6 +398,18 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
         else:
             pass
+
+    def modificaCliente(self):
+        indice = self.treeview2.focus()
+        idx = self.treeview2.item(indice)
+        numeroCarta = '0' + str(idx['values'][0])
+        nomeCliente = idx['values'][1]
+        indirizzoCliente = idx['values'][2]
+        contattoCliente = idx['values'][3]
+        creditoCliente = idx['values'][4]
+        self.destroy()
+        ModificaFidWidget(nomeCliente=nomeCliente, numeroCarta=numeroCarta, indirizzoCliente=indirizzoCliente,
+                          contattoCliente=contattoCliente)
 
     def scanTessera(self):
         self.entry3.delete(0, END)
@@ -385,9 +473,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
         indirizzoCliente = idx['values'][2]
         contattoCliente = idx['values'][3]
         creditoCliente = idx['values'][4]
-
-        print(numeroCarta)
-
+        self.destroy()
         FidClienteWidget(nomeCliente=nomeCliente, numeroCarta=str(numeroCarta), indirizzoCliente=indirizzoCliente,
                          contattoCliente=contattoCliente, creditoCliente=creditoCliente)
 
@@ -2078,7 +2164,8 @@ if __name__ == '__main__':
                 accesso = True
             except IndexError:
                 tkinter.messagebox.showerror(title='Accesso errato', message="Impossibile effettuare l'accesso.\n"
-                                                                             "Password errata o database irraggiungibile")
+                                                                             "Password errata o database "
+                                                                             "irraggiungibile")
             loop = loop + 1
         else:
             try:

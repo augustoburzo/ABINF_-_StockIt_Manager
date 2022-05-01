@@ -289,6 +289,14 @@ class Fidelity:
         self.cursor.close()
         self.mydb.close()
 
+    def aggiornaCliente(self):
+        _SQLUpdate = "UPDATE fidelity SET nomeCliente = %s, indirizzoCliente = %s, contattoCliente = %s " \
+                     "WHERE numeroCarta = %s"
+        self.cursor.execute(_SQLUpdate, (utente, indirizzo, contatto, carta))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
     def verificaCredito(self):
         global nuovoCredito
         _SQLSel = "SELECT * FROM fidelity WHERE numeroCarta = %s;"
