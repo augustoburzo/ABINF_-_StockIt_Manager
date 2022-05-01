@@ -26,6 +26,9 @@ columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodott
                      'note', 'statoPratica')
 
 
+global chatWin
+chatWin = 0
+
 # FINESTRA INSERISCI FIDELITY############################################################################################
 class InserisciFidWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, master=None, **kw):
@@ -76,6 +79,7 @@ class InserisciFidWidget(tk.Toplevel):
         self.labelframe3.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.configure(height='200', width='200')
         self.geometry('640x200')
+        self.title('Inserisci cliente | AB Informatica - StockIt Manager')
 
     def inserisciCarta(self):
         numeroCarta = self.entryNumeroCarta.get()
@@ -84,7 +88,7 @@ class InserisciFidWidget(tk.Toplevel):
         contattoCliente = self.entryContatto.get()
         credito = self.entry11.get()
 
-        databaseOperations.Fidelity(0, numeroCarta=numeroCarta, nomeUtente=nomeCliente,
+        databaseOperations.Fidelity(numeroCarta=numeroCarta, nomeUtente=nomeCliente,
                                     indirizzoCliente=indirizzoCliente, creditoCliente=credito,
                                     contattoCliente=contattoCliente).inserisciCliente()
         self.destroy()
@@ -195,6 +199,7 @@ class FidClienteWidget(tk.Toplevel):
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
         self.configure(height='600', width='800')
         self.geometry('800x600')
+        self.title('Gestione cliente | AB Informatica - StockIt Manager')
         self.iconphoto(True, self.img_creditcard)
 
     def aggiungiCredito(self):
@@ -273,13 +278,14 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.treeview2.pack(expand=True, fill='both', side='top')
         self.treeview2.bind('<Double-1>', self.callback, add='')
         self.treeview2.bind('<Button-3>', self.popup)
-        self.treeview2.yview(1)
+        self.treeview2.yview_moveto(1)
         self.frame9.configure(height=200, width=200)
         self.frame9.pack(expand=True, fill='both', padx=5, pady=5, side='top')
         self.img_creditcard = tk.PhotoImage(file='credit-card.png')
         self.configure(height=600, width=800)
         self.geometry('1024x600')
         self.iconphoto(True, self.img_creditcard)
+        self.title('Ricerca clienti | AB Informatica - StockIt Manager')
 
         self.aggiornamentoCarte()
 
@@ -347,23 +353,29 @@ class RicercaFidClienteWidget(tk.Toplevel):
         numeroCarta = self.entry3.get()
         self.entry2.delete(0, END)
         self.entry3.delete(0, END)
-        self.treeview2.delete(*self.treeview2.get_children())
-        ordini = databaseOperations.Fidelity(0, nomeUtente=nomeUtente, numeroCarta=numeroCarta).ricercaCliente()
 
-        if self.is_empty(ordini):
-            nuovaCarta = tkinter.messagebox.askyesno(parent=self.frame6, title='Card non presente',
-                                                     message='La card inserita non è presente a sistema, inserire?')
+        ordini = databaseOperations.Fidelity(nomeUtente=nomeUtente, numeroCarta=numeroCarta).ricercaCliente()
 
-            if nuovaCarta:
-                self.destroy()
-                InserisciFidWidget(nomeCliente=nomeUtente, numeroCarta=numeroCarta, master=root)
+        if numeroCarta or nomeUtente != '':
+            self.treeview2.delete(*self.treeview2.get_children())
+            if self.is_empty(ordini):
+                nuovaCarta = tkinter.messagebox.askyesno(parent=self.frame6, title='Card non presente',
+                                                         message='La card inserita non è presente a sistema, inserire?')
+
+                if nuovaCarta:
+                    self.destroy()
+                    InserisciFidWidget(nomeCliente=nomeUtente, numeroCarta=numeroCarta, master=root)
+
+                else:
+                    pass
 
             else:
-                pass
-
+                for ordine in ordini:
+                    self.treeview2.insert("", END, values=ordine)
         else:
-            for ordine in ordini:
-                self.treeview2.insert("", END, values=ordine)
+            messaggioErrore = tkinter.messagebox.showerror(parent=self, title='Compilare i campi', message='Compilare '
+                                                                                                           'i campi '
+                                                                                                           'richiesti')
 
     def callback(self, event=None):
         indice = self.treeview2.focus()
@@ -387,7 +399,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
     def aggiornamentoCarte(self):
         self.treeview2.delete(*self.treeview2.get_children())
-        ordini = databaseOperations.Fidelity(0).selezionaClienti()
+        ordini = databaseOperations.Fidelity().selezionaClienti()
 
         for ordine in ordini:
             self.treeview2.insert("", END, values=ordine)
@@ -541,7 +553,7 @@ class CassaWidget(tk.Toplevel):
         self.tblStoricoGiornate.heading('data', anchor='w', text='Data')
         self.tblStoricoGiornate.heading('cassaPuntoVendita', anchor='w', text='Punto vendita')
         self.tblStoricoGiornate.pack(expand='true', fill='both', side='top')
-        self.tblStoricoGiornate.yview(1)
+        self.tblStoricoGiornate.yview_moveto(1)
         self.frame9 = ttk.Frame(self.lfStorico)
         self.frame9.configure(height='70', width='200')
         self.frame9.pack(fill='x', side='top')
@@ -555,7 +567,7 @@ class CassaWidget(tk.Toplevel):
         self.iconphoto(False, iconaCassa)
         self.title('Gestione Cassa | AB Informatica - StockIt Manager')
 
-        self._default_ = 0.00
+        self._default_ = 0
 
         self.entry.insert(0, self._default_)
         self.entryContanti.insert(0, self._default_)
@@ -592,7 +604,7 @@ class CassaWidget(tk.Toplevel):
         self.lblQuadratura.configure(text=quadratura)
 
         if quadratura != 0:
-            tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura negativa",
+            tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura",
                                          message="È stata riscontrata una squadratura di €" + str(quadratura))
 
         print(incassoTotale)
@@ -613,11 +625,12 @@ class CassaWidget(tk.Toplevel):
         try:
             data = selezione['values'][10]
             negozio = selezione['values'][11]
+            importo = selezione['values'][0]
             if negozio == puntoVendita:
                 eliminaVoce = tkinter.messagebox.askyesno(parent=self.frame8, title='Eliminare voce?',
                                                           message='Sei sicuro di voler eliminare la voce selezionata?')
                 if eliminaVoce:
-                    databaseOperations.Cassa(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, data=data, puntoVendita=puntoVendita)
+                    databaseOperations.Cassa(1, data=data, puntoVendita=puntoVendita, incassoTotale=importo)
 
             else:
                 ErrorePV = tkinter.messagebox.showerror(parent=self, title="Errore Punto Vendita",
@@ -631,16 +644,16 @@ class CassaWidget(tk.Toplevel):
 
     def inviaIncasso(self):
         if self.entryIncassoTot.get() != "":
-            corrispettivo = float(self.corrispettivo.get())
-            fatturato = float(self.fatturato.get())
-            contanti = float(self.contanti.get())
-            pos = float(self.pos.get())
-            finanziamenti = float(self.finanziamenti.get())
-            bonifici = float(self.bonifici.get())
-            assegni = float(self.assegni.get())
-            acconti = float(self.acconti.get())
-            preincassato = float(self.preincassato.get())
-            incassoTotale = float(self.incassoTotale.get())
+            corrispettivo = round(float(self.corrispettivo.get()), 2)
+            fatturato = round(float(self.fatturato.get()), 2)
+            contanti = round(float(self.contanti.get()), 2)
+            pos = round(float(self.pos.get()),2)
+            finanziamenti = round(float(self.finanziamenti.get()), 2)
+            bonifici = round(float(self.bonifici.get()), 2)
+            assegni = round(float(self.assegni.get()), 2)
+            acconti = round(float(self.acconti.get()), 2)
+            preincassato = round(float(self.preincassato.get()), 2)
+            incassoTotale = round(float(self.incassoTotale.get()), 2)
             data = self.entryData.get()
 
             if incassoTotale > 0:
@@ -694,13 +707,16 @@ class CassaWidget(tk.Toplevel):
         self.cursor = self.mydb.cursor()
 
         if operatore != 'master':
-            _SQLFetch = "SELECT * FROM cassa WHERE puntoVendita = %s"
+            _SQLFetch = "SELECT * FROM cassa WHERE puntoVendita = %s ORDER BY data ASC"
             self.cursor.execute(_SQLFetch, (puntoVendita,))
 
+
         else:
-            self.cursor.execute("SELECT * FROM cassa")
+            self.cursor.execute("SELECT * FROM cassa ORDER BY data ASC")
 
         giornate = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         self.tblStoricoGiornate.delete(*self.tblStoricoGiornate.get_children())
 
@@ -758,9 +774,16 @@ class ChatWidget(tk.Toplevel):
         self.geometry('800x600')
         self.iconphoto(False, iconaChat)
         self.title('Chat postazioni | AB Informatica - StockIt Manager')
+        self.protocol("WM_DELETE_WINDOW", self.onClosing)
+        chatWin=True
 
         self.aggiornamentoChat()
         self.autoAggiornamentoDaemon()
+
+
+    def onClosing(self):
+        chatWin=False
+        self.destroy()
 
     def recuperaUtenti(self):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
@@ -771,6 +794,8 @@ class ChatWidget(tk.Toplevel):
         self.utentiChat = (
             ''
         )
+        self.cursor.close()
+        self.mydb.close()
 
         for user in self.users:
             utenteChat = str(user[1]).replace(" ", "_") + " "
@@ -800,6 +825,8 @@ class ChatWidget(tk.Toplevel):
         cursor = mydb.cursor()
         cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 30) sub ORDER BY idx ASC")
         messaggi = cursor.fetchall()
+        cursor.close()
+        mydb.close()
 
         self.lbChat.delete(0, END)
 
@@ -905,7 +932,7 @@ class UtentiWidget(tk.Toplevel):
         self.tblUtenti.heading('puntoVendita', anchor='w', text='Punto Vendita')
         self.tblUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.tblUtenti.bind('<Double-1>', self.OnClickTbl, add='')
-        self.tblUtenti.yview(1)
+        self.tblUtenti.yview_moveto(1)
         self.lfUtenti.configure(height='200', text='Utenti', width='200')
         self.lfUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame7 = ttk.Frame(self)
@@ -967,6 +994,8 @@ class UtentiWidget(tk.Toplevel):
         _searchSQL = "SELECT * FROM users WHERE idx = '%s';"
         self.cursor.execute(_searchSQL, (valore,))
         utente = self.cursor.fetchone()
+        self.cursor.close()
+        self.mydb.close()
 
         self.entryNomeUtente.delete(0, END)
         self.entryPassword.delete(0, END)
@@ -983,6 +1012,8 @@ class UtentiWidget(tk.Toplevel):
         self.cursor = self.mydb.cursor()
         self.cursor.execute("SELECT * FROM users")
         utenti = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         self.tblUtenti.delete(*self.tblUtenti.get_children())
 
@@ -1099,7 +1130,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.column(5, width=100, stretch=NO)
         self.treeview1.heading('note', text='Note')
         self.treeview1.heading('statoPratica', text='Stato pratica')
-        self.treeview1.yview(1)
+        self.treeview1.yview_moveto(1)
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -1202,6 +1233,8 @@ class AssistenzaWidget(tk.Toplevel):
         self.cursor = self.mydb.cursor()
         self.cursor.execute("SELECT * FROM assistenzaProdotti")
         ordini = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         # PULISCE TABELLA
         self.treeview1.delete(*self.treeview1.get_children())
@@ -1274,7 +1307,7 @@ class OrdiniWidget(tk.Toplevel):
 
         self.tblOrdiniDaEvadere.bind("d", lambda event: self.eliminaOrdine())
         self.tblOrdiniDaEvadere.bind("e", lambda event: self.evadiOrdine())
-        self.tblOrdiniDaEvadere.yview(1)
+        self.tblOrdiniDaEvadere.yview_moveto(1)
         ################################################################################################################
 
         self.lfNuoviOrdini.configure(height='200', text='Ordini da evadere', width='200')
@@ -1297,7 +1330,7 @@ class OrdiniWidget(tk.Toplevel):
         self.tblOrdiniEvasi.column(5, width=300, stretch=NO)
 
         self.tblOrdiniEvasi.bind("r", lambda event: self.ordineConsegnato())
-        self.tblOrdiniEvasi.yview(1)
+        self.tblOrdiniEvasi.yview_moveto(1)
         ################################################################################################################
 
         self.lfOrdiniEvasi.configure(height='200', text='Ordini evasi', width='200')
@@ -1339,8 +1372,13 @@ class OrdiniWidget(tk.Toplevel):
 
         if self.nomeProdotto != '' and self.quantita != "0":
             # INSERISCE I DATI NEL DATABASE
-            databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente,
+            try:
+                databaseOperations.GestioneOrdini(0, 0, self.nomeProdotto, self.quantita, self.note, self.nomeCliente,
                                               puntoVendita)
+            except mysql.connector.errors.DatabaseError:
+                tkinter.messagebox.showerror(parent=self, title='Valore incorretto', message='Il campo quantità accetta'
+                                                                                             ' solo numeri')
+
 
             # AGGIORNA LA TABELLA ORDINI
             self.aggiornamentoOrdini()
@@ -1398,6 +1436,7 @@ class OrdiniWidget(tk.Toplevel):
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
 
+
         # PULISCE TABELLA
         self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
 
@@ -1406,6 +1445,8 @@ class OrdiniWidget(tk.Toplevel):
 
         self.cursor.execute("SELECT * FROM orders_shipped")
         ordini = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         # PULISCE TABELLA
         self.tblOrdiniEvasi.delete(*self.tblOrdiniEvasi.get_children())
@@ -1676,6 +1717,9 @@ class StockItApp:
         self.cursor.execute("SELECT * FROM chat")
         self.chatList = self.cursor.fetchall()
 
+        self.cursor.close()
+        self.mydb.close()
+
         self.masterFrame = ttk.Frame(master)
         self.style = ttk.Style(master)
 
@@ -1738,7 +1782,7 @@ class StockItApp:
         self.tblComunicazioni.heading('data', text='Data')
         self.tblComunicazioni.column(3, width=180, stretch=NO)
         self.tblComunicazioni.bind("<Double-1>", self.OnDoubleClickComunicazioni)
-        self.tblComunicazioni.yview(1)
+        self.tblComunicazioni.yview_moveto(1)
 
         ################################################################################################################
 
@@ -1762,7 +1806,7 @@ class StockItApp:
         self.tblOrdiniDaEvadere.column(5, width=300, stretch=NO)
 
         self.tblOrdiniDaEvadere.bind("<Double-1>", lambda event: self.ordineEvaso())
-        self.tblOrdiniDaEvadere.yview(1)
+        self.tblOrdiniDaEvadere.yview_moveto(1)
         ################################################################################################################
 
         self.lfOrdiniDaEvadere.configure(height='200', text='Ordini da evadere', width='200')
@@ -1837,7 +1881,8 @@ class StockItApp:
 
     @staticmethod
     def chat():
-        ChatWidget(root)
+        if not chatWin:
+            ChatWidget(root)
 
     def finestraFidelity(self):
         RicercaFidClienteWidget(root)
@@ -1896,6 +1941,8 @@ class StockItApp:
         self.cursor = self.mydb.cursor()
         self.cursor.execute("SELECT * FROM orders_to_ship")
         ordini = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         self.tblOrdiniDaEvadere.delete(*self.tblOrdiniDaEvadere.get_children())
 
@@ -2044,6 +2091,7 @@ if __name__ == '__main__':
         root.title(header)
         app = StockItApp(root)
         ordini = OrdiniWidget
+        assistenza = AssistenzaWidget
         inserisciOrdine = InserisciOrdineWidget
         menubar = tk.Menu(root)
         filemenu = tk.Menu(menubar, tearoff=False)
@@ -2056,11 +2104,15 @@ if __name__ == '__main__':
         ordinimenu.add_command(label='Inserisci ordine', command=inserisciOrdine)
         ordinimenu.add_command(label='Apri finestra ordini', command=ordini)
 
+        assistenzamenu = tk.Menu(menubar, tearoff=False)
+        assistenzamenu.add_command(label='Apri finestra assistenza', command=assistenza)
+
         infomenu = tk.Menu(menubar, tearoff=False)
         infomenu.add_command(label='Credits', command=CreditsWidget, underline=0)
 
         menubar.add(tk.CASCADE, menu=filemenu, label='File', underline=0)
         menubar.add(tk.CASCADE, menu=ordinimenu, label='Ordini', underline=0)
+        menubar.add(tk.CASCADE, menu=assistenzamenu, label='Assistenza', underline=0)
         menubar.add(tk.CASCADE, menu=infomenu, label='Info', underline=0)
         root.configure(menu=menubar)
 

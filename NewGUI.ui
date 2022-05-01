@@ -1477,7 +1477,7 @@
     </child>
   </object>
   <object class="tk.Toplevel" id="ToplevelRicercaCliente">
-    <property name="geometry">800x600</property>
+    <property name="geometry">1024x600</property>
     <property name="height">600</property>
     <property name="iconphoto">credit-card.png</property>
     <property name="width">800</property>
@@ -1531,9 +1531,10 @@
             <property name="height">60</property>
             <property name="width">200</property>
             <layout manager="pack">
+              <property name="expand">true</property>
               <property name="fill">x</property>
               <property name="pady">5</property>
-              <property name="side">top</property>
+              <property name="side">left</property>
             </layout>
             <child>
               <object class="ttk.Entry" id="entry2">
@@ -1559,6 +1560,38 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="ttk.Frame" id="frame13">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="buttonCamera">
+                <property name="command" type="command" cbtype="simple">scanTessera</property>
+                <property name="image">qr-code.png</property>
+                <property name="text" translatable="yes">Camera</property>
+                <layout manager="pack">
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="button11">
+        <property name="command" type="command" cbtype="simple">ricercaCliente</property>
+        <property name="text" translatable="yes">Ricerca cliente</property>
+        <layout manager="pack">
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="side">top</property>
+        </layout>
       </object>
     </child>
     <child>
@@ -1575,12 +1608,73 @@
         <child>
           <object class="ttk.Treeview" id="treeview2">
             <property name="selectmode">extended</property>
+            <property name="show">headings</property>
             <bind sequence="&lt;Double-1&gt;" handler="callback" add="" />
             <layout manager="pack">
               <property name="expand">true</property>
               <property name="fill">both</property>
               <property name="side">top</property>
             </layout>
+            <child>
+              <object class="ttk.Treeview.Column" id="columnCarta">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Numero carta</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">200</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="columnNomeCliente">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Nome cliente</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">200</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="columnIndirizzo">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Indirizzo</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">200</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="columnContatto">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Contatto</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">200</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="columnCredito">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Credito</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">200</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -1647,7 +1741,7 @@
               <property name="side">left</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="label8">
+              <object class="ttk.Label" id="labelNomeCliente">
                 <property name="text" translatable="yes">Mario Rossi</property>
                 <layout manager="pack">
                   <property name="anchor">w</property>
@@ -1658,35 +1752,12 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="label9">
+              <object class="ttk.Label" id="labelNumeroCarta">
                 <property name="text" translatable="yes">01110111011101</property>
                 <layout manager="pack">
                   <property name="anchor">w</property>
                   <property name="padx">5</property>
                   <property name="pady">5</property>
-                  <property name="side">top</property>
-                </layout>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Frame" id="frame13">
-            <property name="height">200</property>
-            <property name="width">200</property>
-            <layout manager="pack">
-              <property name="expand">false</property>
-              <property name="fill">y</property>
-              <property name="padx">5</property>
-              <property name="pady">5</property>
-              <property name="side">right</property>
-            </layout>
-            <child>
-              <object class="ttk.Button" id="button6">
-                <property name="image">id-card.png</property>
-                <property name="text" translatable="yes">button6</property>
-                <layout manager="pack">
-                  <property name="fill">both</property>
                   <property name="side">top</property>
                 </layout>
               </object>
@@ -1737,7 +1808,7 @@
               <property name="side">left</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="label12">
+              <object class="ttk.Label" id="labelIndirizzo">
                 <property name="text" translatable="yes">Via G. Verdi, 39</property>
                 <layout manager="pack">
                   <property name="anchor">w</property>
@@ -1748,7 +1819,7 @@
               </object>
             </child>
             <child>
-              <object class="ttk.Label" id="label13">
+              <object class="ttk.Label" id="labelContatto">
                 <property name="text" translatable="yes">379 379 37 93</property>
                 <layout manager="pack">
                   <property name="anchor">w</property>
@@ -1770,7 +1841,7 @@
               <property name="side">right</property>
             </layout>
             <child>
-              <object class="ttk.Label" id="label17">
+              <object class="ttk.Label" id="labelCredito">
                 <property name="font">{Arial} 20 {bold}</property>
                 <property name="text" translatable="yes">€0.00</property>
                 <layout manager="pack">
@@ -1820,7 +1891,7 @@
           <property name="side">top</property>
         </layout>
         <child>
-          <object class="ttk.Labelframe" id="labelframe3">
+          <object class="ttk.Labelframe" id="lfAggiungiCredito">
             <property name="height">200</property>
             <property name="text" translatable="yes">Aggiungi credito</property>
             <property name="width">200</property>
@@ -1829,10 +1900,36 @@
               <property name="fill">both</property>
               <property name="side">left</property>
             </layout>
+            <child>
+              <object class="ttk.Entry" id="entryAggiungiCredito">
+                <property name="font">{Arial} 36 {}</property>
+                <property name="justify">center</property>
+                <property name="text" translatable="yes">0.00</property>
+                <property name="textvariable">double:aggiungi</property>
+                <property name="width">4</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="buttonAggiungi">
+                <property name="command" type="command" cbtype="simple">aggiungiCredito</property>
+                <property name="image">income.png</property>
+                <property name="text" translatable="yes">button6</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="ttk.Labelframe" id="labelframe4">
+          <object class="ttk.Labelframe" id="lfSottraiCredito">
             <property name="height">200</property>
             <property name="text" translatable="yes">Sottrai credito</property>
             <property name="width">200</property>
@@ -1841,6 +1938,32 @@
               <property name="fill">both</property>
               <property name="side">left</property>
             </layout>
+            <child>
+              <object class="ttk.Entry" id="entrySottraiCredito">
+                <property name="font">{Arial} 36 {}</property>
+                <property name="justify">center</property>
+                <property name="text" translatable="yes">0.00</property>
+                <property name="textvariable">double:sottrai</property>
+                <property name="width">4</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="buttonSottrai">
+                <property name="command" type="command" cbtype="simple">sottraiCredito</property>
+                <property name="image">outcome.png</property>
+                <property name="text" translatable="yes">button6</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -2084,6 +2207,203 @@ Vecteezy</property>
             </child>
           </object>
         </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="toplevelInserisciFid">
+    <property name="geometry">640x200</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="labelframe3">
+        <property name="height">80</property>
+        <property name="text" translatable="yes">Inserisci cliente</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="frame20">
+            <property name="height">70</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">false</property>
+              <property name="fill">y</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="label8">
+                <property name="text" translatable="yes">Nome cliente:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="padx">5</property>
+                  <property name="pady">4</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label9">
+                <property name="text" translatable="yes">Numero carta:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="padx">5</property>
+                  <property name="pady">4</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label12">
+                <property name="text" translatable="yes">Indirizzo:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="padx">5</property>
+                  <property name="pady">4</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label17">
+                <property name="text" translatable="yes">Contatto:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="padx">5</property>
+                  <property name="pady">4</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="label13">
+                <property name="text" translatable="yes">Credito iniziale:</property>
+                <layout manager="pack">
+                  <property name="anchor">e</property>
+                  <property name="expand">true</property>
+                  <property name="padx">5</property>
+                  <property name="pady">4</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frame21">
+            <property name="height">60</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="pady">5</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="ttk.Entry" id="entry7">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">5</property>
+                  <property name="pady">0</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryNumeroCarta">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryIndirizzo">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entryContatto">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="entry11">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">5</property>
+                  <property name="pady">0</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frame26">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="btnInserisciCarta">
+                <property name="command" type="command" cbtype="simple">inserisciCarta</property>
+                <property name="image">plus.png</property>
+                <property name="text" translatable="yes">button13</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">y</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="toplevel2">
+    <property name="height">200</property>
+    <property name="title" translatable="yes">Configurazione database | AB Informatica StockIt Manager</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Labelframe" id="labelframe4">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">labelframe4</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
       </object>
     </child>
   </object>
