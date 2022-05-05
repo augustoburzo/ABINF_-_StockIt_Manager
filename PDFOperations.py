@@ -151,7 +151,7 @@ class InserisciDataWidget(tk.Toplevel):
         self.frame1.pack(fill='y', padx='5', pady='5', side='left')
         self.frame2 = ttk.Frame(self)
         self.combobox1 = ttk.Combobox(self.frame2)
-        iconaStampe = tk.PhotoImage(file='printer.png')
+        iconaStampe = tk.PhotoImage(file='images/printer.png')
         self.iconphoto(False, iconaStampe)
 
         self.operatore = operatore
@@ -184,7 +184,7 @@ class InserisciDataWidget(tk.Toplevel):
         self.frame2.pack(expand='true', fill='both', padx='5', pady='5', side='left')
         self.frame4 = ttk.Frame(self)
         self.button5 = ttk.Button(self.frame4)
-        self.img_printer = tk.PhotoImage(file='printer.png')
+        self.img_printer = tk.PhotoImage(file='images/printer.png')
         self.button5.configure(image=self.img_printer, text='Stampa', command=self.stampa)
         self.button5.pack(expand='true', fill='y', side='bottom')
         self.frame4.configure(height='200', width='60')

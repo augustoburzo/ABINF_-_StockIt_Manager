@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="tk.Frame" id="frame1">
+    <property name="background">#333</property>
+    <property name="container">false</property>
+    <property name="height">768</property>
+    <property name="width">1024</property>
+    <layout manager="pack">
+      <property name="expand">true</property>
+      <property name="fill">both</property>
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="ttk.Label" id="label6">
+        <property name="background">#333</property>
+        <property name="image">settings.png</property>
+        <property name="text" translatable="yes">label6</property>
+        <layout manager="pack">
+          <property name="pady">20</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Label" id="label1">
+        <property name="background">#333</property>
+        <property name="foreground">#fff</property>
+        <property name="text" translatable="yes">Nome database:</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Entry" id="entry1">
+        <property name="background">#666</property>
+        <property name="foreground">#fff</property>
+        <property name="relief">flat</property>
+        <property name="width">60</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Label" id="label2">
+        <property name="background">#333</property>
+        <property name="foreground">#fff</property>
+        <property name="text" translatable="yes">Indirizzo IP:</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Entry" id="entry2">
+        <property name="background">#666</property>
+        <property name="foreground">#fff</property>
+        <property name="relief">flat</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Label" id="label3">
+        <property name="background">#333</property>
+        <property name="foreground">#fff</property>
+        <property name="text" translatable="yes">Nome utente:</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Entry" id="entry3">
+        <property name="background">#666</property>
+        <property name="foreground">#fff</property>
+        <property name="relief">flat</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Label" id="label4">
+        <property name="background">#333</property>
+        <property name="foreground">#fff</property>
+        <property name="text" translatable="yes">Password:</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Entry" id="entry4">
+        <property name="background">#666</property>
+        <property name="foreground">#fff</property>
+        <property name="relief">flat</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Checkbutton" id="checkbutton2">
+        <property name="activebackground">#333</property>
+        <property name="activeforeground">#fff</property>
+        <property name="background">#333</property>
+        <property name="foreground">#fff</property>
+        <property name="highlightbackground">#333</property>
+        <property name="offrelief">flat</property>
+        <property name="overrelief">flat</property>
+        <property name="relief">flat</property>
+        <property name="selectcolor">#666</property>
+        <property name="state">normal</property>
+        <property name="text" translatable="yes">Cancella database</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Button" id="button1">
+        <property name="activebackground">#666</property>
+        <property name="activeforeground">#fff</property>
+        <property name="background">#666</property>
+        <property name="foreground">#fff</property>
+        <property name="relief">flat</property>
+        <property name="text" translatable="yes">Aggiorna impostazioni e genera Database</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">x</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">bottom</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -2181,7 +2181,8 @@ info@augustoburzo.com
 
 Icone:
 Flaticon
-Vecteezy</property>
+Vecteezy
+Freepik</property>
         <layout manager="pack">
           <property name="expand">true</property>
           <property name="fill">both</property>

@@ -10,11 +10,8 @@ from datetime import date
 from tkinter import END, NO, YES, ANCHOR
 
 import _tkinter
-import cv2
 import mysql.connector
-import numpy as np
 from PIL import ImageTk, Image
-from pyzbar.pyzbar import decode
 
 import PDFOperations
 import databaseOperations
@@ -23,6 +20,9 @@ columnsOrdini = ('numOrdine', 'nomeProdotto', 'quantita', 'note', 'nomeCliente',
 columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
+
+
+
 
 
 # FINESTRA MODIFICA CLIENTE#############################################################################################
@@ -63,7 +63,7 @@ class ModificaFidWidget(tk.Toplevel):
         self.frame21.pack(expand=True, fill='both', pady=5, side='left')
         self.frame26 = ttk.Frame(self.labelframe3)
         self.btnInserisciCarta = ttk.Button(self.frame26)
-        self.img_refresh = tk.PhotoImage(file='refresh.png')
+        self.img_refresh = tk.PhotoImage(file='images/refresh.png')
         self.btnInserisciCarta.configure(image=self.img_refresh, text='button13')
         self.btnInserisciCarta.pack(expand=True, fill='y', padx=5, pady=5, side='top')
         self.btnInserisciCarta.configure(command=self.inserisciCarta)
@@ -128,7 +128,7 @@ class InserisciFidWidget(tk.Toplevel):
         self.frame21.pack(expand=True, fill='both', pady=5, side='left')
         self.frame26 = ttk.Frame(self.labelframe3)
         self.btnInserisciCarta = ttk.Button(self.frame26)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.btnInserisciCarta.configure(image=self.img_plus, text='button13')
         self.btnInserisciCarta.pack(expand=True, fill='y', padx=5, pady=5, side='top')
         self.btnInserisciCarta.configure(command=self.inserisciCarta)
@@ -232,7 +232,7 @@ class FidClienteWidget(tk.Toplevel):
         self.entryAggiungiCredito.pack(expand=True, fill='both', side='top')
         self.entryAggiungiCredito.bind('<Return>', lambda a: self.aggiungiCredito())
         self.buttonAggiungi = ttk.Button(self.lfAggiungiCredito)
-        self.img_income = tk.PhotoImage(file='income.png')
+        self.img_income = tk.PhotoImage(file='images/income.png')
         self.buttonAggiungi.configure(image=self.img_income, text='button6')
         self.buttonAggiungi.pack(expand=True, fill='both', side='top')
         self.buttonAggiungi.configure(command=self.aggiungiCredito)
@@ -247,7 +247,7 @@ class FidClienteWidget(tk.Toplevel):
         self.entrySottraiCredito.delete('0', 'end')
         self.entrySottraiCredito.pack(expand=True, fill='both', side='top')
         self.buttonSottrai = ttk.Button(self.lfSottraiCredito)
-        self.img_outcome = tk.PhotoImage(file='outcome.png')
+        self.img_outcome = tk.PhotoImage(file='images/outcome.png')
         self.buttonSottrai.configure(image=self.img_outcome, text='button6')
         self.buttonSottrai.pack(expand=True, fill='both', side='top')
         self.buttonSottrai.configure(command=self.sottraiCredito)
@@ -255,7 +255,7 @@ class FidClienteWidget(tk.Toplevel):
         self.lfSottraiCredito.pack(expand=True, fill='both', side='left')
         self.frame12.configure(height='200', width='200')
         self.frame12.pack(expand=True, fill='both', padx='5', pady='5', side='top')
-        self.img_creditcard = tk.PhotoImage(file='credit-card.png')
+        self.img_creditcard = tk.PhotoImage(file='images/credit-card.png')
         self.configure(height='600', width='800')
         self.geometry('800x600')
         title = 'Gestione cliente: ' + nomeCliente + ' | AB Informatica - StockIt Manager'
@@ -320,14 +320,14 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.entry3.focus_force()
         self.frame8.configure(height='60', width='200')
         self.frame8.pack(expand=True, fill='x', pady='5', side='left')
-        self.frame13 = ttk.Frame(self.labelframe1)
+        '''self.frame13 = ttk.Frame(self.labelframe1)
         self.buttonCamera = ttk.Button(self.frame13)
-        self.img_qrcode = tk.PhotoImage(file='qr-code.png')
+        self.img_qrcode = tk.PhotoImage(file='images/qr-code.png')
         self.buttonCamera.configure(image=self.img_qrcode, text='Camera')
         self.buttonCamera.pack(padx='5', pady='5', side='top')
         self.buttonCamera.configure(command=self.scanTessera)
         self.frame13.configure(height='200', width='200')
-        self.frame13.pack(side='left')
+        self.frame13.pack(side='left')'''
         self.labelframe1.configure(height='80', text='Ricerca cliente', width='200')
         self.labelframe1.pack(fill='x', padx='5', pady='5', side='top')
         self.button11 = ttk.Button(self)
@@ -356,7 +356,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.treeview2.yview_moveto(1)
         self.frame9.configure(height=200, width=200)
         self.frame9.pack(expand=True, fill='both', padx=5, pady=5, side='top')
-        self.img_creditcard = tk.PhotoImage(file='credit-card.png')
+        self.img_creditcard = tk.PhotoImage(file='images/credit-card.png')
         self.configure(height=600, width=800)
         self.geometry('1024x600')
         self.iconphoto(True, self.img_creditcard)
@@ -389,6 +389,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
         iid = self.treeview2.identify_row(event.y)
         if iid:
             self.treeview2.selection_set(iid)
+            self.treeview2.focus(iid)
             try:
                 m.tk_popup(event.x_root, event.y_root)
             finally:
@@ -400,7 +401,9 @@ class RicercaFidClienteWidget(tk.Toplevel):
     def modificaCliente(self):
         indice = self.treeview2.focus()
         idx = self.treeview2.item(indice)
-        numeroCarta = '0' + str(idx['values'][0])
+        numeroCarta = str(idx['values'][0])
+        if numeroCarta[0] != '0':
+            numeroCarta = '0' + numeroCarta
         nomeCliente = idx['values'][1]
         indirizzoCliente = idx['values'][2]
         contattoCliente = idx['values'][3]
@@ -408,7 +411,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
         ModificaFidWidget(nomeCliente=nomeCliente, numeroCarta=numeroCarta, indirizzoCliente=indirizzoCliente,
                           contattoCliente=contattoCliente)
 
-    def scanTessera(self):
+    '''def scanTessera(self):
         self.entry3.delete(0, END)
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         cap.set(3, 1024)
@@ -431,7 +434,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
                 cv2.putText(img, myData, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 255), 2)
 
         # playsound("beep.wav")
-        self.ricercaCliente()
+        self.ricercaCliente()'''
 
     def ricercaCliente(self):
         nomeCliente = self.entry2.get()
@@ -500,7 +503,7 @@ class CassaWidget(tk.Toplevel):
         self.acconti = tk.StringVar()
         self.preincassato = tk.StringVar()
 
-        iconaCassa = tk.PhotoImage(file='money.png')
+        iconaCassa = tk.PhotoImage(file='images/money.png')
 
         super(CassaWidget, self).__init__(master, **kw)
         self.lfReportGiornata = ttk.Labelframe(self)
@@ -582,7 +585,7 @@ class CassaWidget(tk.Toplevel):
         self.lblQuadratura.pack(side='top')
 
         self.btnInviaIncasso = ttk.Button(self.frame8)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.btnInviaIncasso.configure(image=self.img_plus, text='button7')
         self.btnInviaIncasso.pack(expand=False, fill='both', padx='5', pady='5', side='bottom')
         self.btnInviaIncasso.configure(command=self.inviaIncasso)
@@ -662,6 +665,8 @@ class CassaWidget(tk.Toplevel):
 
         self.aggiornaCasse()
 
+
+
     def quadratura(self):
         self.entryIncassoTot.delete(0, END)
         # incassoTotale = float(self.incassoTotale.get())
@@ -734,6 +739,7 @@ class CassaWidget(tk.Toplevel):
             acconti = round(float(self.acconti.get()), 2)
             preincassato = round(float(self.preincassato.get()), 2)
             incassoTotale = round(float(self.incassoTotale.get()), 2)
+            incassoTotale = incassoTotale
             data = self.entryData.get()
 
             if incassoTotale > 0:
@@ -815,7 +821,7 @@ class ChatWidget(tk.Toplevel):
 
         self.recuperaUtenti()
 
-        iconaChat = tk.PhotoImage(file='chat.png')
+        iconaChat = tk.PhotoImage(file='images/chat.png')
 
         super(ChatWidget, self).__init__(master, **kw)
         self.lfChat = ttk.Labelframe(self)
@@ -840,7 +846,7 @@ class ChatWidget(tk.Toplevel):
         self.frmBoxTesto.pack(expand='true', fill='x', pady='5', side='left')
         self.frmButton = ttk.Frame(self.frmNuovoMessaggio)
         self.btnInviaMessaggio = ttk.Button(self.frmButton)
-        self.img_send = tk.PhotoImage(file='send.png')
+        self.img_send = tk.PhotoImage(file='images/send.png')
         self.btnInviaMessaggio.configure(image=self.img_send, text='Invia')
         self.btnInviaMessaggio.pack(expand='true', fill='y', pady='5', side='top')
         self.btnInviaMessaggio.configure(command=self.inviaMessaggio)
@@ -958,7 +964,7 @@ class ChatWidget(tk.Toplevel):
 
 class UtentiWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-        iconaUser = tk.PhotoImage(file='user.png')
+        iconaUser = tk.PhotoImage(file='images/user.png')
 
         super(UtentiWidget, self).__init__(master, **kw)
         self.lfInserisciUtente = ttk.Labelframe(self)
@@ -1012,15 +1018,15 @@ class UtentiWidget(tk.Toplevel):
         self.lfUtenti.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame7 = ttk.Frame(self)
         self.button1 = ttk.Button(self.frame7)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.button1.configure(image=self.img_plus, text='button1', command=self.inserisciUtente)
         self.button1.pack(padx='5', pady='5', side='right')
         self.button3 = ttk.Button(self.frame7)
-        self.img_clean = tk.PhotoImage(file='clean.png')
+        self.img_clean = tk.PhotoImage(file='images/clean.png')
         self.button3.configure(image=self.img_clean, text='button1', command=self.svuotaCampi)
         self.button3.pack(padx='5', pady='5', side='right')
         self.button4 = ttk.Button(self.frame7)
-        self.img_delete = tk.PhotoImage(file='delete.png')
+        self.img_delete = tk.PhotoImage(file='images/delete.png')
         self.button4.configure(image=self.img_delete, text='button1', command=self.eliminaUtente)
         self.button4.pack(padx='5', pady='5', side='right')
         self.frame7.configure(height='200', width='200')
@@ -1109,12 +1115,12 @@ class NuovaComunicazioneWidget(tk.Toplevel):
         self.lfNuovaComunicazione.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frmPulsanti = ttk.Frame(self)
         self.btnComInserisciComunicazione = ttk.Button(self.frmPulsanti)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.btnComInserisciComunicazione.configure(image=self.img_plus, text='Inserisci comunicazione')
         self.btnComInserisciComunicazione.pack(padx='5', pady='5', side='right')
         self.btnComInserisciComunicazione.configure(command=self.inserisciComunicazione)
         self.btnComSvuotaCampi = ttk.Button(self.frmPulsanti)
-        self.img_clean = tk.PhotoImage(file='clean.png')
+        self.img_clean = tk.PhotoImage(file='images/clean.png')
         self.btnComSvuotaCampi.configure(image=self.img_clean, text='Svuota campi')
         self.btnComSvuotaCampi.pack(padx='5', pady='5', side='right')
         self.btnComSvuotaCampi.configure(command=self.svuotaCampi)
@@ -1142,7 +1148,7 @@ class NuovaComunicazioneWidget(tk.Toplevel):
 class AssistenzaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
 
-        iconaAssistenza = tk.PhotoImage(file='call-center.png')
+        iconaAssistenza = tk.PhotoImage(file='images/call-center.png')
 
         super(AssistenzaWidget, self).__init__(master, **kw)
         self.lfNuovaPratica = ttk.Labelframe(self)
@@ -1183,7 +1189,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.frameEntryAss.configure(height='200', width='200')
         self.frameEntryAss.pack(expand='true', fill='both', padx='5', pady='5', side='left')
         self.btnNuovaAssistenza = ttk.Button(self.lfNuovaPratica)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.btnNuovaAssistenza.configure(image=self.img_plus, text='Inserisci')
         self.btnNuovaAssistenza.pack(expand='true', padx='5', pady='5', side='top')
         self.btnNuovaAssistenza.configure(command=self.nuovaAssistenza)
@@ -1321,7 +1327,7 @@ class AssistenzaWidget(tk.Toplevel):
 # FINESTRA ORDINI#######################################################################################################
 class OrdiniWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-        iconaOrdini = tk.PhotoImage(file='box1.png')
+        iconaOrdini = tk.PhotoImage(file='images/box1.png')
 
         super(OrdiniWidget, self).__init__(master, **kw)  # INIZIO BUILD INTERFACCIA ORDINI
         self.lfNuovoOrdine = ttk.Labelframe(self)
@@ -1343,6 +1349,7 @@ class OrdiniWidget(tk.Toplevel):
         self.frameEntryOrdine = ttk.Frame(self.lfNuovoOrdine)
         self.entryNomeProdotto = ttk.Entry(self.frameEntryOrdine)
         self.entryNomeProdotto.configure(width=60)
+        self.entryNomeProdotto.focus_force()
         self.entryNomeProdotto.pack(expand='true', fill='x', side='top')
         self.entryQuantita = ttk.Entry(self.frameEntryOrdine)
         self.entryQuantita.configure(width='60')
@@ -1357,7 +1364,7 @@ class OrdiniWidget(tk.Toplevel):
         self.frameEntryOrdine.configure(height='200', width='200')
         self.frameEntryOrdine.pack(expand='true', fill='both', padx='5', pady='5', side='left')
         self.btnNuovoOrdine = ttk.Button(self.lfNuovoOrdine)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.btnNuovoOrdine.configure(image=self.img_plus, text='Inserisci')
         self.btnNuovoOrdine.pack(expand='true', fill='y', padx='5', pady='5', side='top')
         self.btnNuovoOrdine.configure(command=self.nuovoOrdine)
@@ -1533,7 +1540,7 @@ class InserisciOrdineWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(InserisciOrdineWidget, self).__init__(master, **kw)
 
-        iconaOrdini = tk.PhotoImage(file='box1.png')
+        iconaOrdini = tk.PhotoImage(file='images/box1.png')
 
         self.labelframe5 = ttk.Labelframe(self)
         self.frame18 = ttk.Frame(self.labelframe5)
@@ -1554,6 +1561,7 @@ class InserisciOrdineWidget(tk.Toplevel):
         self.frame19 = ttk.Frame(self.labelframe5)
         self.entryNomeProdotto1 = ttk.Entry(self.frame19)
         self.entryNomeProdotto1.configure(width='60')
+        self.entryNomeProdotto1.focus_force()
         self.entryNomeProdotto1.pack(expand='true', fill='x', side='top')
         self.entryQuantita1 = ttk.Entry(self.frame19)
         self.entryQuantita1.configure(width='60')
@@ -1567,7 +1575,7 @@ class InserisciOrdineWidget(tk.Toplevel):
         self.frame19.configure(height='200', width='200')
         self.frame19.pack(expand='true', fill='both', padx='5', pady='5', side='left')
         self.button7 = ttk.Button(self.labelframe5)
-        self.img_plus = tk.PhotoImage(file='plus.png')
+        self.img_plus = tk.PhotoImage(file='images/plus.png')
         self.button7.configure(image=self.img_plus, text='Inserisci')
         self.button7.pack(expand='true', fill='y', padx='5', pady='5', side='top')
         self.button7.configure(command=self.nuovoOrdine)
@@ -1612,6 +1620,7 @@ class LeggiComunicazioneWidget(tk.Toplevel):
     def __init__(self, master=None, text="", **kw):
         super(LeggiComunicazioneWidget, self).__init__(master, **kw)
         self.labelframe6 = ttk.Labelframe(self)
+        self.focus_force()
         self.text = tk.Text(self.labelframe6)
         self.text.configure(height='10', state='normal', width='50')
         self.text.insert(1.0, text)
@@ -1629,9 +1638,10 @@ class LeggiComunicazioneWidget(tk.Toplevel):
 
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
-        iconaStampe = tk.PhotoImage(file='printer.png')
+        iconaStampe = tk.PhotoImage(file='images/printer.png')
 
         super(StampeWidget, self).__init__(master, **kw)
+        self.focus_force()
         self.lfStampeOrdini = ttk.Labelframe(self)
         self.btnStampaNuoviOrdini = ttk.Button(self.lfStampeOrdini)
         self.btnStampaNuoviOrdini.configure(text='Stampa nuovi ordini')
@@ -1752,6 +1762,7 @@ class StampeWidget(tk.Toplevel):
 class CreditsWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(CreditsWidget, self).__init__(master, **kw)
+        self.focus_force()
         self.label20 = ttk.Label(self)
         self.label20.configure(font='{Consolas} 20 {bold}', text='AB Informatica')
         self.label20.pack(pady='10', side='top')
@@ -1798,34 +1809,34 @@ class StockItApp:
 
         self.frmPulsantiSup = ttk.Frame(self.masterFrame)
         self.btnStampa = ttk.Button(self.frmPulsantiSup)
-        self.img_printer = tk.PhotoImage(file='printer.png')
+        self.img_printer = tk.PhotoImage(file='images/printer.png')
         self.btnStampa.configure(image=self.img_printer, text='Cassa')
         self.btnStampa.pack(expand='false', padx='5', pady='5', side='right')
         self.btnStampa.configure(command=self.finestraStampe)
         self.btnOrdini = ttk.Button(self.frmPulsantiSup)
-        self.img_box1 = tk.PhotoImage(file='box1.png')
+        self.img_box1 = tk.PhotoImage(file='images/box1.png')
         self.btnOrdini.configure(image=self.img_box1, text='Ordini')
         self.btnOrdini.pack(expand='false', padx='5', side='left')
         self.btnOrdini.configure(command=self.finestraOrdini)
         self.btnAssistenza = ttk.Button(self.frmPulsantiSup)
-        self.img_callcenter = tk.PhotoImage(file='call-center.png')
+        self.img_callcenter = tk.PhotoImage(file='images/call-center.png')
         self.btnAssistenza.configure(image=self.img_callcenter, text='Cassa')
         self.btnAssistenza.pack(expand='false', padx='5', side='left')
         self.btnAssistenza.configure(command=self.finestraAssistenza)
         if operatore != 'operatore':
             self.btnCassa = ttk.Button(self.frmPulsantiSup)
-            self.img_money = tk.PhotoImage(file='money.png')
+            self.img_money = tk.PhotoImage(file='images/money.png')
             self.btnCassa.configure(image=self.img_money, text='Cassa')
             self.btnCassa.pack(expand='false', padx='5', side='left')
             self.btnCassa.configure(command=self.finestraCassa)
         self.btnChat = ttk.Button(self.frmPulsantiSup)
-        self.img_chat = tk.PhotoImage(file='chat.png')
+        self.img_chat = tk.PhotoImage(file='images/chat.png')
         self.btnChat.configure(image=self.img_chat, text='Cassa', style='')
         self.style.configure('Die.TButton', background='#f00')
         self.btnChat.pack(expand='false', padx='5', side='left')
         self.btnChat.configure(command=self.finestraChat)
         self.btnBuoni = ttk.Button(self.frmPulsantiSup)
-        self.img_creditcard = tk.PhotoImage(file='credit-card.png')
+        self.img_creditcard = tk.PhotoImage(file='images/credit-card.png')
         self.btnBuoni.configure(image=self.img_creditcard, text='Cassa')
         self.btnBuoni.pack(expand='false', padx='5', side='left')
         self.btnBuoni.configure(command=self.finestraFidelity)
@@ -1837,7 +1848,7 @@ class StockItApp:
             self.btnSettings.configure(command=self.finestraFidelity)'''
         if operatore == 'master':
             self.btnUsers = ttk.Button(self.frmPulsantiSup)
-            self.img_users = tk.PhotoImage(file='user.png')
+            self.img_users = tk.PhotoImage(file='images/user.png')
             self.btnUsers.configure(image=self.img_users, text='Cassa')
             self.btnUsers.pack(expand='false', padx='5', side='left')
             self.btnUsers.configure(command=self.finestraUtenti)
@@ -1945,9 +1956,11 @@ class StockItApp:
     def finestraUtenti():
         UtentiWidget(root)
 
-    @staticmethod
-    def finestraCassa():
-        CassaWidget(root)
+    def finestraCassa(self):
+        if wincassa == 'c':
+            CassaWidget(root)
+        else:
+            print(wincassa)
 
     def finestraChat(self):
         self.btnChat.configure(style='')
@@ -2096,6 +2109,8 @@ class StockItApp:
 
 
 operatore = 0
+winchat = 'c'
+wincassa = 'c'
 
 
 class StringDialog(tkinter.simpledialog._QueryString):
@@ -2121,7 +2136,7 @@ if __name__ == '__main__':
     user32 = ctypes.windll.user32
     width = user32.GetSystemMetrics(0)
     height = user32.GetSystemMetrics(1)
-    splashTiny = Image.open("icon.png")
+    splashTiny = Image.open("images/icon.png")
     splashResized = splashTiny.resize((height, height), Image.ANTIALIAS)
     splash = ImageTk.PhotoImage(splashResized)
     splashImage = tk.Label(root, image=splash)
@@ -2164,6 +2179,7 @@ if __name__ == '__main__':
         app = StockItApp(root)
         ordini = OrdiniWidget
         assistenza = AssistenzaWidget
+        cassa = CassaWidget
         inserisciOrdine = InserisciOrdineWidget
         menubar = tk.Menu(root)
         filemenu = tk.Menu(menubar, tearoff=False)
@@ -2179,12 +2195,16 @@ if __name__ == '__main__':
         assistenzamenu = tk.Menu(menubar, tearoff=False)
         assistenzamenu.add_command(label='Apri finestra assistenza', command=assistenza)
 
+        cassamenu = tk.Menu(menubar, tearoff=False)
+        cassamenu.add_command(label='Apri finestra cassa', command=cassa)
+
         infomenu = tk.Menu(menubar, tearoff=False)
         infomenu.add_command(label='Credits', command=CreditsWidget, underline=0)
 
         menubar.add(tk.CASCADE, menu=filemenu, label='File', underline=0)
         menubar.add(tk.CASCADE, menu=ordinimenu, label='Ordini', underline=0)
         menubar.add(tk.CASCADE, menu=assistenzamenu, label='Assistenza', underline=0)
+        menubar.add(tk.CASCADE, menu=cassamenu, label='Cassa', underline=0)
         menubar.add(tk.CASCADE, menu=infomenu, label='Info', underline=0)
         root.configure(menu=menubar)
 
