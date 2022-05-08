@@ -16,6 +16,34 @@ class StrutturaDatabase:
             self.mydb.close()
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS prodottiMagazzino('
+                                'codice VARCHAR(40) PRIMARY KEY,'
+                                'nome VARCHAR(40),'
+                                'ean VARCHAR(40),'
+                                'iva VARCHAR(40),'
+                                'quantity INT,'
+                                'categoria VARCHAR(80),'
+                                'costo VARCHAR(40),'
+                                'prezzo VARCHAR(40),'
+                                'mag0 INT,'
+                                'mag1 INT,'
+                                'mag2 INT,'
+                                'mag3 INT,'
+                                'mag4 INT,'
+                                'fornitore VARCHAR(40));')
+            self.mydb.commit()
+            print('Tabella Prodotti Magazzino')
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS prodottiMagazzino('
+                                'numero VARCHAR(40) PRIMARY KEY,'
+                                'importo VARCHAR(40),'
+                                'data VARCHAR(40),'
+                                'fornitore VARCHAR(40),'
+                                'tipo VARCHAR(40),'
+                                'prodotti VARCHAR(1000));')
+            self.mydb.commit()
+            print('Tabella Documenti Magazzino')
+
             self.cursor.execute('CREATE TABLE IF NOT EXISTS orders_to_ship('
                                 'idx INT AUTO_INCREMENT PRIMARY KEY,'
                                 'nomeProdotto VARCHAR(40),'
@@ -23,6 +51,7 @@ class StrutturaDatabase:
                                 'note VARCHAR(80),'
                                 'nomeCliente VARCHAR(40),'
                                 'puntoVendita VARCHAR(40));')
+            self.mydb.commit()
             print('Tabella ordini da inviare creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS orders_shipped('
@@ -32,6 +61,7 @@ class StrutturaDatabase:
                                 'note VARCHAR(80),'
                                 'nomeCliente VARCHAR(40),'
                                 'puntoVendita VARCHAR(40));')
+            self.mydb.commit()
             print('Tabella ordini inviati creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS orders_received('
@@ -41,6 +71,7 @@ class StrutturaDatabase:
                                 'note VARCHAR(80),'
                                 'nomeCliente VARCHAR(40),'
                                 'puntoVendita VARCHAR(40));')
+            self.mydb.commit()
             print('Tabella ordini ricevuti creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS assistenzaProdotti('
@@ -52,6 +83,7 @@ class StrutturaDatabase:
                                 'dataConsegna VARCHAR(30),'
                                 'note VARCHAR(120),'
                                 'statoPratica VARCHAR(40));')
+            self.mydb.commit()
             print('Tabella assistenza creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS users('
@@ -60,6 +92,7 @@ class StrutturaDatabase:
                                 'password VARCHAR(40),'
                                 'manager VARCHAR(60),'
                                 'puntoVendita VARCHAR(40));')
+            self.mydb.commit()
             print('Tabella utenti creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS comunicazioni('

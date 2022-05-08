@@ -307,3 +307,111 @@ class Fidelity:
         for utente in utenti:
             nuovoCredito = utente[4]
         return nuovoCredito
+
+class GestioneMagazzino:
+    def __init__(self):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+
+    def inserisciDocumento(self, numero='', importo=0, data='', fornitore='', tipo='', prodotti=''):
+        _SQLInsert = "INSERT INTO `documentiMagazzino`(`numeroDoc`,`importoDoc`,`dataDoc`,`fornitoreDoc`,`tipoDoc`," \
+                     "`prodottiDoc`) VALUES (%s,%s,%s,%s,%s,%s);"
+        self.cursor.execute(_SQLInsert, (numero, importo, data, fornitore, tipo, prodotti))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def ricercaDocumenti(self, ricercaNumero=True, numero='', fornitore=''):
+
+        if ricercaNumero:
+            _SQLSearch = "SELECT * FROM documentiMagazzino WHERE numeroDoc = %s;"
+            self.cursor.execute(_SQLSearch, (numero,))
+
+        elif not ricercaNumero:
+            _SQLSearch = "SELECT * FROM documentiMagazzino WHERE fornitoreDoc = %s;"
+            self.cursor.execute(_SQLSearch, (fornitore,))
+
+        documenti = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
+
+        return documenti
+
+    def listaDocumenti(self):
+        #Ricava la lista completa dei documenti in magazzino
+        _SQLList = "SELECT * FROM documentiMagazzino"
+        self.cursor.execute(_SQLList)
+        documenti = self.cursor.fetchall()
+
+        return documenti
+
+    def inserisciProdotto(self, codice='', nome='', ean='', iva='', quantita='', categoria='', costo='', prezzo='',
+                          fornitore=''):
+        #Inserisce il prodotto a magazzino
+        _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codiceProdotto`,`nomeProdottto`,`ean`,`regimeIVA`,`quantita`," \
+                     "`categoria`,`costoProdotto`,`prezzoProdotto`,`fornitore`,`mag0`) VALUES (%s,%s,%s,%s,%s,%s,%s," \
+                     "%s,%s,%s);"
+        self.cursor.execute(_SQLInsert, (codice, nome, ean, iva, quantita, categoria, costo, prezzo, fornitore,
+                                         quantita))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def aggiornaProdotto(self, codice='', nome='', ean='', iva='', quantita='', categoria='', costo='', prezzo='',
+                          fornitore=''):
+        pass
+
+    def prodottoEsistente(self, ean):
+        #Verifica se il prodotto è esistente e restituisce un Booleano
+        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s"
+        self.cursor.execute(_SQLSearch, (ean,))
+        prodotto = self.cursor.fetchone()
+        self.cursor.close()
+        self.mydb.close()
+
+        if self.is_empty(prodotto):
+            return False
+        else:
+            return True
+
+    def listaMagazzino(self):
+        _SQLList = "SELECT * FROM prodottiMagazzino"
+        self.cursor.execute(_SQLList)
+        prodotti = self.cursor.fetchall()
+
+        return prodotti
+
+    def ricercaMagazzino(self, ricerca='ean', nome='', codice='', ean=''):
+        global prodotti
+        if ricerca == 'ean':
+            _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s"
+            self.cursor.execute(_SQLSearch, (ean,))
+            prodotti = self.cursor.fetchall()
+
+        elif ricerca == 'nome':
+            _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE nome LIKE %%s%"
+            self.cursor.execute(_SQLSearch, (nome,))
+            prodotti = self.cursor.fetchall()
+
+        elif ricerca == 'codice':
+            _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE codice = %s"
+            self.cursor.execute(_SQLSearch, (codice,))
+            prodotti = self.cursor.fetchall()
+
+        else:
+            pass
+
+        check = self.is_empty(prodotti)
+
+        if check:
+            return 1
+        else:
+            return prodotti
+
+    def is_empty(self, any_structure):
+        if any_structure:
+            return False
+        else:
+            return True
+
+
