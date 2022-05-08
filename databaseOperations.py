@@ -348,10 +348,10 @@ class GestioneMagazzino:
     def inserisciProdotto(self, codice='', nome='', ean='', iva='', quantita='', categoria='', costo='', prezzo='',
                           fornitore=''):
         #Inserisce il prodotto a magazzino
-        _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codice`,`nome`,`ean`,`iva`,`quantity`," \
+        _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codice`,`nome`,`ean`,`iva`," \
                      "`categoria`,`costo`,`prezzo`,`fornitore`,`mag0`) VALUES (%s,%s,%s,%s,%s,%s,%s," \
-                     "%s,%s,%s);"
-        self.cursor.execute(_SQLInsert, (codice, nome, ean, iva, quantita, categoria, costo, prezzo, fornitore,
+                     "%s,%s);"
+        self.cursor.execute(_SQLInsert, (codice, nome, ean, iva, categoria, costo, prezzo, fornitore,
                                          quantita))
         self.mydb.commit()
         self.cursor.close()
@@ -359,7 +359,12 @@ class GestioneMagazzino:
 
     def aggiornaProdotto(self, codice='', nome='', ean='', iva='', quantita='', categoria='', costo='', prezzo='',
                           fornitore=''):
-        pass
+        _SQLUpdate = "UPDATE prodottiMagazzino SET nome = %s, ean = %s, iva = %s, categoria = %s, costo = %s, " \
+                     "prezzo = %s, mag0 = %s, fornitore = %s WHERE codice = %s"
+        self.cursor.execute(_SQLUpdate, (nome, ean, iva, categoria, costo, prezzo, quantita, fornitore, codice))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
 
     def prodottoEsistente(self, ean, codice):
         #Verifica se il prodotto è esistente e restituisce un Booleano

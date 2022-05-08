@@ -1946,11 +1946,11 @@ class InserisciDocumentoWidget(tk.Toplevel):
             codice = prodottoInMagazzino[0]
             nome = prodottoInMagazzino[1]
             ean = prodottoInMagazzino[2]
-            quantitaOLD = prodottoInMagazzino[4]
+            quantitaOLD = prodottoInMagazzino[7]
             iva = prodottoInMagazzino[3]
-            categoria = prodottoInMagazzino[5]
-            costoOLD = prodottoInMagazzino[6]
-            prezzo = prodottoInMagazzino[7]
+            categoria = prodottoInMagazzino[4]
+            costoOLD = prodottoInMagazzino[5]
+            prezzo = prodottoInMagazzino[6]
             self.aggiornaProdotto(codice=codice, nome=nome, ean=ean, regime=iva, categoria=categoria, prezzo=prezzo)
 
         if not prodottoEsistente:
@@ -2068,6 +2068,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
             categoria = prodotto[5]
             costo = prodotto[6]
             prezzo = prodotto[7]
+
             fornitoreReale = self.entryFornitore.get()
             numeroDocumento = self.entryNumDoc.get()
             dataDocumento = self.entryDataDoc.get()
@@ -2077,7 +2078,18 @@ class InserisciDocumentoWidget(tk.Toplevel):
                 databaseOperations.GestioneMagazzino().inserisciProdotto(codice, nome, ean, iva, quantita, categoria,
                                                                      costo, prezzo, fornitore)
             except mysql.connector.errors.IntegrityError:
-                databaseOperations.GestioneMagazzino().aggiornaProdotto(codice)
+                esiste = True
+
+            if esiste:
+                prodottoInMagazzino = databaseOperations.GestioneMagazzino().leggiProdottoEsistente(ean=ean,
+                                                                                                    codice=codice)
+                quantitaOLD = prodottoInMagazzino[7]
+                fornitoreOLD = prodottoInMagazzino[12]
+                fornitoreNEW = fornitore + fornitoreOLD
+                newQty = int(quantitaOLD)+int(quantita)
+                databaseOperations.GestioneMagazzino().aggiornaProdotto(
+                    codice=codice, nome=nome, ean=ean, iva=iva, categoria=categoria, costo=costo, prezzo=prezzo,
+                quantita=newQty, fornitore=fornitoreNEW)
 
 
     def nuovoDocumento(self):
@@ -2162,13 +2174,13 @@ class RicercaProdottiWidget(tk.Toplevel):
             codice = prodotto[0]
             nome = prodotto[1]
             ean = prodotto[2]
-            fornitore = prodotto[13]
-            mag0 = prodotto[8]
-            mag1 = prodotto[9]
-            mag2 = prodotto[10]
-            mag3 = prodotto[11]
-            mag4 = prodotto[12]
-            prezzo = prodotto[7]
+            fornitore = str(prodotto[12]).replace("\n","")
+            mag0 = prodotto[7]
+            mag1 = prodotto[8]
+            mag2 = prodotto[9]
+            mag3 = prodotto[10]
+            mag4 = prodotto[11]
+            prezzo = prodotto[6]
             riga = (
                 codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
             )

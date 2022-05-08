@@ -21,7 +21,6 @@ class StrutturaDatabase:
                                 'nome VARCHAR(40),'
                                 'ean VARCHAR(40),'
                                 'iva VARCHAR(40),'
-                                'quantity INT,'
                                 'categoria VARCHAR(80),'
                                 'costo VARCHAR(40),'
                                 'prezzo VARCHAR(40),'
