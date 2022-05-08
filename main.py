@@ -2015,7 +2015,21 @@ class RicercaProdottiWidget(tk.Toplevel):
         magazzino = databaseOperations.GestioneMagazzino().listaMagazzino()
 
         for prodotto in magazzino:
-            self.tblProdotti.insert("", END, values=prodotto)
+            codice = prodotto[0]
+            nome = prodotto[1]
+            ean = prodotto[2]
+            fornitore = prodotto[13]
+            mag0 = prodotto[8]
+            mag1 = prodotto[9]
+            mag2 = prodotto[10]
+            mag3 = prodotto[11]
+            mag4 = prodotto[12]
+            prezzo = prodotto[7]
+            riga = (
+                codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
+            )
+            print(riga)
+            self.tblProdotti.insert("", END, values=riga)
 
 
 # FINESTRA PRINCIPALE###################################################################################################

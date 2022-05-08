@@ -34,7 +34,7 @@ class StrutturaDatabase:
             self.mydb.commit()
             print('Tabella Prodotti Magazzino')
 
-            self.cursor.execute('CREATE TABLE IF NOT EXISTS prodottiMagazzino('
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS documentiMagazzino('
                                 'numero VARCHAR(40) PRIMARY KEY,'
                                 'importo VARCHAR(40),'
                                 'data VARCHAR(40),'
