@@ -348,8 +348,8 @@ class GestioneMagazzino:
     def inserisciProdotto(self, codice='', nome='', ean='', iva='', quantita='', categoria='', costo='', prezzo='',
                           fornitore=''):
         #Inserisce il prodotto a magazzino
-        _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codiceProdotto`,`nomeProdottto`,`ean`,`regimeIVA`,`quantita`," \
-                     "`categoria`,`costoProdotto`,`prezzoProdotto`,`fornitore`,`mag0`) VALUES (%s,%s,%s,%s,%s,%s,%s," \
+        _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codice`,`nome`,`ean`,`iva`,`quantity`," \
+                     "`categoria`,`costo`,`prezzo`,`fornitore`,`mag0`) VALUES (%s,%s,%s,%s,%s,%s,%s," \
                      "%s,%s,%s);"
         self.cursor.execute(_SQLInsert, (codice, nome, ean, iva, quantita, categoria, costo, prezzo, fornitore,
                                          quantita))
@@ -361,10 +361,10 @@ class GestioneMagazzino:
                           fornitore=''):
         pass
 
-    def prodottoEsistente(self, ean):
+    def prodottoEsistente(self, ean, codice):
         #Verifica se il prodotto è esistente e restituisce un Booleano
-        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s"
-        self.cursor.execute(_SQLSearch, (ean,))
+        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s OR codice = %s"
+        self.cursor.execute(_SQLSearch, (ean, codice))
         prodotto = self.cursor.fetchone()
         self.cursor.close()
         self.mydb.close()
@@ -373,6 +373,15 @@ class GestioneMagazzino:
             return False
         else:
             return True
+
+    def leggiProdottoEsistente(self, ean, codice):
+        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s OR codice = %s"
+        self.cursor.execute(_SQLSearch, (ean, codice))
+        prodotto = self.cursor.fetchone()
+        self.cursor.close()
+        self.mydb.close()
+
+        return prodotto
 
     def listaMagazzino(self):
         _SQLList = "SELECT * FROM prodottiMagazzino"

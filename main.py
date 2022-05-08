@@ -23,10 +23,6 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-
-
-
-
 # FINESTRA MODIFICA CLIENTE#############################################################################################
 
 class ModificaFidWidget(tk.Toplevel):
@@ -1931,10 +1927,158 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.title('Inserimento documento | AB Informatica StockIt Manager')
 
     def inserisciProdottoDoc(self):
-        pass
+        codice = self.entryCodProdDoc.get()
+        nome = self.entryNomeProdDoc.get()
+        ean = self.entryEANProdDoc.get()
+        quantita = self.entryQtyProdDoc.get()
+        iva = self.comboIVAProdDoc.get()
+        categoria = self.comboCatProdDoc.get()
+        costo = self.entryCostoProdDoc.get()
+        prezzo = self.entryPrezzoProdDoc.get()
+
+
+
+        prodottoEsistente = databaseOperations.GestioneMagazzino().prodottoEsistente(ean=ean, codice=codice)
+
+        if prodottoEsistente:
+            #tkinter.messagebox.showerror(parent=self, title='Prodotto esistente', message='Il prodotto esiste già:')
+            prodottoInMagazzino = databaseOperations.GestioneMagazzino().leggiProdottoEsistente(ean=ean, codice=codice)
+            codice = prodottoInMagazzino[0]
+            nome = prodottoInMagazzino[1]
+            ean = prodottoInMagazzino[2]
+            quantitaOLD = prodottoInMagazzino[4]
+            iva = prodottoInMagazzino[3]
+            categoria = prodottoInMagazzino[5]
+            costoOLD = prodottoInMagazzino[6]
+            prezzo = prodottoInMagazzino[7]
+            self.aggiornaProdotto(codice=codice, nome=nome, ean=ean, regime=iva, categoria=categoria, prezzo=prezzo)
+
+        if not prodottoEsistente:
+            riga = (
+                codice, nome, ean, quantita, iva, categoria, costo, prezzo
+            )
+            self.treeview3.insert("", END, values=riga)
+
+            self.entryCodProdDoc.delete(0, END)
+            self.entryNomeProdDoc.delete(0, END)
+            self.entryEANProdDoc.delete(0, END)
+            self.entryQtyProdDoc.delete(0, END)
+            self.comboIVAProdDoc.delete(0, END)
+            self.comboCatProdDoc.delete(0, END)
+            self.entryCostoProdDoc.delete(0, END)
+            self.entryPrezzoProdDoc.delete(0, END)
+
+    def aggiornaProdotto(self, codice, nome, ean, regime, categoria, prezzo):
+        self.finestra = tk.Toplevel(self)
+        self.labelframe7 = ttk.Labelframe(self.finestra)
+        self.frame33 = ttk.Frame(self.labelframe7)
+        self.label39 = ttk.Label(self.frame33)
+        self.label39.configure(text='Codice prodotto:')
+        self.label39.pack(anchor='e', pady='1', side='top')
+        self.label40 = ttk.Label(self.frame33)
+        self.label40.configure(text='Nome prodotto:')
+        self.label40.pack(anchor='e', pady='1', side='top')
+        self.label41 = ttk.Label(self.frame33)
+        self.label41.configure(text='EAN:')
+        self.label41.pack(anchor='e', pady='1', side='top')
+        self.label42 = ttk.Label(self.frame33)
+        self.label42.configure(text='Quantità in documento:')
+        self.label42.pack(anchor='e', pady='1', side='top')
+        self.label43 = ttk.Label(self.frame33)
+        self.label43.configure(text='Regime IVA:')
+        self.label43.pack(anchor='e', pady='1', side='top')
+        self.label44 = ttk.Label(self.frame33)
+        self.label44.configure(text='Cat. prodotto:')
+        self.label44.pack(anchor='e', pady='1', side='top')
+        self.label45 = ttk.Label(self.frame33)
+        self.label45.configure(text='Costo:')
+        self.label45.pack(anchor='e', pady='1', side='top')
+        self.label46 = ttk.Label(self.frame33)
+        self.label46.configure(text='Prezzo vendita:')
+        self.label46.pack(anchor='e', pady='1', side='top')
+        self.frame33.configure(height='200', width='200')
+        self.frame33.pack(padx='5', side='left')
+        self.frame34 = ttk.Frame(self.labelframe7)
+        self.entry4 = ttk.Entry(self.frame34)
+        self.entry4.configure(width='80')
+        self.entry4.pack(fill='x', side='top')
+        self.entry5 = ttk.Entry(self.frame34)
+        self.entry5.configure(width='50')
+        self.entry5.pack(fill='x', side='top')
+        self.entry6 = ttk.Entry(self.frame34)
+        self.entry6.pack(fill='x', side='top')
+        self.entry8 = ttk.Entry(self.frame34)
+        self.entry8.pack(fill='x', side='top')
+        self.combobox3 = ttk.Combobox(self.frame34)
+        self.combobox3.pack(fill='x', side='top')
+        self.combobox4 = ttk.Combobox(self.frame34)
+        self.combobox4.pack(fill='x', side='top')
+        self.entry9 = ttk.Entry(self.frame34)
+        self.entry9.pack(fill='x', side='top')
+        self.entry10 = ttk.Entry(self.frame34)
+        self.entry10.pack(fill='x', side='top')
+        self.frame34.configure(height='200', width='200')
+        self.frame34.pack(expand='true', fill='x', padx='5', side='left')
+        self.labelframe7.configure(height='200', text='Aggiorna prodotti', width='200')
+        self.labelframe7.pack(expand='false', fill='x', padx='5', pady='5', side='top')
+        self.frame35 = ttk.Frame(self.finestra)
+        self.button6 = ttk.Button(self.frame35)
+        self.button6.configure(text='Inserisci prodotto')
+        self.button6.pack(padx='5', pady='5', side='right')
+        self.button6.configure(command=self.aggiornaProdottoDoc)
+        self.frame35.configure(height='200', width='200')
+        self.frame35.pack(fill='x', side='top')
+        self.finestra.configure(height='200', width='200')
+        self.finestra.resizable(False, False)
+        self.finestra.title('Aggiorna prodotto | AB Informatica StockIt Manager')
+
+        self.entry4.insert(0, codice)
+        self.entry5.insert(0, nome)
+        self.entry6.insert(0, ean)
+        self.combobox3.insert(0, regime)
+        self.combobox4.insert(0, categoria)
+        self.entry10.insert(0, prezzo)
+
+    def aggiornaProdottoDoc(self):
+        codice = self.entry4.get()
+        nome = self.entry5.get()
+        ean = self.entry6.get()
+        quantita = self.entry8.get()
+        iva = self.combobox3.get()
+        categoria = self.combobox4.get()
+        costo = self.entry9.get()
+        prezzo = self.entry10.get()
+        riga = (
+            codice, nome, ean, quantita, iva, categoria, costo, prezzo
+        )
+        self.treeview3.insert("", END, values=riga)
+
+        self.finestra.destroy()
 
     def inserisciDocumento(self):
-        pass
+        for child in self.treeview3.get_children():
+            print(self.treeview3.item(child)["values"])
+            prodotto = self.treeview3.item(child)["values"]
+
+            codice = prodotto[0]
+            nome = prodotto[1]
+            ean = prodotto[2]
+            quantita = prodotto[3]
+            iva = prodotto[4]
+            categoria = prodotto[5]
+            costo = prodotto[6]
+            prezzo = prodotto[7]
+            fornitoreReale = self.entryFornitore.get()
+            numeroDocumento = self.entryNumDoc.get()
+            dataDocumento = self.entryDataDoc.get()
+            fornitore = fornitoreReale + " - " + numeroDocumento + " - " + dataDocumento + ";\n"
+
+            try:
+                databaseOperations.GestioneMagazzino().inserisciProdotto(codice, nome, ean, iva, quantita, categoria,
+                                                                     costo, prezzo, fornitore)
+            except mysql.connector.errors.IntegrityError:
+                databaseOperations.GestioneMagazzino().aggiornaProdotto(codice)
+
 
     def nuovoDocumento(self):
         pass

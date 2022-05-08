@@ -30,7 +30,7 @@ class StrutturaDatabase:
                                 'mag2 INT,'
                                 'mag3 INT,'
                                 'mag4 INT,'
-                                'fornitore VARCHAR(40));')
+                                'fornitore VARCHAR(1000));')
             self.mydb.commit()
             print('Tabella Prodotti Magazzino')
 
