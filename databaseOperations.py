@@ -308,15 +308,23 @@ class Fidelity:
             nuovoCredito = utente[4]
         return nuovoCredito
 
+
 class GestioneMagazzino:
     def __init__(self):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
         self.cursor = self.mydb.cursor()
 
     def inserisciDocumento(self, numero='', importo=0, data='', fornitore='', tipo='', prodotti=''):
-        _SQLInsert = "INSERT INTO `documentiMagazzino`(`numeroDoc`,`importoDoc`,`dataDoc`,`fornitoreDoc`,`tipoDoc`," \
-                     "`prodottiDoc`) VALUES (%s,%s,%s,%s,%s,%s);"
+        _SQLInsert = "INSERT INTO `documentiMagazzino`(`numero`,`importo`,`data`,`fornitore`,`tipo`," \
+                     "`prodotti`) VALUES (%s,%s,%s,%s,%s,%s);"
         self.cursor.execute(_SQLInsert, (numero, importo, data, fornitore, tipo, prodotti))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def eliminaDocumento(self, numero=''):
+        _SQLDelete = "DELETE FROM documentiMagazzino WHERE numero = %s;"
+        self.cursor.execute(_SQLDelete, (numero,))
         self.mydb.commit()
         self.cursor.close()
         self.mydb.close()
@@ -379,7 +387,7 @@ class GestioneMagazzino:
         else:
             return True
 
-    def leggiProdottoEsistente(self, ean, codice):
+    def leggiProdottoEsistente(self, ean='', codice=''):
         _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s OR codice = %s"
         self.cursor.execute(_SQLSearch, (ean, codice))
         prodotto = self.cursor.fetchone()
@@ -392,6 +400,8 @@ class GestioneMagazzino:
         _SQLList = "SELECT * FROM prodottiMagazzino"
         self.cursor.execute(_SQLList)
         prodotti = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
 
         return prodotti
 
@@ -415,6 +425,9 @@ class GestioneMagazzino:
         else:
             pass
 
+        self.cursor.close()
+        self.mydb.close()
+
         check = self.is_empty(prodotti)
 
         if check:
@@ -428,4 +441,81 @@ class GestioneMagazzino:
         else:
             return True
 
+class Settings:
+    def __init__(self):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')
+        self.cursor = self.mydb.cursor()
+
+    def aliquoteIva(self, percentonly=False):
+        _SQLSearch = "SELECT * FROM aliquote"
+        self.cursor.execute(_SQLSearch)
+        aliquote = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
+        percent = ''
+        nomi = ''
+        for aliquota in aliquote:
+            aliquota = aliquota[1]
+            aliquota = str(aliquota)
+            aliquota = aliquota.replace('[', '')
+            aliquota = aliquota.replace(']', '')
+            percent = percent + aliquota + ' '
+
+        for stringa in aliquote:
+            stringa = stringa[0]
+            stringa = str(stringa)
+            stringa = stringa.replace('[', '')
+            stringa = stringa.replace(']', '')
+            stringa = stringa.replace(' ', '_')
+            nomi = nomi + stringa + ' '
+
+        if percentonly:
+            return percent
+
+        if not percentonly:
+            return nomi
+
+    def inserisciAliquota(self, nomeAliquota='', percentuale=0):
+        _SQLInsert = "INSERT INTO `aliquote` (`aliquota`, `percentuale`) VALUES ('%', '%');"
+        self.cursor.execute(_SQLInsert, (nomeAliquota, percentuale))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def inserisciTipoDocumento(self, tipoDocumento=''):
+        _SQLInsert = "INSERT INTO `tipodocumenti` (`tipo`) VALUES ('%');"
+        self.cursor.execute(_SQLInsert, (tipoDocumento,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def eliminaTipoDocumento(self, idx=0):
+        _SQLDelete = "DELETE FROM tipoDocumenti WHERE idx = %s;"
+        self.cursor.execute(_SQLDelete, (idx,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def tipiDocumento(self):
+        _SQLSearch = "SELECT * FROM tipoDocumenti"
+        self.cursor.execute(_SQLSearch)
+        tipi = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
+        lista = ''
+        for tipo in tipi:
+            tipo = tipo[1]
+            tipo = str(tipo)
+            tipo = tipo.replace("[", "")
+            tipo = tipo.replace("]", "")
+            tipo = tipo.replace("'", "")
+            lista = lista + tipo + ' '
+        return lista
+
+    def eliminaAliquota(self, aliquota=''):
+        _SQLDelete = "DELETE FROM aliquote WHERE aliquota = %s;"
+        self.cursor.execute(_SQLDelete, (aliquota,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
 

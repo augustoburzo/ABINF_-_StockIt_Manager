@@ -16,6 +16,18 @@ class StrutturaDatabase:
             self.mydb.close()
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS tipoDocumenti('
+                                'idx INT AUTO_INCREMENT PRIMARY KEY,'
+                                'tipo VARCHAR(40));')
+            self.mydb.commit()
+            print('Tabella Aliquota IVA creata')
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS aliquote('
+                                'aliquota VARCHAR(40) PRIMARY KEY,'
+                                'percentuale INT);')
+            self.mydb.commit()
+            print('Tabella Aliquota IVA creata')
+
             self.cursor.execute('CREATE TABLE IF NOT EXISTS prodottiMagazzino('
                                 'codice VARCHAR(40) PRIMARY KEY,'
                                 'nome VARCHAR(40),'
@@ -31,7 +43,7 @@ class StrutturaDatabase:
                                 'mag4 INT,'
                                 'fornitore VARCHAR(1000));')
             self.mydb.commit()
-            print('Tabella Prodotti Magazzino')
+            print('Tabella Prodotti Magazzino creata')
 
             self.cursor.execute('CREATE TABLE IF NOT EXISTS documentiMagazzino('
                                 'numero VARCHAR(40) PRIMARY KEY,'

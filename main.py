@@ -14,6 +14,7 @@ from idlelib.tooltip import Hovertip
 import _tkinter
 import mysql.connector
 from PIL import ImageTk, Image
+from win10toast import ToastNotifier
 
 import PDFOperations
 import databaseOperations
@@ -1856,9 +1857,14 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.frame23.configure(height='200', width='200')
         self.frame23.pack(padx='5', side='left')
         self.frame25 = ttk.Frame(self.labelframe8)
-        self.entryCodProdDoc = ttk.Entry(self.frame25)
+        self.frame26 = ttk.Frame(self.frame25)
+        self.entryCodProdDoc = ttk.Entry(self.frame26)
         self.entryCodProdDoc.configure(width='80')
-        self.entryCodProdDoc.pack(fill='x', side='top')
+        self.entryCodProdDoc.pack(fill='x', side='left', expand=True)
+        self.cercaProdottoBtn = ttk.Button(self.frame26)
+        self.cercaProdottoBtn.configure(text='Cerca...', command=self.onReturn)
+        self.cercaProdottoBtn.pack(fill='x', side='right')
+        self.frame26.pack(fill='x', side='top')
         self.entryNomeProdDoc = ttk.Entry(self.frame25)
         self.entryNomeProdDoc.configure(width='50')
         self.entryNomeProdDoc.pack(fill='x', side='top')
@@ -2055,9 +2061,33 @@ class InserisciDocumentoWidget(tk.Toplevel):
 
         self.finestra.destroy()
 
+    def onReturn(self):
+        codice = self.entryCodProdDoc.get()
+        listaProdotti = databaseOperations.GestioneMagazzino().ricercaMagazzino(ricerca='codice', codice=codice)
+        if listaProdotti != 1:
+            prodottoInMagazzino = databaseOperations.GestioneMagazzino().leggiProdottoEsistente(codice=codice)
+            codice = prodottoInMagazzino[0]
+            nome = prodottoInMagazzino[1]
+            ean = prodottoInMagazzino[2]
+            quantitaOLD = prodottoInMagazzino[7]
+            iva = prodottoInMagazzino[3]
+            categoria = prodottoInMagazzino[4]
+            costoOLD = prodottoInMagazzino[5]
+            prezzo = prodottoInMagazzino[6]
+            self.aggiornaProdotto(codice=codice, nome=nome, ean=ean, regime=iva, categoria=categoria, prezzo=prezzo)
+        if listaProdotti == 1:
+            tkinter.messagebox.showinfo(parent=self, title='Prodotto non presente',
+                                        message='Il codice inserito non corrisponde a nessun prodotto in magazzino!')
+
     def inserisciDocumento(self):
+        listaProdotti = ''
+        fornitoreReale = self.entryFornitore.get()
+        numeroDocumento = self.entryNumDoc.get()
+        dataDocumento = self.entryDataDoc.get()
+        tipoDocumento = self.comboCatProdDoc.get()
+        totaleDocumento = self.entryTotDoc.get()
         for child in self.treeview3.get_children():
-            print(self.treeview3.item(child)["values"])
+            #print(self.treeview3.item(child)["values"])
             prodotto = self.treeview3.item(child)["values"]
 
             codice = prodotto[0]
@@ -2068,15 +2098,18 @@ class InserisciDocumentoWidget(tk.Toplevel):
             categoria = prodotto[5]
             costo = prodotto[6]
             prezzo = prodotto[7]
+            singoloProdotto = str(prodotto)
+            singoloProdotto = singoloProdotto.replace("[","")
+            singoloProdotto = singoloProdotto.replace("]","")
+            singoloProdotto = singoloProdotto.replace("'","")
+            listaProdotti = listaProdotti + singoloProdotto + ';\n'
 
-            fornitoreReale = self.entryFornitore.get()
-            numeroDocumento = self.entryNumDoc.get()
-            dataDocumento = self.entryDataDoc.get()
             fornitore = fornitoreReale + " - " + numeroDocumento + " - " + dataDocumento + ";\n"
+            esiste = False
 
             try:
                 databaseOperations.GestioneMagazzino().inserisciProdotto(codice, nome, ean, iva, quantita, categoria,
-                                                                     costo, prezzo, fornitore)
+                                                                         costo, prezzo, fornitore)
             except mysql.connector.errors.IntegrityError:
                 esiste = True
 
@@ -2091,6 +2124,23 @@ class InserisciDocumentoWidget(tk.Toplevel):
                     codice=codice, nome=nome, ean=ean, iva=iva, categoria=categoria, costo=costo, prezzo=prezzo,
                 quantita=newQty, fornitore=fornitoreNEW)
 
+        try:
+            databaseOperations.GestioneMagazzino().inserisciDocumento(numero=numeroDocumento, fornitore=fornitoreReale,
+                                                                      data=dataDocumento, tipo=tipoDocumento,
+                                                                      importo=totaleDocumento, prodotti=listaProdotti)
+        except mysql.connector.errors.IntegrityError:
+            tkinter.messagebox.showerror(parent=self, title='Documento già presente', message='Il numero documento '
+                                                                                              'indicato è già presente'
+                                                                                              ' nel database!')
+
+        toast = ToastNotifier()
+        toast.show_toast(
+            "Documento inserito",
+            "Il documento è stato inserito correttamente",
+            duration=20,
+            icon_path="icon.ico",
+            threaded=True
+        )
 
     def nuovoDocumento(self):
         pass
