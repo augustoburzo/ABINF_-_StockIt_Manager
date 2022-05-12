@@ -24,8 +24,8 @@ columnsComunicazioni = ('numComunicazione', 'autore', 'messaggio', 'data')
 columnsAssistenza = ('numAssistenza', 'nomeCliente', 'contattoCliente', 'prodotto', 'difettoProdotto', 'dataConsegna',
                      'note', 'statoPratica')
 
-# FINESTRA MODIFICA CLIENTE#############################################################################################
 
+# FINESTRA MODIFICA CLIENTE#############################################################################################
 class ModificaFidWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, master=None, **kw):
         super(ModificaFidWidget, self).__init__(master, **kw)
@@ -154,7 +154,6 @@ class InserisciFidWidget(tk.Toplevel):
 
 
 # FINESTRA FIDELITY GESTIONE CLIENTE####################################################################################
-
 class FidClienteWidget(tk.Toplevel):
     def __init__(self, nomeCliente, numeroCarta, indirizzoCliente, contattoCliente, creditoCliente, master=None, **kw):
         super(FidClienteWidget, self).__init__(master, **kw)
@@ -296,7 +295,6 @@ class FidClienteWidget(tk.Toplevel):
 
 
 # FINESTRA FIDELITY RICERCA CLIENTE#####################################################################################
-
 class RicercaFidClienteWidget(tk.Toplevel):
 
     def __init__(self, master=None, **kw):
@@ -810,7 +808,6 @@ class CassaWidget(tk.Toplevel):
 
 
 # FINESTRA CHAT#########################################################################################################
-
 class ChatWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
@@ -960,7 +957,6 @@ class ChatWidget(tk.Toplevel):
 
 
 # FINESTRA UTENTI#######################################################################################################
-
 class UtentiWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         iconaUser = tk.PhotoImage(file='images/user.png')
@@ -1102,7 +1098,6 @@ class UtentiWidget(tk.Toplevel):
 
 
 # FINESTRA NUOVA COMUNICAZIONE##########################################################################################
-
 class NuovaComunicazioneWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(NuovaComunicazioneWidget, self).__init__(master, **kw)
@@ -1142,8 +1137,6 @@ class NuovaComunicazioneWidget(tk.Toplevel):
 
 
 # FINESTRA ASSISTENZA###################################################################################################
-
-
 class AssistenzaWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
 
@@ -1536,7 +1529,7 @@ class OrdiniWidget(tk.Toplevel):
 
 # FINESTRA NUOVO ORDINE#################################################################################################
 class InserisciOrdineWidget(tk.Toplevel):
-    def __init__(self, master=None, **kw):
+    def __init__(self, master=None, nome='', **kw):
         super(InserisciOrdineWidget, self).__init__(master, **kw)
 
         iconaOrdini = tk.PhotoImage(file='images/box1.png')
@@ -1560,6 +1553,7 @@ class InserisciOrdineWidget(tk.Toplevel):
         self.frame19 = ttk.Frame(self.labelframe5)
         self.entryNomeProdotto1 = ttk.Entry(self.frame19)
         self.entryNomeProdotto1.configure(width='60')
+        self.entryNomeProdotto1.insert(0, nome)
         self.entryNomeProdotto1.focus_force()
         self.nomeTip = Hovertip(self.entryNomeProdotto1, "Inserisci il nome prodotto")
         self.entryNomeProdotto1.pack(expand='true', fill='x', side='top')
@@ -1635,7 +1629,6 @@ class LeggiComunicazioneWidget(tk.Toplevel):
 
 
 # FINESTRA STAMPE#######################################################################################################
-
 class StampeWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         iconaStampe = tk.PhotoImage(file='images/printer.png')
@@ -1788,10 +1781,12 @@ Freepik''')
 
 
 # FINESTRA INSERISCI DOCUMENTO##########################################################################################
-
 class InserisciDocumentoWidget(tk.Toplevel):
-    def __init__(self, master=None, **kw):
+    def __init__(self, master=None, viewonly=False, **kw):
         super(InserisciDocumentoWidget, self).__init__(master, **kw)
+
+        aliquote = databaseOperations.Settings().aliquoteIva()
+
         self.labelframe4 = ttk.Labelframe(self)
         self.frame22 = ttk.Frame(self.labelframe4)
         self.label25 = ttk.Label(self.frame22)
@@ -1873,6 +1868,8 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.entryQtyProdDoc = ttk.Entry(self.frame25)
         self.entryQtyProdDoc.pack(fill='x', side='top')
         self.comboIVAProdDoc = ttk.Combobox(self.frame25)
+        self.comboIVAProdDoc.configure(values=aliquote)
+        self.comboIVAProdDoc.current(END)
         self.comboIVAProdDoc.pack(fill='x', side='top')
         self.comboCatProdDoc = ttk.Combobox(self.frame25)
         self.comboCatProdDoc.pack(fill='x', side='top')
@@ -1889,6 +1886,8 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.btnInserisciProdDoc.configure(text='Inserisci prodotto')
         self.btnInserisciProdDoc.pack(padx='5', pady='5', side='right')
         self.btnInserisciProdDoc.configure(command=self.inserisciProdottoDoc)
+        if viewonly:
+            self.btnInserisciProdDoc.configure(state='disabled')
         self.frame29.configure(height='200', width='200')
         self.frame29.pack(fill='x', side='top')
         self.frame31 = ttk.Frame(self)
@@ -1921,6 +1920,8 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.btnInserisciDocumento.configure(image=self.img_plus, text='button13')
         self.btnInserisciDocumento.pack(anchor='e', expand='false', fill='y', padx='5', pady='5', side='right')
         self.btnInserisciDocumento.configure(command=self.inserisciDocumento)
+        if viewonly:
+            self.btnInserisciDocumento.configure(state='disabled')
         self.btnNuovoDocumento = ttk.Button(self.frame32)
         self.img_contract = tk.PhotoImage(file='images/contract.png')
         self.btnNuovoDocumento.configure(image=self.img_contract, text='button13')
@@ -2104,7 +2105,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
             singoloProdotto = singoloProdotto.replace("'","")
             listaProdotti = listaProdotti + singoloProdotto + ';\n'
 
-            fornitore = fornitoreReale + " - " + numeroDocumento + " - " + dataDocumento + ";\n"
+            fornitore = fornitoreReale + " - " + numeroDocumento + " - " + dataDocumento + " - " + costo + ";\n"
             esiste = False
 
             try:
@@ -2147,7 +2148,6 @@ class InserisciDocumentoWidget(tk.Toplevel):
 
 
 # FINESTRA RICERCA PRODOTTI#############################################################################################
-
 class RicercaProdottiWidget(tk.Toplevel):
     def __init__(self, master=None, **kw):
         super(RicercaProdottiWidget, self).__init__(master, **kw)
@@ -2206,6 +2206,8 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.tblProdotti.heading('column9', anchor='w',text='Mag. 4')
         self.tblProdotti.heading('column18', anchor='w',text='Prezzo')
         self.tblProdotti.pack(expand='true', fill='both', side='top')
+        self.tblProdotti.bind('<Double-1>', self.callback, add='')
+
         self.frame30.configure(height='200', width='200')
         self.frame30.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.img_warehouse = tk.PhotoImage(file='images/warehouse.png')
@@ -2216,6 +2218,13 @@ class RicercaProdottiWidget(tk.Toplevel):
 
         self.gestioneMagazzino = databaseOperations.GestioneMagazzino()
         self.listaMagazzino()
+
+    def callback(self, event):
+        indice = self.tblProdotti.focus()
+        idx = self.tblProdotti.item(indice)
+        codiceProdotto = str(idx['values'][0])
+        VisualizzaProdottoWidget(codiceProdotto=codiceProdotto)
+        self.destroy()
 
     def listaMagazzino(self):
         magazzino = databaseOperations.GestioneMagazzino().listaMagazzino()
@@ -2238,8 +2247,142 @@ class RicercaProdottiWidget(tk.Toplevel):
             self.tblProdotti.insert("", END, values=riga)
 
 
-# FINESTRA PRINCIPALE###################################################################################################
+# FINESTRA VISUALIZZA PRODOTTO##########################################################################################
+class VisualizzaProdottoWidget(tk.Toplevel):
+    def __init__(self, master=None, codiceProdotto='', **kw):
+        self.codiceProdotto = codiceProdotto
+        super(VisualizzaProdottoWidget, self).__init__(master, **kw)
 
+        aliquote = databaseOperations.Settings().aliquoteIva()
+
+        self.frame38 = ttk.Frame(self)
+        self.frame36 = ttk.Frame(self.frame38)
+        self.label42 = ttk.Label(self.frame36)
+        self.label42.configure(text='Codice prodotto:')
+        self.label42.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label43 = ttk.Label(self.frame36)
+        self.label43.configure(text='Nome prodotto:')
+        self.label43.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label44 = ttk.Label(self.frame36)
+        self.label44.configure(text='EAN:')
+        self.label44.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label45 = ttk.Label(self.frame36)
+        self.label45.configure(text='Quantità tot. magazzino:')
+        self.label45.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label46 = ttk.Label(self.frame36)
+        self.label46.configure(text='Regime IVA:')
+        self.label46.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label47 = ttk.Label(self.frame36)
+        self.label47.configure(text='Categoria merceologica:')
+        self.label47.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label48 = ttk.Label(self.frame36)
+        self.label48.configure(text='Costo:')
+        self.label48.pack(anchor='e', padx='5', pady='5', side='top')
+        self.label49 = ttk.Label(self.frame36)
+        self.label49.configure(text='Prezzo di vendita:')
+        self.label49.pack(anchor='e', padx='5', pady='5', side='top')
+        self.frame36.configure(height='150', width='200')
+        self.frame36.pack(anchor='w', expand='false', fill='both', padx='5', pady='5', side='left')
+        self.frame37 = ttk.Frame(self.frame38)
+        self.entryCodProd = ttk.Entry(self.frame37)
+        self.entryCodProd.pack(fill='x', pady='4', side='top')
+        self.entryNomeProd = ttk.Entry(self.frame37)
+        self.entryNomeProd.configure(width='40')
+        self.entryNomeProd.pack(fill='x', pady='4', side='top')
+        self.entryEanProd = ttk.Entry(self.frame37)
+        self.entryEanProd.pack(fill='x', pady='4', side='top')
+        self.entryQuant = ttk.Entry(self.frame37)
+        self.entryQuant.pack(fill='x', pady='4', side='top')
+        self.comboIVA = ttk.Combobox(self.frame37)
+        self.comboIVA.configure(values=aliquote)
+        self.comboIVA.pack(fill='x', pady='4', side='top')
+        self.comboCategoria = ttk.Combobox(self.frame37)
+        self.comboCategoria.pack(fill='x', pady='4', side='top')
+        self.entry15 = ttk.Entry(self.frame37)
+        self.entry15.pack(fill='x', pady='4', side='top')
+        self.entry16 = ttk.Entry(self.frame37)
+        self.entry16.pack(fill='x', pady='4', side='top')
+        self.frame37.configure(height='200', width='200')
+        self.frame37.pack(anchor='e', expand='true', fill='both', padx='5', pady='5', side='left')
+        self.frame38.configure(height='200', width='200')
+        self.frame38.pack(expand='false', fill='both', side='top')
+        self.labelframe9 = ttk.Labelframe(self)
+        self.treeview5 = ttk.Treeview(self.labelframe9)
+        self.treeview5_cols = ['column26', 'column27', 'column28', 'column29']
+        self.treeview5_dcols = ['column26', 'column27', 'column28', 'column29']
+        self.treeview5.configure(columns=self.treeview5_cols, show='headings')
+        self.treeview5.column('column26', anchor='w',stretch='true',width='20',minwidth='20')
+        self.treeview5.column('column27', anchor='w',stretch='true',width='20',minwidth='20')
+        self.treeview5.column('column28', anchor='w',stretch='true',width='20',minwidth='20')
+        self.treeview5.column('column29', anchor='w',stretch='true',width='20',minwidth='20')
+        self.treeview5.heading('column26', anchor='w',text='Fornitore')
+        self.treeview5.heading('column27', anchor='w',text='Numero documento')
+        self.treeview5.heading('column28', anchor='w',text='Data di acquisto')
+        self.treeview5.heading('column29', anchor='w',text='Costo di acquisto')
+        self.treeview5.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.labelframe9.configure(height='200', text='Fornitori: ', width='200')
+        self.labelframe9.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frame40 = ttk.Frame(self)
+        self.button8 = ttk.Button(self.frame40)
+        self.button8.configure(text='Aggiorna prodotto')
+        self.button8.pack(anchor='e', padx='5', pady='5', side='right')
+        self.button9 = ttk.Button(self.frame40)
+        self.button9.configure(text='Ordina prodotto', command=self.ordina)
+        self.button9.pack(anchor='e', padx='5', pady='5', side='left')
+        self.frame40.configure(height='200', width='200')
+        self.frame40.pack(fill='x', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('600x600')
+        self.minsize(600, 600)
+        title = 'Visualizza prodotto: ' + codiceProdotto
+        self.title(title)
+
+        self.caricaInterfaccia()
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def on_closing(self):
+        RicercaProdottiWidget(root)
+        self.destroy()
+
+    def ordina(self):
+        cod = self.entryCodProd.get()
+        nome = self.entryNomeProd.get()
+        nome = cod + " - " + nome
+        InserisciOrdineWidget(nome=nome)
+
+    def caricaInterfaccia(self):
+        ricerca = databaseOperations.GestioneMagazzino()
+        prodotti = ricerca.ricercaMagazzino(ricerca='codice', codice=self.codiceProdotto)
+        prodotto = prodotti[0]
+        codice = prodotto[0]
+        nome = prodotto[1]
+        ean = prodotto[2]
+        iva = prodotto[3]
+        categoria = prodotto[4]
+        costo = prodotto[5]
+        prezzo = prodotto[6]
+        quantità = int(prodotto[7])+int(prodotto[8])+int(prodotto[9])+int(prodotto[10])+int(prodotto[11])
+        documentoFornitore = str(prodotto[12])
+
+        #Inserisce i dati nelle entry:
+        self.entryCodProd.insert(0, codice)
+        self.entryCodProd.configure(state="disabled")
+        self.entryNomeProd.insert(0, nome)
+        self.entryEanProd.insert(0, ean)
+        self.entryQuant.insert(0, str(quantità))
+        self.comboIVA.insert(0, iva)
+        self.comboCategoria.insert(0, categoria)
+        self.entry15.insert(0, costo)
+        self.entry16.insert(0, prezzo)
+
+        datiTabella = tuple(map(str, documentoFornitore.splitlines(False)))
+        for riga in datiTabella:
+            riga = riga[:-1]
+            riga = tuple(map(str, riga.split(' - ')))
+            self.treeview5.insert("", END, values=riga)
+
+
+# FINESTRA PRINCIPALE###################################################################################################
 class StockItApp:
     def __init__(self, master=None):
         # build ui
@@ -2569,11 +2712,7 @@ class StockItApp:
         print("Daemon STARTED\n")
 
 
-operatore = 0
-winchat = 'c'
-wincassa = 'c'
-
-
+# STRING DIALOG PERSONALIZZATA##########################################################################################
 class StringDialog(tkinter.simpledialog._QueryString):
     def body(self, master):
         super().body(master)
@@ -2585,6 +2724,9 @@ class StringDialog(tkinter.simpledialog._QueryString):
         d = StringDialog(title, prompt, **kargs)
         return d.result
 
+operatore = 0
+winchat = 'c'
+wincassa = 'c'
 
 if __name__ == '__main__':
 

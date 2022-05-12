@@ -329,15 +329,19 @@ class GestioneMagazzino:
         self.cursor.close()
         self.mydb.close()
 
-    def ricercaDocumenti(self, ricercaNumero=True, numero='', fornitore=''):
+    def ricercaDocumenti(self, ricerca=0, numero='', fornitore='', data=''):
 
-        if ricercaNumero:
+        if ricerca == 0:
             _SQLSearch = "SELECT * FROM documentiMagazzino WHERE numeroDoc = %s;"
             self.cursor.execute(_SQLSearch, (numero,))
 
-        elif not ricercaNumero:
+        elif ricerca == 1:
             _SQLSearch = "SELECT * FROM documentiMagazzino WHERE fornitoreDoc = %s;"
             self.cursor.execute(_SQLSearch, (fornitore,))
+
+        elif ricerca == 2:
+            _SQLSearch = "SELECT * FROM documentiMagazzino WHERE data = %s;"
+            self.cursor.execute(_SQLSearch, (data,))
 
         documenti = self.cursor.fetchall()
         self.cursor.close()
@@ -357,8 +361,8 @@ class GestioneMagazzino:
                           fornitore=''):
         #Inserisce il prodotto a magazzino
         _SQLInsert = "INSERT INTO `prodottiMagazzino`(`codice`,`nome`,`ean`,`iva`," \
-                     "`categoria`,`costo`,`prezzo`,`fornitore`,`mag0`) VALUES (%s,%s,%s,%s,%s,%s,%s," \
-                     "%s,%s);"
+                     "`categoria`,`costo`,`prezzo`,`fornitore`,`mag0`,`mag1`,`mag2`,`mag3`,`mag4`) VALUES (%s,%s,%s," \
+                     "%s,%s,%s,%s,%s,%s,0,0,0,0);"
         self.cursor.execute(_SQLInsert, (codice, nome, ean, iva, categoria, costo, prezzo, fornitore,
                                          quantita))
         self.mydb.commit()
