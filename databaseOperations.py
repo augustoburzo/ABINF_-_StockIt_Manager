@@ -329,6 +329,13 @@ class GestioneMagazzino:
         self.cursor.close()
         self.mydb.close()
 
+    def eliminaProdotto(self, codice=''):
+        _SQLDelete = "DELETE FROM prodottiMagazzino WHERE codice = %s"
+        self.cursor.execute(_SQLDelete, (codice,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
     def ricercaDocumenti(self, ricerca=0, numero='', fornitore='', data=''):
 
         if ricerca == 0:
@@ -523,3 +530,32 @@ class Settings:
         self.cursor.close()
         self.mydb.close()
 
+    def eliminaCategoria(self, categoria=''):
+        _SQLDelete = "DELETE FROM categorieProdotto WHERE categoria = %s;"
+        self.cursor.execute(_SQLDelete, (categoria,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
+    def categorieProdotto(self):
+        _SQLSearch = "SELECT * FROM categorieProdotto"
+        self.cursor.execute(_SQLSearch)
+        categorie = self.cursor.fetchall()
+        self.cursor.close()
+        self.mydb.close()
+        lista = ''
+        for categoria in categorie:
+            categoria = categoria[1]
+            categoria = str(categoria)
+            categoria = categoria.replace("[", "")
+            categoria = categoria.replace("]", "")
+            categoria = categoria.replace("'", "")
+            lista = lista + categoria + ' '
+        return lista
+
+    def inserisciCategoriaProdotto(self, categoriaProdotto=''):
+        _SQLInsert = "INSERT INTO `tipodocumenti` (`tipo`) VALUES ('%');"
+        self.cursor.execute(_SQLInsert, (categoriaProdotto,))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()

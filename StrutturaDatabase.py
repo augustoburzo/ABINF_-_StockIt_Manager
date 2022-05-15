@@ -1,6 +1,6 @@
 import mysql.connector
 
-
+#TODO: Creare interfaccia Tk
 class StrutturaDatabase:
     def __init__(self):
         print("La seguente procedura distruggerà completamente il database!\n"
@@ -16,6 +16,12 @@ class StrutturaDatabase:
             self.mydb.close()
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
+
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS categorieProdotto('
+                                'idx INT AUTO_INCREMENT PRIMARY KEY,'
+                                'categoria VARCHAR(40));')
+            print('Tabella Categorie prodotto creata')
+
             self.cursor.execute('CREATE TABLE IF NOT EXISTS tipoDocumenti('
                                 'idx INT AUTO_INCREMENT PRIMARY KEY,'
                                 'tipo VARCHAR(40));')

@@ -317,6 +317,8 @@ class RicercaFidClienteWidget(tk.Toplevel):
         self.entry3.focus_force()
         self.frame8.configure(height='60', width='200')
         self.frame8.pack(expand=True, fill='x', pady='5', side='left')
+
+        #TODO: Integrare fuznione camera nell'eseguibile
         '''self.frame13 = ttk.Frame(self.labelframe1)
         self.buttonCamera = ttk.Button(self.frame13)
         self.img_qrcode = tk.PhotoImage(file='images/qr-code.png')
@@ -377,7 +379,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
         else:
             pass
-
+#todo:
     def popup(self, event):
         m = tk.Menu(self, tearoff=0)
         m.add_command(label="Modifica", command=self.modificaCliente)
@@ -690,16 +692,6 @@ class CassaWidget(tk.Toplevel):
             tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura",
                                          message="È stata riscontrata una squadratura di €" + str(quadratura))
 
-        print(incassoTotale)
-        print(corrispettivo)
-        print(fatturato)
-        print(contanti)
-        print(pos)
-        print(finanziamenti)
-        print(bonifici)
-        print(quadratura)
-        print(totale)
-
     def eliminaRecord(self):
         indice = self.tblStoricoGiornate.focus()
         selezione = self.tblStoricoGiornate.item(indice)
@@ -809,6 +801,7 @@ class CassaWidget(tk.Toplevel):
 
 # FINESTRA CHAT#########################################################################################################
 class ChatWidget(tk.Toplevel):
+    #TODO: Inserire treeview anziché listbox per inserire destinatario
     def __init__(self, master=None, **kw):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
         self.cursor = self.mydb.cursor()
@@ -955,6 +948,7 @@ class ChatWidget(tk.Toplevel):
         newthread.start()
         print("Chat Daemon STARTED\n")
 
+#TODO: Aggiungi gestione magazzini
 
 # FINESTRA UTENTI#######################################################################################################
 class UtentiWidget(tk.Toplevel):
@@ -1204,6 +1198,7 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.heading('note', text='Note')
         self.treeview1.heading('statoPratica', text='Stato pratica')
         self.treeview1.yview_moveto(1)
+        #TODO: Aggiungi binding e menu contestuale
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -1491,6 +1486,8 @@ class OrdiniWidget(tk.Toplevel):
             databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
                                               puntoVendita='')
 
+        #TODO: Funzione trasferimento unità da magazzino a magazzino
+
         self.aggiornamentoOrdini()
 
     def ordineConsegnato(self):
@@ -1579,6 +1576,7 @@ class InserisciOrdineWidget(tk.Toplevel):
         self.geometry('640x200')
         self.resizable(False, False)
         self.iconphoto(False, iconaOrdini)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.title('Inserisci ordine | AB Informatica - StockIt Manager')
 
     def nuovoOrdine(self):
@@ -1601,12 +1599,20 @@ class InserisciOrdineWidget(tk.Toplevel):
             self.entryQuantita1.delete(0, END)
             self.entryNote1.delete(0, END)
             self.entryNomeCliente1.delete(0, END)
+            tkinter.messagebox.showinfo(parent=self, title="Ordine inserito", message="L'ordine è stato inserito"
+                                                                                      "correttamente!")
+            self.destroy()
+            OrdiniWidget()
 
         else:
             ErroreOrdine = tkinter.messagebox.showerror(parent=self, title="Compilare i campi",
                                                         message="Assicurati di aver compilato almeno i campi richiesti")
 
             self.destroy()
+
+    def on_closing(self):
+        self.destroy()
+        #TODO: Aggiungere riapertura finestra ordini
 
 
 # FINESTRA LEGGI COMUNICAZIONE##########################################################################################
@@ -1681,6 +1687,8 @@ class StampeWidget(tk.Toplevel):
             self.btnReportAnno.configure(command=self.stampaReportAnno)
             self.lfStampeCassa.configure(height='200', text='Stampe Cassa', width='200')
             self.lfStampeCassa.pack(expand='true', fill='both', pady='5', side='top')
+
+        #TODO: Inserire stampe buoni spesa e stampe magazzino
         '''self.lfStampeBuoniSpesa = ttk.Labelframe(self)
         self.btnBuoniReportTotale = ttk.Button(self.lfStampeBuoniSpesa)
         self.btnBuoniReportTotale.configure(text='Stampa report totale')
@@ -1817,6 +1825,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.entryTotDoc.pack(fill='x', side='top')
         self.entryDataDoc = ttk.Entry(self.frame24)
         self.entryDataDoc.pack(fill='x', side='top')
+        #TODO: Aggiungi data picker per il documento
         self.comboTipoDoc = ttk.Combobox(self.frame24)
         self.comboTipoDoc.pack(fill='x', side='top')
         self.frame24.configure(height='200', width='200')
@@ -1923,6 +1932,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
         if viewonly:
             self.btnInserisciDocumento.configure(state='disabled')
         self.btnNuovoDocumento = ttk.Button(self.frame32)
+        #TODO: Definisci funzione "Nuovo documento"
         self.img_contract = tk.PhotoImage(file='images/contract.png')
         self.btnNuovoDocumento.configure(image=self.img_contract, text='button13')
         self.btnNuovoDocumento.pack(anchor='e', expand='false', fill='y', pady='5', side='right')
@@ -2175,6 +2185,7 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.frame28.configure(height='100', width='200')
         self.frame28.pack(expand='true', fill='x', side='left')
         self.btnSearch = ttk.Button(self.lfRicercaProdMag)
+        #TODO: Inserire comando ricerca
         self.img_magnifyingglass = tk.PhotoImage(file='images/magnifying-glass.png')
         self.btnSearch.configure(image=self.img_magnifyingglass, text='button6')
         self.btnSearch.pack(padx='5', pady='5', side='bottom')
@@ -2207,6 +2218,7 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.tblProdotti.heading('column18', anchor='w',text='Prezzo')
         self.tblProdotti.pack(expand='true', fill='both', side='top')
         self.tblProdotti.bind('<Double-1>', self.callback, add='')
+        self.tblProdotti.bind('<Button-3>', self.popup)
 
         self.frame30.configure(height='200', width='200')
         self.frame30.pack(expand='true', fill='both', padx='5', pady='5', side='top')
@@ -2215,9 +2227,62 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.geometry('1024x600')
         self.iconphoto(True, self.img_warehouse)
         self.title('Visualizza magazzino | AB Informatica StockIt Manager')
+        self.focus_force()
 
         self.gestioneMagazzino = databaseOperations.GestioneMagazzino()
         self.listaMagazzino()
+
+    def popup(self, event):
+        m = tk.Menu(self, tearoff=0)
+        m.add_command(label="Ordina prodotto", command=self.ordinaProdotto)
+        m.add_separator()
+        m.add_command(label="Visualizza prodotto", command=self.visualizzaProdotto)
+        m.add_command(label="Elimina", command=self.eliminaProdotto)
+
+        iid = self.tblProdotti.identify_row(event.y)
+        if iid:
+            self.tblProdotti.selection_set(iid)
+            self.tblProdotti.focus(iid)
+            try:
+                m.tk_popup(event.x_root, event.y_root)
+            finally:
+                m.grab_release()
+
+        else:
+            pass
+
+    def ordinaProdotto(self):
+        indice = self.tblProdotti.focus()
+        idx = self.tblProdotti.item(indice)
+        cod = str(idx['values'][0])
+        nome = str(idx['values'][1])
+        nome = "*" + cod + " - " + nome
+        InserisciOrdineWidget(nome=nome)
+
+    def eliminaProdotto(self):
+        indice = self.tblProdotti.focus()
+        idx = self.tblProdotti.item(indice)
+        cod = str(idx['values'][0])
+        nome = str(idx['values'][1])
+        elimina = tkinter.messagebox.askyesno(parent=self, title='Eliminare prodotto?',
+                                              message="Sei sicuro di voler eliminare il prodotto?")
+        elimina1 = tkinter.messagebox.askyesno(parent=self, title='Conferma eliminazione',
+                                               message="L'eliminazione del prodotto è definitiva, procedere?")
+        if elimina and elimina1:
+            databaseOperations.GestioneMagazzino.eliminaProdotto(codice=cod)
+            _Message = "Il prodotto " + nome + " è stato correttamente eliminato!"
+            tkinter.messagebox.showinfo(parent=self, title="Prodotto eliminato",
+                                        message=_Message)
+        else:
+            tkinter.messagebox.showinfo(parent=self, title='Operazione annullata',
+                                        message="Nessuna modifica è stata apportata al database")
+
+    def visualizzaProdotto(self):
+        indice = self.tblProdotti.focus()
+        idx = self.tblProdotti.item(indice)
+        codiceProdotto = str(idx['values'][0])
+        VisualizzaProdottoWidget(codiceProdotto=codiceProdotto)
+        self.destroy()
 
     def callback(self, event):
         indice = self.tblProdotti.focus()
@@ -2336,6 +2401,7 @@ class VisualizzaProdottoWidget(tk.Toplevel):
         self.minsize(600, 600)
         title = 'Visualizza prodotto: ' + codiceProdotto
         self.title(title)
+        self.focus_force()
 
         self.caricaInterfaccia()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -2347,7 +2413,7 @@ class VisualizzaProdottoWidget(tk.Toplevel):
     def ordina(self):
         cod = self.entryCodProd.get()
         nome = self.entryNomeProd.get()
-        nome = cod + " - " + nome
+        nome = "*" + cod + " - " + nome
         InserisciOrdineWidget(nome=nome)
 
     def caricaInterfaccia(self):
@@ -2718,7 +2784,7 @@ class StringDialog(tkinter.simpledialog._QueryString):
         super().body(master)
         self.iconbitmap('icon.ico')
         self.resizable(False, False)
-        self.overrideredirect(True)
+        #self.overrideredirect(True)
 
     def ask_string(title, prompt, **kargs):
         d = StringDialog(title, prompt, **kargs)
@@ -2796,6 +2862,7 @@ if __name__ == '__main__':
         magazzinomenu = tk.Menu(menubar, tearoff=False)
         magazzinomenu.add_command(label='Inserisci nuovo documento', command=inserisciDocumento)
         magazzinomenu.add_command(label='Ricerca prodotti magazzino', command=ricercaProdotti)
+        #TODO: Aggiungi voce menu per aggiunta singolo prodotto
 
         ordinimenu = tk.Menu(menubar, tearoff=False)
         ordinimenu.add_command(label='Inserisci ordine', command=inserisciOrdine)
