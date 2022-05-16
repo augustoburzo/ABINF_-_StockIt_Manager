@@ -157,14 +157,14 @@ class StrutturaDatabase:
             self.cursor.execute("""INSERT
                         INTO
                         `users`(`nomeUtente`, `password`, `manager`, `puntoVendita`)
-                        VALUES ('MasterUser', 'mtsa6156', 'master', 'all')""")
+                        VALUES ('MasterUser', 'mtsa6156', 'master', 'PV0')""")
             print('Master User creato')
             self.mydb.commit()
 
             self.cursor.execute("""INSERT
                                     INTO
                                     `users`(`nomeUtente`, `password`, `manager`, `puntoVendita`)
-                                    VALUES ('Manager', 'manager', 'manager', 'all')""")
+                                    VALUES ('Manager', 'manager', 'manager', 'PV0')""")
             print('Manager User creato')
             self.mydb.commit()
             self.cursor.close()

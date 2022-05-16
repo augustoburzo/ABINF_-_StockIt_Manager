@@ -96,5 +96,12 @@
 		btnSvuota			#Svuota ricevuti
 			@svuotaRicevuti
 		
-		
-		
+
+--------------------------------------------------------------
+##LOGICA TRASFERIMENTO PRODOTTI##
+
+Se ordine inizia con * scompone il nome leggendo i primi caratteri dopo * fino al separatore
+e ricerca in Mag0 la quantità richiesta sottraendola ed assegnandola la Mag di riferimento per
+l'operatore.
+
+Selezione Magazzino di provenienza???

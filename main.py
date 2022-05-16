@@ -165,9 +165,6 @@ class FidClienteWidget(tk.Toplevel):
         aggiungiCredito = tk.DoubleVar()
         sottraiCredito = tk.DoubleVar()
 
-        print(numeroCarta)
-        print(carta)
-
         self.labelframe2 = ttk.Labelframe(self)
         self.frame10 = ttk.Frame(self.labelframe2)
         self.label6 = ttk.Label(self.frame10)
@@ -282,7 +279,7 @@ class FidClienteWidget(tk.Toplevel):
             creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
             nuovoCredito = float(creditoAggiornato) - float(self.entrySottraiCredito.get())
             if nuovoCredito >= 0:
-                databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito).aggiornaCredito()
+                databaseOperations.Fidelity(numeroCarta=carta, creditoCliente=nuovoCredito) .aggiornaCredito()
                 databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
                 creditoAggiornato = databaseOperations.Fidelity(numeroCarta=carta).verificaCredito()
                 self.entrySottraiCredito.delete(0, END)
@@ -379,7 +376,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
         else:
             pass
-#todo:
+#todo::::::POPUP
     def popup(self, event):
         m = tk.Menu(self, tearoff=0)
         m.add_command(label="Modifica", command=self.modificaCliente)
@@ -443,7 +440,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
         ordini = databaseOperations.Fidelity(nomeUtente=nomeCliente, numeroCarta=numeroCarta).ricercaCliente()
 
-        if numeroCarta or nomeUtente != '':
+        if numeroCarta or nomeCliente != '':
             self.treeview2.delete(*self.treeview2.get_children())
             if self.is_empty(ordini):
                 nuovaCarta = tkinter.messagebox.askyesno(parent=self.frame6, title='Card non presente',
@@ -451,7 +448,7 @@ class RicercaFidClienteWidget(tk.Toplevel):
 
                 if nuovaCarta:
                     self.destroy()
-                    InserisciFidWidget(nomeCliente=nomeUtente, numeroCarta=numeroCarta, master=root)
+                    InserisciFidWidget(nomeCliente=nomeCliente, numeroCarta=numeroCarta, master=root)
 
                 else:
                     pass
@@ -871,14 +868,11 @@ class ChatWidget(tk.Toplevel):
             utenteChat = str(user[1]).replace(" ", "_") + " "
             self.utentiChat = self.utentiChat + utenteChat
 
-        print(self.utentiChat)
-
     def rispondi(self, event=None):
         destinatario = self.lbChat.get(ANCHOR)
         left_text = destinatario.partition(" ")[0]
         self.comboDestinatario.delete(0, END)
         self.comboDestinatario.insert(0, left_text)
-        print("fatto")
 
     def inviaMessaggio(self, event=None):
         autore = nomeUtente
@@ -934,13 +928,6 @@ class ChatWidget(tk.Toplevel):
 
             else:
                 pass
-            # except:
-            #   print("error")
-
-    # def aggiornamentoInterfacce():
-    #    UtentiWidget.aggiornaUtenti()
-    #    AssistenzaWidget.aggiornamentoOrdini()
-    #    OrdiniWidget.aggiornamentoOrdini()
 
     def autoAggiornamentoDaemon(self):
         newthread = threading.Thread(target=self.ricercaAggiornamenti)
@@ -948,7 +935,6 @@ class ChatWidget(tk.Toplevel):
         newthread.start()
         print("Chat Daemon STARTED\n")
 
-#TODO: Aggiungi gestione magazzini
 
 # FINESTRA UTENTI#######################################################################################################
 class UtentiWidget(tk.Toplevel):
@@ -980,7 +966,10 @@ class UtentiWidget(tk.Toplevel):
         self.comboRuolo = ttk.Combobox(self.frmEntry)
         self.comboRuolo.configure(values='operatore manager master')
         self.comboRuolo.pack(fill='x', side='top')
-        self.entryPuntoVendita = ttk.Entry(self.frmEntry)
+        self.comboRuolo.insert(0, 'operatore')
+        self.entryPuntoVendita = ttk.Combobox(self.frmEntry)
+        self.entryPuntoVendita.configure(values='PV0 PV1 PV2 PV3 PV4')
+        self.entryPuntoVendita.insert(0, 'PV0')
         self.entryPuntoVendita.pack(fill='x', side='top')
         self.frmEntry.configure(height='200', width='200')
         self.frmEntry.pack(fill='both', padx='5', pady='5', side='top')
@@ -1055,7 +1044,7 @@ class UtentiWidget(tk.Toplevel):
         databaseOperations.Utenti(1, valore, nomeUtente='', password='', ruolo='', puntoVendita='')
         self.aggiornaUtenti()
 
-    def OnClickTbl(self):
+    def OnClickTbl(self, event):
         indice = self.tblUtenti.focus()
         idx = self.tblUtenti.item(indice)
         valore = idx['values'][0]
@@ -1198,7 +1187,8 @@ class AssistenzaWidget(tk.Toplevel):
         self.treeview1.heading('note', text='Note')
         self.treeview1.heading('statoPratica', text='Stato pratica')
         self.treeview1.yview_moveto(1)
-        #TODO: Aggiungi binding e menu contestuale
+        self.treeview1.bind('<Double-1>', self.visualizzaPratica)
+        #TODO:::ASSISTENZA:::Aggiungi binding e menu contestuale
         self.lfPraticheInCorso.configure(height='200', text='Pratiche in corso', width='200')
         self.lfPraticheInCorso.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame3 = ttk.Frame(self)
@@ -1231,6 +1221,11 @@ class AssistenzaWidget(tk.Toplevel):
         self.title('Gestione Assistenza | AB Informatica - StockIt Manager')
 
         self.aggiornamentoOrdini()
+
+    def visualizzaPratica(self, event):
+        window = PraticaAssistenzaWidget(self.frame3)
+        window.grab_set()
+
 
     def nuovaAssistenza(self):
         self.nomeCliente = self.entryAssNomeCliente.get()
@@ -1309,6 +1304,74 @@ class AssistenzaWidget(tk.Toplevel):
 
         for ordine in ordini:
             self.treeview1.insert("", END, values=ordine)
+
+
+# FINESTRA PRATICA ASSISTENZA###########################################################################################
+class PraticaAssistenzaWidget(tk.Toplevel):
+    def __init__(self, master=None, **kw):
+        super(PraticaAssistenzaWidget, self).__init__(master, **kw)
+        self.labelframe10 = ttk.Labelframe(self)
+        self.frame39 = ttk.Frame(self.labelframe10)
+        self.label57 = ttk.Label(self.frame39)
+        self.label57.configure(text='Progressivo:')
+        self.label57.pack(anchor='e', pady='5', side='top')
+        self.label51 = ttk.Label(self.frame39)
+        self.label51.configure(text='Nome cliente:')
+        self.label51.pack(anchor='e', pady='5', side='top')
+        self.label54 = ttk.Label(self.frame39)
+        self.label54.configure(text='Contatto cliente:')
+        self.label54.pack(anchor='e', pady='5', side='top')
+        self.label55 = ttk.Label(self.frame39)
+        self.label55.configure(text='Prodotto:')
+        self.label55.pack(anchor='e', pady='5', side='top')
+        self.label56 = ttk.Label(self.frame39)
+        self.label56.configure(text='Difetto riscontrato:')
+        self.label56.pack(anchor='e', pady='5', side='top')
+        self.frame39.configure(height='120', width='120')
+        self.frame39.pack(padx='5', side='left')
+        self.frame42 = ttk.Frame(self.labelframe10)
+        self.entryProgressivo = ttk.Entry(self.frame42)
+        self.entryProgressivo.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryNomeCl = ttk.Entry(self.frame42)
+        self.entryNomeCl.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryContattoCli = ttk.Entry(self.frame42)
+        self.entryContattoCli.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryProdGuasto = ttk.Entry(self.frame42)
+        self.entryProdGuasto.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryDifetto = ttk.Entry(self.frame42)
+        self.entryDifetto.pack(expand='true', fill='x', pady='4', side='top')
+        self.frame42.configure(height='100', width='200')
+        self.frame42.pack(expand='true', fill='both', padx='5', side='top')
+        self.labelframe10.configure(height='120', text='Dati prodotto', width='200')
+        self.labelframe10.pack(fill='x', padx='5', pady='5', side='top')
+        self.labelframe11 = ttk.Labelframe(self)
+        self.textNote = tk.Text(self.labelframe11)
+        self.textNote.configure(height='10', width='50')
+        self.textNote.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.labelframe11.configure(height='200', text='Note', width='200')
+        self.labelframe11.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frame43 = ttk.Frame(self)
+        self.btnAggiornaPratica = ttk.Button(self.frame43)
+        self.btnAggiornaPratica.configure(text='Aggiorna pratica')
+        self.btnAggiornaPratica.pack(anchor='e', padx='5', pady='5', side='right')
+        self.btnLavorazione = ttk.Button(self.frame43)
+        self.btnLavorazione.configure(text='In lavorazione')
+        self.btnLavorazione.pack(anchor='e', padx='5', pady='5', side='left')
+        self.btnLavorata = ttk.Button(self.frame43)
+        self.btnLavorata.configure(text='Lavorata')
+        self.btnLavorata.pack(anchor='e', padx='5', pady='5', side='left')
+        self.btnRestituita = ttk.Button(self.frame43)
+        self.btnRestituita.configure(text='Restituita')
+        self.btnRestituita.pack(anchor='e', padx='5', pady='5', side='left')
+        self.frame43.configure(height='200', width='200')
+        self.frame43.pack(fill='x', side='top')
+        self.configure(height='200', width='200')
+        self.geometry('600x600')
+        self.minsize(600, 600)
+        iconaAssistenza = tk.PhotoImage(file='images/call-center.png')
+        self.iconphoto(False, iconaAssistenza)
+        self.title('Pratica assistenza | AB Informatica - StockIt Manager')
+
 
 
 # FINESTRA ORDINI#######################################################################################################
@@ -1486,8 +1549,6 @@ class OrdiniWidget(tk.Toplevel):
             databaseOperations.GestioneOrdini(1, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
                                               puntoVendita='')
 
-        #TODO: Funzione trasferimento unità da magazzino a magazzino
-
         self.aggiornamentoOrdini()
 
     def ordineConsegnato(self):
@@ -1497,6 +1558,33 @@ class OrdiniWidget(tk.Toplevel):
             valore = index['values'][0]
             databaseOperations.GestioneOrdini(2, valore, nomeCliente='', nomeProdotto='', note='', quantity='',
                                               puntoVendita='')
+
+            nomeProdotto = index['values'][1]
+            qty = int(index['values'][2])
+
+            if nomeProdotto.startswith('*'):
+                nomeProdotto = nomeProdotto.replace('*', '')
+                prodotto = nomeProdotto.split(',')
+                cod = str(prodotto[0])
+                mag = str(prodotto[1]).split(' - ')
+                mag = int(mag[0])
+                switch1 = mag + 7
+                magDest = int(puntoVendita.replace('PV', ''))
+                switch2 = magDest + 7
+
+                prodotto = databaseOperations.GestioneMagazzino().ricercaMagazzino(ricerca='codice', codice=cod)
+                prodotto = prodotto[0]
+                qtyprov = int(prodotto[switch1])
+                qtydest = int(prodotto[switch2])
+
+                n1 = qtyprov-qty
+                n2 = qtydest+qty
+
+                databaseOperations.GestioneMagazzino().trasferisciProdotto(codice=cod, provenienza=mag,
+                                                                           destinazione=magDest, qprov=n1, qdest=n2)
+
+
+                #print('Prodotto cod. ' + cod + ' trasferito da magazzino ' + mag + ' a magazzino ' + magDest)
 
         self.aggiornamentoOrdini()
 
@@ -1556,6 +1644,7 @@ class InserisciOrdineWidget(tk.Toplevel):
         self.entryNomeProdotto1.pack(expand='true', fill='x', side='top')
         self.entryQuantita1 = ttk.Entry(self.frame19)
         self.entryQuantita1.configure(width='60')
+        self.entryQuantita1.insert(END, '0')
         self.entryQuantita1.pack(expand='true', fill='x', side='top')
         self.entryNote1 = ttk.Entry(self.frame19)
         self.entryNote1.configure(width='60')
@@ -1600,7 +1689,7 @@ class InserisciOrdineWidget(tk.Toplevel):
             self.entryNote1.delete(0, END)
             self.entryNomeCliente1.delete(0, END)
             tkinter.messagebox.showinfo(parent=self, title="Ordine inserito", message="L'ordine è stato inserito"
-                                                                                      "correttamente!")
+                                                                                      " correttamente!")
             self.destroy()
             OrdiniWidget()
 
@@ -1612,7 +1701,6 @@ class InserisciOrdineWidget(tk.Toplevel):
 
     def on_closing(self):
         self.destroy()
-        #TODO: Aggiungere riapertura finestra ordini
 
 
 # FINESTRA LEGGI COMUNICAZIONE##########################################################################################
@@ -1931,12 +2019,12 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.btnInserisciDocumento.configure(command=self.inserisciDocumento)
         if viewonly:
             self.btnInserisciDocumento.configure(state='disabled')
-        self.btnNuovoDocumento = ttk.Button(self.frame32)
+        '''self.btnNuovoDocumento = ttk.Button(self.frame32)
         #TODO: Definisci funzione "Nuovo documento"
         self.img_contract = tk.PhotoImage(file='images/contract.png')
         self.btnNuovoDocumento.configure(image=self.img_contract, text='button13')
         self.btnNuovoDocumento.pack(anchor='e', expand='false', fill='y', pady='5', side='right')
-        self.btnNuovoDocumento.configure(command=self.nuovoDocumento)
+        self.btnNuovoDocumento.configure(command=self.nuovoDocumento)'''
         self.frame32.configure(height='200', width='200')
         self.frame32.pack(expand='false', fill='x', side='top')
         self.geometry('1024x600')
@@ -2098,7 +2186,6 @@ class InserisciDocumentoWidget(tk.Toplevel):
         tipoDocumento = self.comboCatProdDoc.get()
         totaleDocumento = self.entryTotDoc.get()
         for child in self.treeview3.get_children():
-            #print(self.treeview3.item(child)["values"])
             prodotto = self.treeview3.item(child)["values"]
 
             codice = prodotto[0]
@@ -2115,7 +2202,8 @@ class InserisciDocumentoWidget(tk.Toplevel):
             singoloProdotto = singoloProdotto.replace("'","")
             listaProdotti = listaProdotti + singoloProdotto + ';\n'
 
-            fornitore = fornitoreReale + " - " + numeroDocumento + " - " + dataDocumento + " - " + costo + ";\n"
+            fornitore = str(fornitoreReale) + " - " + str(numeroDocumento) + " - " + str(dataDocumento) + " - " + \
+                        str(costo) + ";\n"
             esiste = False
 
             try:
@@ -2139,22 +2227,19 @@ class InserisciDocumentoWidget(tk.Toplevel):
             databaseOperations.GestioneMagazzino().inserisciDocumento(numero=numeroDocumento, fornitore=fornitoreReale,
                                                                       data=dataDocumento, tipo=tipoDocumento,
                                                                       importo=totaleDocumento, prodotti=listaProdotti)
+            toast = ToastNotifier()
+            toast.show_toast(
+                "Documento inserito",
+                "Il documento è stato inserito correttamente",
+                duration=20,
+                icon_path="icon.ico",
+                threaded=True
+            )
+
         except mysql.connector.errors.IntegrityError:
             tkinter.messagebox.showerror(parent=self, title='Documento già presente', message='Il numero documento '
                                                                                               'indicato è già presente'
                                                                                               ' nel database!')
-
-        toast = ToastNotifier()
-        toast.show_toast(
-            "Documento inserito",
-            "Il documento è stato inserito correttamente",
-            duration=20,
-            icon_path="icon.ico",
-            threaded=True
-        )
-
-    def nuovoDocumento(self):
-        pass
 
 
 # FINESTRA RICERCA PRODOTTI#############################################################################################
@@ -2177,17 +2262,18 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.frame28 = ttk.Frame(self.lfRicercaProdMag)
         self.entryRicNomeProdotto = ttk.Entry(self.frame28)
         self.entryRicNomeProdotto.pack(fill='x', side='top')
-        self.entryRicNomeProdotto.focus_force()
+        self.entryRicNomeProdotto.bind('<FocusIn>', self.nomeFocus)
         self.entryRicCodProd = ttk.Entry(self.frame28)
         self.entryRicCodProd.pack(fill='x', side='top')
+        self.entryRicCodProd.bind('<FocusIn>', self.codFocus)
         self.entryRicEANProd = ttk.Entry(self.frame28)
         self.entryRicEANProd.pack(fill='x', side='top')
+        self.entryRicEANProd.bind('<FocusIn>', self.eanFocus)
         self.frame28.configure(height='100', width='200')
         self.frame28.pack(expand='true', fill='x', side='left')
         self.btnSearch = ttk.Button(self.lfRicercaProdMag)
-        #TODO: Inserire comando ricerca
         self.img_magnifyingglass = tk.PhotoImage(file='images/magnifying-glass.png')
-        self.btnSearch.configure(image=self.img_magnifyingglass, text='button6')
+        self.btnSearch.configure(image=self.img_magnifyingglass, text='button6', command=self.ricercaProdotto)
         self.btnSearch.pack(padx='5', pady='5', side='bottom')
         self.lfRicercaProdMag.configure(height='100', text='Ricerca prodotto', width='200')
         self.lfRicercaProdMag.pack(fill='x', padx='5', pady='5', side='top')
@@ -2232,12 +2318,24 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.gestioneMagazzino = databaseOperations.GestioneMagazzino()
         self.listaMagazzino()
 
+    def nomeFocus(self, event):
+        self.entryRicEANProd.delete(0, END)
+        self.entryRicCodProd.delete(0, END)
+
+    def eanFocus(self, event):
+        self.entryRicCodProd.delete(0, END)
+        self.entryRicNomeProdotto.delete(0, END)
+
+    def codFocus(self, event):
+        self.entryRicEANProd.delete(0, END)
+        self.entryRicNomeProdotto.delete(0, END)
+
     def popup(self, event):
         m = tk.Menu(self, tearoff=0)
         m.add_command(label="Ordina prodotto", command=self.ordinaProdotto)
         m.add_separator()
         m.add_command(label="Visualizza prodotto", command=self.visualizzaProdotto)
-        m.add_command(label="Elimina", command=self.eliminaProdotto)
+        m.add_command(label="Elimina prodotto", command=self.eliminaProdotto)
 
         iid = self.tblProdotti.identify_row(event.y)
         if iid:
@@ -2252,11 +2350,19 @@ class RicercaProdottiWidget(tk.Toplevel):
             pass
 
     def ordinaProdotto(self):
+        magazzinoP = tkinter.simpledialog.askstring(parent=self, title='Selezione Magazzino',
+                                                   prompt='Inserisci il numero magazzino:')
         indice = self.tblProdotti.focus()
         idx = self.tblProdotti.item(indice)
         cod = str(idx['values'][0])
         nome = str(idx['values'][1])
-        nome = "*" + cod + " - " + nome
+        magazzinoD = puntoVendita.replace('PV', '')
+        if magazzinoP == magazzinoD:
+            tkinter.messagebox.showerror(parent=self, title='Errore selezione',
+                                         message='Non puoi ordinare dal tuo magazzino!')
+            magazzinoP = tkinter.simpledialog.askstring(parent=self, title='Selezione Magazzino',
+                                                        prompt='Inserisci il numero magazzino:')
+        nome = "*" + cod + "," + magazzinoP + " - " + nome
         InserisciOrdineWidget(nome=nome)
 
     def eliminaProdotto(self):
@@ -2269,10 +2375,11 @@ class RicercaProdottiWidget(tk.Toplevel):
         elimina1 = tkinter.messagebox.askyesno(parent=self, title='Conferma eliminazione',
                                                message="L'eliminazione del prodotto è definitiva, procedere?")
         if elimina and elimina1:
-            databaseOperations.GestioneMagazzino.eliminaProdotto(codice=cod)
+            databaseOperations.GestioneMagazzino().eliminaProdotto(codice=cod)
             _Message = "Il prodotto " + nome + " è stato correttamente eliminato!"
             tkinter.messagebox.showinfo(parent=self, title="Prodotto eliminato",
                                         message=_Message)
+            self.listaMagazzino()
         else:
             tkinter.messagebox.showinfo(parent=self, title='Operazione annullata',
                                         message="Nessuna modifica è stata apportata al database")
@@ -2291,7 +2398,93 @@ class RicercaProdottiWidget(tk.Toplevel):
         VisualizzaProdottoWidget(codiceProdotto=codiceProdotto)
         self.destroy()
 
+    def ricercaProdotto(self):
+        codice = self.entryRicCodProd.get()
+        nome = self.entryRicNomeProdotto.get()
+        ean = self.entryRicEANProd.get()
+
+        if codice == '' and nome == '' and ean == '':
+            tkinter.messagebox.showerror(parent=self, title='Campi non compilati',
+                                         message='Compila almeno un campo per procedere alla ricerca!')
+            self.listaMagazzino()
+
+        elif codice == '' and ean == '':
+            prodotti = databaseOperations.GestioneMagazzino().ricercaMagazzino(ricerca='nome', nome=nome)
+            self.entryRicNomeProdotto.delete(0, END)
+            if prodotti == 1:
+                tkinter.messagebox.showerror(parent=self, title='Nessun prodotto',
+                                             message="Non è stato trovato nessun prodotto!")
+            else:
+                self.tblProdotti.delete(*self.tblProdotti.get_children())
+                for prodotto in prodotti:
+                    codice = prodotto[0]
+                    nome = prodotto[1]
+                    ean = prodotto[2]
+                    fornitore = str(prodotto[12]).replace("\n", "")
+                    mag0 = prodotto[7]
+                    mag1 = prodotto[8]
+                    mag2 = prodotto[9]
+                    mag3 = prodotto[10]
+                    mag4 = prodotto[11]
+                    prezzo = prodotto[6]
+                    riga = (
+                        codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
+                    )
+                    self.tblProdotti.insert("", END, values=riga)
+
+        elif nome == '' and ean == '':
+            prodotti = databaseOperations.GestioneMagazzino().ricercaMagazzino(ricerca='codice', codice=codice)
+            self.entryRicCodProd.delete(0, END)
+            if prodotti == 1:
+                tkinter.messagebox.showerror(parent=self, title='Nessun prodotto',
+                                             message="Non è stato trovato nessun prodotto!")
+            else:
+                self.tblProdotti.delete(*self.tblProdotti.get_children())
+                for prodotto in prodotti:
+                    codice = prodotto[0]
+                    nome = prodotto[1]
+                    ean = prodotto[2]
+                    fornitore = str(prodotto[12]).replace("\n", "")
+                    mag0 = prodotto[7]
+                    mag1 = prodotto[8]
+                    mag2 = prodotto[9]
+                    mag3 = prodotto[10]
+                    mag4 = prodotto[11]
+                    prezzo = prodotto[6]
+                    riga = (
+                        codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
+                    )
+                    self.tblProdotti.insert("", END, values=riga)
+
+        elif codice == '' and nome == '':
+            prodotti = databaseOperations.GestioneMagazzino().ricercaMagazzino(ricerca='ean', ean=ean)
+            self.entryRicEANProd.delete(0, END)
+            if prodotti == 1:
+                tkinter.messagebox.showerror(parent=self, title='Nessun prodotto',
+                                             message="Non è stato trovato nessun prodotto!")
+            else:
+                self.tblProdotti.delete(*self.tblProdotti.get_children())
+                for prodotto in prodotti:
+                    codice = prodotto[0]
+                    nome = prodotto[1]
+                    ean = prodotto[2]
+                    fornitore = str(prodotto[12]).replace("\n", "")
+                    mag0 = prodotto[7]
+                    mag1 = prodotto[8]
+                    mag2 = prodotto[9]
+                    mag3 = prodotto[10]
+                    mag4 = prodotto[11]
+                    prezzo = prodotto[6]
+                    riga = (
+                        codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
+                    )
+                    self.tblProdotti.insert("", END, values=riga)
+
+
+
+
     def listaMagazzino(self):
+        self.tblProdotti.delete(*self.tblProdotti.get_children())
         magazzino = databaseOperations.GestioneMagazzino().listaMagazzino()
 
         for prodotto in magazzino:
@@ -2308,7 +2501,6 @@ class RicercaProdottiWidget(tk.Toplevel):
             riga = (
                 codice, nome, ean, fornitore, mag0, mag1, mag2, mag3, mag4, prezzo
             )
-            print(riga)
             self.tblProdotti.insert("", END, values=riga)
 
 
@@ -2413,7 +2605,16 @@ class VisualizzaProdottoWidget(tk.Toplevel):
     def ordina(self):
         cod = self.entryCodProd.get()
         nome = self.entryNomeProd.get()
-        nome = "*" + cod + " - " + nome
+
+        magazzinoP = tkinter.simpledialog.askstring(parent=self, title='Selezione Magazzino',
+                                                    prompt='Inserisci il numero magazzino:')
+        magazzinoD = puntoVendita.replace('PV', '')
+        if magazzinoP == magazzinoD:
+            tkinter.messagebox.showerror(parent=self, title='Errore selezione',
+                                         message='Non puoi ordinare dal tuo magazzino!')
+            magazzinoP = tkinter.simpledialog.askstring(parent=self, title='Selezione Magazzino',
+                                                        prompt='Inserisci il numero magazzino:')
+        nome = "*" + cod + "," + magazzinoP + " - " + nome
         InserisciOrdineWidget(nome=nome)
 
     def caricaInterfaccia(self):
@@ -2610,15 +2811,17 @@ class StockItApp:
 
     @staticmethod
     def widgetInserisciOrdine():
-        InserisciOrdineWidget(root)
+        inserisci = InserisciOrdineWidget(root)
+        inserisci.grab_set()
 
     @staticmethod
     def finestraStampe():
-        StampeWidget(root)
+        stampe = StampeWidget(root)
+        #stampe.grab_set()
 
-    @staticmethod
-    def finestraOrdini():
-        OrdiniWidget(root)
+    def finestraOrdini(self):
+        ordini = OrdiniWidget(self.masterFrame)
+        #ordini.grab_set()
 
     @staticmethod
     def finestraAssistenza():
@@ -2629,10 +2832,7 @@ class StockItApp:
         UtentiWidget(root)
 
     def finestraCassa(self):
-        if wincassa == 'c':
-            CassaWidget(root)
-        else:
-            print(wincassa)
+        CassaWidget(root)
 
     def finestraChat(self):
         self.btnChat.configure(style='')

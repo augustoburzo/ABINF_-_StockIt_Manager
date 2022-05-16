@@ -88,7 +88,6 @@ class GestioneOrdini:
             self.cursor = self.mydb.cursor()
             _SQLMove = "INSERT INTO orders_shipped SELECT * FROM orders_to_ship WHERE idx = '%s';"
             _SQLDel = "DELETE FROM orders_to_ship WHERE idx = '%s';"
-            print(idx)
 
             self.cursor.execute(_SQLMove, (idx,))
             self.cursor.execute(_SQLDel, (idx,))
@@ -102,7 +101,6 @@ class GestioneOrdini:
             self.cursor = self.mydb.cursor()
             _SQLMove = "INSERT INTO orders_received SELECT * FROM orders_shipped WHERE idx = '%s';"
             _SQLDel = "DELETE FROM orders_shipped WHERE idx = '%s';"
-            print(idx)
 
             self.cursor.execute(_SQLMove, (idx,))
             self.cursor.execute(_SQLDel, (idx,))
@@ -385,6 +383,13 @@ class GestioneMagazzino:
         self.cursor.close()
         self.mydb.close()
 
+    def trasferisciProdotto(self, codice='', provenienza='', destinazione='', qprov='', qdest=''):
+        _SQLUpdate = "UPDATE prodottiMagazzino SET mag%s = %s, mag%s = %s WHERE codice = %s"
+        self.cursor.execute(_SQLUpdate, (provenienza, qprov, destinazione, qdest, codice))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
+
     def prodottoEsistente(self, ean, codice):
         #Verifica se il prodotto è esistente e restituisce un Booleano
         _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE ean = %s OR codice = %s"
@@ -424,7 +429,7 @@ class GestioneMagazzino:
             prodotti = self.cursor.fetchall()
 
         elif ricerca == 'nome':
-            _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE nome LIKE %%s%"
+            _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE nome LIKE %s"
             self.cursor.execute(_SQLSearch, (nome,))
             prodotti = self.cursor.fetchall()
 
