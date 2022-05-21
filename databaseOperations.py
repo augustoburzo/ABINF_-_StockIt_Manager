@@ -3,7 +3,8 @@ from datetime import date
 import mysql.connector
 
 class GestioneAssistenza:
-    def __init__(self, switch, idx, nomeCliente, contattoCliente, prodotto, difettoProdotto, dataConsegna, note):
+    def __init__(self, switch=5, idx='', nomeCliente='', contattoCliente='', prodotto='', difettoProdotto='',
+                 dataConsegna='', note=''):
         if switch == 0:
             # PRODOTTO RITIRATO
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
@@ -23,7 +24,7 @@ class GestioneAssistenza:
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'in lavorazione' WHERE " \
-                       "idx = '%s';"
+                       "idx = %s;"
 
             self.cursor.execute(_SQLMove, (idx,))
 
@@ -35,7 +36,7 @@ class GestioneAssistenza:
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = 'lavorata' WHERE " \
-                       "idx = '%s';"
+                       "idx = %s;"
 
             self.cursor.execute(_SQLMove, (idx,))
 
@@ -47,7 +48,7 @@ class GestioneAssistenza:
             self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
             self.cursor = self.mydb.cursor()
             _SQLMove = "UPDATE assistenzaProdotti SET statoPratica = %s WHERE " \
-                       "idx = '%s';"
+                       "idx = %s;"
             oggi = str(date.today())
             oggi = "Restituita il " + oggi
             self.cursor.execute(_SQLMove, (oggi, idx))
@@ -64,6 +65,29 @@ class GestioneAssistenza:
             self.mydb.commit()
             self.cursor.close()
             self.mydb.close()
+
+        else: pass
+
+    def selezionaPratica(self, idx):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+        self.cursor = self.mydb.cursor()
+        _SQLSelect = "SELECT * FROM assistenzaProdotti WHERE idx = %s"
+        self.cursor.execute(_SQLSelect, (idx,))
+        pratica = self.cursor.fetchall()
+        pratica = pratica[0]
+        self.cursor.close()
+        self.mydb.close()
+        return pratica
+
+    def aggiornaPratica(self, idx='', nomeCliente='', contatto='', prodotto='', difetto='', note=''):
+        self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
+        self.cursor = self.mydb.cursor()
+        _SQLUpdate = "UPDATE assistenzaProdotti SET nomeCliente = %s, contattoCliente = %s," \
+                     " prodotto = %s, difettoProdotto = %s, note = %s WHERE idx = %s"
+        self.cursor.execute(_SQLUpdate,(nomeCliente, contatto, prodotto, difetto, note, idx))
+        self.mydb.commit()
+        self.cursor.close()
+        self.mydb.close()
 
 
 class GestioneOrdini:
@@ -170,7 +194,7 @@ class Utenti:
 
 
 class Chat:
-    def __init__(self, autore, messaggio, destinatario):
+    def __init__(self, autore, messaggio, destinatario=''):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')  # CONNESSIONE DATABASE
         self.cursor = self.mydb.cursor()
         sql = ("""INSERT

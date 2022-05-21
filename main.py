@@ -14,7 +14,8 @@ from idlelib.tooltip import Hovertip
 import _tkinter
 import mysql.connector
 from PIL import ImageTk, Image
-from win10toast import ToastNotifier
+from toastify import notify
+
 
 import PDFOperations
 import databaseOperations
@@ -798,7 +799,6 @@ class CassaWidget(tk.Toplevel):
 
 # FINESTRA CHAT#########################################################################################################
 class ChatWidget(tk.Toplevel):
-    #TODO: Inserire treeview anziché listbox per inserire destinatario
     def __init__(self, master=None, **kw):
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
         self.cursor = self.mydb.cursor()
@@ -811,25 +811,38 @@ class ChatWidget(tk.Toplevel):
 
         super(ChatWidget, self).__init__(master, **kw)
         self.lfChat = ttk.Labelframe(self)
-        self.lbChat = tk.Listbox(self.lfChat)
+        self.lbChat = ttk.Treeview(self.lfChat)
+
+        self.lbChat_cols = ['autore', 'messaggio']
+        self.lbChat_dcols = ['autore', 'messaggio']
+
+        self.lbChat.configure(columns=self.lbChat_cols, show='headings')
+
+        self.lbChat.column('autore', anchor='w', stretch=False, width=100, minwidth=80)
+        self.lbChat.column('messaggio', anchor='w', stretch=True, width=100, minwidth=80)
+
+        self.lbChat.heading('autore', anchor='w', text='Autore')
+        self.lbChat.heading('messaggio', anchor='w', text='Messaggio')
+
         self.lbChat.pack(expand='true', fill='both', padx='5', pady='5', side='top')
-        self.lbChat.bind('<Double-1>', self.rispondi, add='')
+        self.lbChat.yview_moveto(1)
+        #self.lbChat.bind('<Double-1>', self.rispondi, add='')
         self.lfChat.configure(height='200', text='Chat utenti', width='200')
         self.lfChat.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frmNuovoMessaggio = ttk.Frame(self)
         self.frmBoxTesto = ttk.Frame(self.frmNuovoMessaggio)
-        self.frame5 = ttk.Frame(self.frmBoxTesto)
+        '''self.frame5 = ttk.Frame(self.frmBoxTesto)
         self.comboDestinatario = ttk.Combobox(self.frame5)
         self.comboDestinatario.pack(fill='x', side='top')
         self.comboDestinatario.configure(values=self.utentiChat)
         self.frame5.configure(height='20', width='200')
-        self.frame5.pack(fill='x', side='top')
-        self.textMessaggio = tk.Text(self.frmBoxTesto)
-        self.textMessaggio.configure(height='6', width='50')
-        self.textMessaggio.pack(expand='true', fill='x', side='top')
-        self.textMessaggio.bind('<Return>', self.inviaMessaggio, add='')
+        self.frame5.pack(fill='x', side='top')'''
+        self.textMessaggio = tk.Entry(self.frmBoxTesto)
+        self.textMessaggio.configure(width='50')
+        self.textMessaggio.pack(expand='true', fill='both', side='top')
+        self.textMessaggio.bind('<Return>', self.inviaMessaggio)
         self.frmBoxTesto.configure(height='100', width='200')
-        self.frmBoxTesto.pack(expand='true', fill='x', pady='5', side='left')
+        self.frmBoxTesto.pack(expand='true', fill='both', pady='5', side='left')
         self.frmButton = ttk.Frame(self.frmNuovoMessaggio)
         self.btnInviaMessaggio = ttk.Button(self.frmButton)
         self.img_send = tk.PhotoImage(file='images/send.png')
@@ -840,7 +853,7 @@ class ChatWidget(tk.Toplevel):
         self.frmButton.pack(expand='true', fill='y', side='top')
         self.frmNuovoMessaggio.configure(height='100', width='200')
         self.frmNuovoMessaggio.pack(fill='x', padx='5', side='top')
-        self.lbChat.insert(0, 'Caricamento chat...')
+        self.lbChat.insert("", END, 'Caricamento chat...')
         self.configure(height='200', width='200')
         self.geometry('800x600')
         self.iconphoto(False, iconaChat)
@@ -868,41 +881,62 @@ class ChatWidget(tk.Toplevel):
             utenteChat = str(user[1]).replace(" ", "_") + " "
             self.utentiChat = self.utentiChat + utenteChat
 
-    def rispondi(self, event=None):
-        destinatario = self.lbChat.get(ANCHOR)
-        left_text = destinatario.partition(" ")[0]
-        self.comboDestinatario.delete(0, END)
-        self.comboDestinatario.insert(0, left_text)
-
     def inviaMessaggio(self, event=None):
         autore = nomeUtente
-        messaggio = self.textMessaggio.get(1.0, END)
-        destinatario = self.comboDestinatario.get().replace("_", " ")
+        messaggio = self.textMessaggio.get()
+        self.textMessaggio.delete(0, END)
+        #destinatario = self.comboDestinatario.get().replace("_", " ")
 
-        if messaggio != "" or messaggio != "\n":
-            databaseOperations.Chat(autore, messaggio, destinatario)
-            self.textMessaggio.delete(1.0, END)
-            self.comboDestinatario.delete(0, END)
+        if messaggio != "":
+            databaseOperations.Chat(autore, messaggio)
+
+            #self.comboDestinatario.delete(0, END)
+
+        self.textMessaggio.delete(0, END)
+
+    def riceviMessaggio(self):
+        mydb = mysql.connector.connect(option_files='connector.cnf')
+        cursor = mydb.cursor()
+        cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 1) sub ORDER BY idx ASC")
+        messaggio = cursor.fetchone()
+        messaggio = messaggio[1:]
+        cursor.close()
+        mydb.close()
+        try:
+            self.lbChat.insert("", END, values=messaggio)
+            self.lbChat.yview_moveto(1)
+        except _tkinter.TclError:
+            pass
+        text = str(messaggio[0]+": "+str(messaggio[1]))
+        '''if messaggio[0] != nomeUtente:
+            try:
+                notify(
+                    BodyText=text,
+                    AppName='StockIt Manager',
+                    TitleText='Nuovo messaggio',
+                    ImagePath='images/chat.png'
+                )
+            except AttributeError:
+                pass'''
 
     def aggiornamentoChat(self):
         mydb = mysql.connector.connect(option_files='connector.cnf')
         cursor = mydb.cursor()
-        cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 30) sub ORDER BY idx ASC")
+        cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC) sub ORDER BY idx ASC")
         messaggi = cursor.fetchall()
         cursor.close()
         mydb.close()
 
-        self.lbChat.delete(0, END)
+        self.lbChat.delete(*self.lbChat.get_children())
 
         for messaggio in messaggi:
             messaggio = messaggio[1:]
-            y = "  -  ".join([str(value) for value in messaggio])
+            '''y = "  -  ".join([str(value) for value in messaggio])
             y.replace("{", "")
-            y.replace("}", "")
-            self.lbChat.insert(END, y)
-            self.lbChat.update()
-            self.lbChat.yview(END)
-            self.textMessaggio.delete(1.0, END)
+            y.replace("}", "")'''
+            self.lbChat.insert("", END, values=messaggio)
+            self.lbChat.yview_moveto(1)
+            self.textMessaggio.delete(0, END)
 
     def ricercaAggiornamenti(self):
         while 1:
@@ -924,7 +958,7 @@ class ChatWidget(tk.Toplevel):
             if file1changed:
                 self.chat = NEWChat
 
-                self.aggiornamentoChat()
+                self.riceviMessaggio()
 
             else:
                 pass
@@ -1223,9 +1257,11 @@ class AssistenzaWidget(tk.Toplevel):
         self.aggiornamentoOrdini()
 
     def visualizzaPratica(self, event):
-        window = PraticaAssistenzaWidget(self.frame3)
+        indice = self.treeview1.focus()
+        idx = self.treeview1.item(indice)
+        codiceProdotto = str(idx['values'][0])
+        window = PraticaAssistenzaWidget(idx=codiceProdotto)
         window.grab_set()
-
 
     def nuovaAssistenza(self):
         self.nomeCliente = self.entryAssNomeCliente.get()
@@ -1254,6 +1290,16 @@ class AssistenzaWidget(tk.Toplevel):
         self.entryAssProdotto.delete(0, END)
         self.entryAssDifetto.delete(0, END)
         self.textAssNote.delete(1.0, END)
+
+        try:
+            notify(
+                    BodyText='La pratica è stata inserita correttamente',
+                    AppName='StockIt Manager',
+                    TitleText='Pratica inserita',
+                    ImagePath='icon.ico'
+                    )
+        except AttributeError:
+            pass
 
     def praticaLavorazione(self):
         indice = self.treeview1.focus()
@@ -1308,8 +1354,13 @@ class AssistenzaWidget(tk.Toplevel):
 
 # FINESTRA PRATICA ASSISTENZA###########################################################################################
 class PraticaAssistenzaWidget(tk.Toplevel):
-    def __init__(self, master=None, **kw):
+    def __init__(self, idx='', master=None, **kw):
         super(PraticaAssistenzaWidget, self).__init__(master, **kw)
+
+        pratica = databaseOperations.GestioneAssistenza().selezionaPratica(idx=idx)
+
+        self.index = idx
+
         self.labelframe10 = ttk.Labelframe(self)
         self.frame39 = ttk.Frame(self.labelframe10)
         self.label57 = ttk.Label(self.frame39)
@@ -1332,14 +1383,20 @@ class PraticaAssistenzaWidget(tk.Toplevel):
         self.frame42 = ttk.Frame(self.labelframe10)
         self.entryProgressivo = ttk.Entry(self.frame42)
         self.entryProgressivo.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryProgressivo.insert(0, str(pratica[0]))
+        self.entryProgressivo.configure(state='disabled')
         self.entryNomeCl = ttk.Entry(self.frame42)
         self.entryNomeCl.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryNomeCl.insert(0, str(pratica[1]))
         self.entryContattoCli = ttk.Entry(self.frame42)
         self.entryContattoCli.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryContattoCli.insert(0, str(pratica[2]))
         self.entryProdGuasto = ttk.Entry(self.frame42)
         self.entryProdGuasto.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryProdGuasto.insert(0, str(pratica[3]))
         self.entryDifetto = ttk.Entry(self.frame42)
         self.entryDifetto.pack(expand='true', fill='x', pady='4', side='top')
+        self.entryDifetto.insert(0, str(pratica[4]))
         self.frame42.configure(height='100', width='200')
         self.frame42.pack(expand='true', fill='both', padx='5', side='top')
         self.labelframe10.configure(height='120', text='Dati prodotto', width='200')
@@ -1348,20 +1405,21 @@ class PraticaAssistenzaWidget(tk.Toplevel):
         self.textNote = tk.Text(self.labelframe11)
         self.textNote.configure(height='10', width='50')
         self.textNote.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.textNote.insert(1.0, pratica[6])
         self.labelframe11.configure(height='200', text='Note', width='200')
         self.labelframe11.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frame43 = ttk.Frame(self)
         self.btnAggiornaPratica = ttk.Button(self.frame43)
-        self.btnAggiornaPratica.configure(text='Aggiorna pratica')
+        self.btnAggiornaPratica.configure(text='Aggiorna pratica', command=self.aggiornaPratica)
         self.btnAggiornaPratica.pack(anchor='e', padx='5', pady='5', side='right')
         self.btnLavorazione = ttk.Button(self.frame43)
-        self.btnLavorazione.configure(text='In lavorazione')
+        self.btnLavorazione.configure(text='In lavorazione', command=self.praticaLavorazione)
         self.btnLavorazione.pack(anchor='e', padx='5', pady='5', side='left')
         self.btnLavorata = ttk.Button(self.frame43)
-        self.btnLavorata.configure(text='Lavorata')
+        self.btnLavorata.configure(text='Lavorata', command=self.praticaLavorata)
         self.btnLavorata.pack(anchor='e', padx='5', pady='5', side='left')
         self.btnRestituita = ttk.Button(self.frame43)
-        self.btnRestituita.configure(text='Restituita')
+        self.btnRestituita.configure(text='Restituita', command=self.praticaRestituita)
         self.btnRestituita.pack(anchor='e', padx='5', pady='5', side='left')
         self.frame43.configure(height='200', width='200')
         self.frame43.pack(fill='x', side='top')
@@ -1371,7 +1429,51 @@ class PraticaAssistenzaWidget(tk.Toplevel):
         iconaAssistenza = tk.PhotoImage(file='images/call-center.png')
         self.iconphoto(False, iconaAssistenza)
         self.title('Pratica assistenza | AB Informatica - StockIt Manager')
+        self.focus_force()
 
+    def aggiornaPratica(self):
+        idx = self.entryProgressivo.get()
+        nomeCliente = self.entryNomeCl.get()
+        contattoCliente = self.entryContattoCli.get()
+        prodotto = self.entryProdGuasto.get()
+        difettoProdotto = self.entryDifetto.get()
+        note = self.textNote.get(1.0, END)
+
+        databaseOperations.GestioneAssistenza().aggiornaPratica(idx, nomeCliente, contattoCliente, prodotto,
+                                                                difettoProdotto, note)
+
+        try:
+            notify(
+                BodyText='La pratica è stata aggiornata correttamente',
+                AppName='StockIt Manager',
+                TitleText='Pratica aggiornata',
+                ImagePath='icon.ico'
+            )
+        except AttributeError:
+            pass
+
+        self.destroy()
+
+    def praticaLavorazione(self):
+        valore = self.index
+        databaseOperations.GestioneAssistenza(1, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.destroy()
+
+    def praticaLavorata(self):
+        valore = self.index
+        databaseOperations.GestioneAssistenza(2, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.destroy()
+
+    def praticaRestituita(self):
+        valore = self.index
+        databaseOperations.GestioneAssistenza(3, valore, nomeCliente="", contattoCliente="", prodotto="",
+                                              difettoProdotto="", note="", dataConsegna="")
+
+        self.destroy()
 
 
 # FINESTRA ORDINI#######################################################################################################
@@ -1913,7 +2015,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.entryTotDoc.pack(fill='x', side='top')
         self.entryDataDoc = ttk.Entry(self.frame24)
         self.entryDataDoc.pack(fill='x', side='top')
-        #TODO: Aggiungi data picker per il documento
+        self.entryDataDoc.insert(0, date.today())
         self.comboTipoDoc = ttk.Combobox(self.frame24)
         self.comboTipoDoc.pack(fill='x', side='top')
         self.frame24.configure(height='200', width='200')
@@ -1983,8 +2085,6 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.btnInserisciProdDoc.configure(text='Inserisci prodotto')
         self.btnInserisciProdDoc.pack(padx='5', pady='5', side='right')
         self.btnInserisciProdDoc.configure(command=self.inserisciProdottoDoc)
-        if viewonly:
-            self.btnInserisciProdDoc.configure(state='disabled')
         self.frame29.configure(height='200', width='200')
         self.frame29.pack(fill='x', side='top')
         self.frame31 = ttk.Frame(self)
@@ -2017,8 +2117,6 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.btnInserisciDocumento.configure(image=self.img_plus, text='button13')
         self.btnInserisciDocumento.pack(anchor='e', expand='false', fill='y', padx='5', pady='5', side='right')
         self.btnInserisciDocumento.configure(command=self.inserisciDocumento)
-        if viewonly:
-            self.btnInserisciDocumento.configure(state='disabled')
         '''self.btnNuovoDocumento = ttk.Button(self.frame32)
         #TODO: Definisci funzione "Nuovo documento"
         self.img_contract = tk.PhotoImage(file='images/contract.png')
@@ -2028,6 +2126,7 @@ class InserisciDocumentoWidget(tk.Toplevel):
         self.frame32.configure(height='200', width='200')
         self.frame32.pack(expand='false', fill='x', side='top')
         self.geometry('1024x600')
+        self.img_contract = tk.PhotoImage(file='images/contract.png')
         self.iconphoto(True, self.img_contract)
         self.title('Inserimento documento | AB Informatica StockIt Manager')
 
@@ -2040,8 +2139,6 @@ class InserisciDocumentoWidget(tk.Toplevel):
         categoria = self.comboCatProdDoc.get()
         costo = self.entryCostoProdDoc.get()
         prezzo = self.entryPrezzoProdDoc.get()
-
-
 
         prodottoEsistente = databaseOperations.GestioneMagazzino().prodottoEsistente(ean=ean, codice=codice)
 
@@ -2227,14 +2324,15 @@ class InserisciDocumentoWidget(tk.Toplevel):
             databaseOperations.GestioneMagazzino().inserisciDocumento(numero=numeroDocumento, fornitore=fornitoreReale,
                                                                       data=dataDocumento, tipo=tipoDocumento,
                                                                       importo=totaleDocumento, prodotti=listaProdotti)
-            toast = ToastNotifier()
-            toast.show_toast(
-                "Documento inserito",
-                "Il documento è stato inserito correttamente",
-                duration=20,
-                icon_path="icon.ico",
-                threaded=True
-            )
+            try:
+                notify(
+                    BodyText='Il documento è stato inserita correttamente',
+                    AppName='StockIt Manager',
+                    TitleText='Documento inserito',
+                    ImagePath='icon.ico'
+                )
+            except AttributeError:
+                pass
 
         except mysql.connector.errors.IntegrityError:
             tkinter.messagebox.showerror(parent=self, title='Documento già presente', message='Il numero documento '
@@ -2653,14 +2751,22 @@ class VisualizzaProdottoWidget(tk.Toplevel):
 class StockItApp:
     def __init__(self, master=None):
         # build ui
+
+        self.style = ttk.Style(root)
+        self.style.configure('TButton', background='#ff0000')
+
+        self.normal = ttk.Style(root)
+        self.normal.configure('TButton', background='#eee')
+
         self.mydb = mysql.connector.connect(option_files='connector.cnf')
         self.cursor = self.mydb.cursor()
         self.cursor.execute("SELECT * FROM orders_to_ship")
         self.orders_to_ship = self.cursor.fetchall()
         self.cursor.execute("SELECT * FROM comunicazioni")
         self.comunicazioni = self.cursor.fetchall()
-        self.cursor.execute("SELECT * FROM chat")
-        self.chatList = self.cursor.fetchall()
+        self.cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 1) sub ORDER BY "
+                                           "idx ASC")
+        self.chatList = str(self.cursor.fetchone())
 
         self.cursor.close()
         self.mydb.close()
@@ -2701,6 +2807,7 @@ class StockItApp:
             self.cassaTip = Hovertip(self.btnCassa, "Apri la finestra Gestione Cassa")
         self.btnChat = ttk.Button(self.frmPulsantiSup)
         self.img_chat = tk.PhotoImage(file='images/chat.png')
+        self.img_chatNotif = tk.PhotoImage(file='images/chatPlus.png')
         self.btnChat.configure(image=self.img_chat, text='Cassa', style='')
         self.style.configure('Die.TButton', background='#f00')
         self.btnChat.pack(expand='false', padx='5', side='left')
@@ -2835,7 +2942,7 @@ class StockItApp:
         CassaWidget(root)
 
     def finestraChat(self):
-        self.btnChat.configure(style='')
+        self.btnChat.configure(image=self.img_chat, text='Cassa', style='')
         self.chat()
 
     @staticmethod
@@ -2935,8 +3042,8 @@ class StockItApp:
             NEWorders_to_ship = cursor.fetchall()
             cursor.execute("SELECT * FROM comunicazioni")
             NEWcomunicazioni = cursor.fetchall()
-            cursor.execute("SELECT * FROM chat")
-            self.NEWChat = cursor.fetchall()
+            cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 1) sub ORDER BY idx ASC")
+            NEWChat = str(cursor.fetchone())
             cursor.close()
             mydb.close()
             if NEWorders_to_ship != self.orders_to_ship:
@@ -2945,8 +3052,10 @@ class StockItApp:
             elif NEWcomunicazioni != self.comunicazioni:
                 file2changed = True
                 time.sleep(1)
-            elif self.NEWChat != self.chatList:
+            elif NEWChat != self.chatList:
                 file3changed = True
+                time.sleep(1)
+
             else:
                 file1changed = False
                 file2changed = False
@@ -2957,8 +3066,39 @@ class StockItApp:
                 self.comunicazioni = NEWcomunicazioni
                 self.aggiornamentoOrdini()
 
+                try:
+                    notify(
+                        BodyText='Una nuova comunicazione o un nuovo ordine è stato ricevuto!',
+                        AppName='StockIt Manager',
+                        TitleText='Aggiornamento ricevuto',
+                        ImagePath='icon.ico'
+                    )
+                except AttributeError:
+                    pass
+
             if file3changed:
-                pass
+                self.chatList = NEWChat
+
+                mydb = mysql.connector.connect(option_files='connector.cnf')
+                cursor = mydb.cursor()
+                cursor.execute("SELECT * FROM (SELECT * FROM chat ORDER BY idx DESC LIMIT 1) sub ORDER BY idx ASC")
+                messaggio = cursor.fetchone()
+                messaggio = messaggio[1:]
+                cursor.close()
+                mydb.close()
+                text = str(messaggio[0] + ": " + str(messaggio[1]))
+                if messaggio[0] != nomeUtente:
+                    self.btnChat.configure(image=self.img_chatNotif, style='Die.TButton')
+                    try:
+                        notify(
+                            BodyText=text,
+                            AppName='StockIt Manager',
+                            TitleText='Nuovo messaggio',
+                            ImagePath='images/chat.png'
+                        )
+                    except AttributeError:
+                        pass
+                file3changed = False
 
             else:
                 pass
