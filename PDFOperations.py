@@ -250,20 +250,54 @@ class InserisciDataWidget(tk.Toplevel):
         pdf.cell(23, 6, "Data", 1, align='l')
         pdf.cell(23, 6, "P.Vendita", 1, align='l')
         pdf.ln()
+        sommaIncassi = 0
+        sommaCorrispettivi = 0
+        sommaFatturati = 0
+        sommaContanti = 0
+        sommaPos = 0
+        sommaFinanziamenti = 0
+        sommaBonifici = 0
+        sommaAssegni = 0
+        sommaAcconti = 0
+        sommaPreinc = 0
         for ordine in ordiniDaStampare:
             pdf.cell(23, 4, str(ordine[1]), 1, align='L')
+            sommaIncassi = sommaIncassi + float(ordine[1])
             pdf.cell(23, 4, str(ordine[2]), 1, align='L')
+            sommaCorrispettivi = sommaCorrispettivi + float(ordine[2])
             pdf.cell(23, 4, str(ordine[3]), 1, align='L')
+            sommaFatturati = sommaFatturati + float(ordine[3])
             pdf.cell(23, 4, str(ordine[4]), 1, align='L')
+            sommaContanti = sommaContanti + float(ordine[4])
             pdf.cell(23, 4, str(ordine[5]), 1, align='L')
+            sommaPos = sommaPos + float(ordine[5])
             pdf.cell(23, 4, str(ordine[6]), 1, align='L')
+            sommaFinanziamenti = sommaFinanziamenti + float(ordine[6])
             pdf.cell(23, 4, str(ordine[7]), 1, align='L')
+            sommaBonifici = sommaBonifici + float(ordine[7])
             pdf.cell(23, 4, str(ordine[8]), 1, align='L')
+            sommaAssegni = sommaAssegni + float(ordine[8])
             pdf.cell(23, 4, str(ordine[9]), 1, align='L')
+            sommaAcconti = sommaAcconti + float(ordine[9])
             pdf.cell(23, 4, str(ordine[10]), 1, align='L')
+            sommaPreinc = sommaPreinc + float(ordine[10])
             pdf.cell(23, 4, str(ordine[11]), 1, align='L')
             pdf.cell(23, 4, str(ordine[12]), 1, align='L')
             pdf.ln()
+            
+        pdf.set_fill_color(230, 230, 230)
+        pdf.cell(23, 4, str(round(sommaIncassi, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaCorrispettivi, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaFatturati, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaContanti, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaPos, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaFinanziamenti, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaBonifici, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaAssegni, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaAcconti, 2)), 1, align='L', fill=True)
+        pdf.cell(23, 4, str(round(sommaPreinc, 2)), 1, align='L', fill=True)
+        pdf.ln()
+
         try:
             files = [('PDF', '*.pdf')]
             outfile = tkinter.filedialog.asksaveasfilename(filetypes=files, defaultextension=files, title='Ordine',

@@ -661,34 +661,66 @@ class CassaWidget(tk.Toplevel):
         self.entryCorrispettivo.insert(0, self._default_)
 
         self.aggiornaCasse()
+        self.focus_force()
 
 
 
     def quadratura(self):
         self.entryIncassoTot.delete(0, END)
+        bonifici = 0
         # incassoTotale = float(self.incassoTotale.get())
-        corrispettivo = float(self.corrispettivo.get())
-        fatturato = float(self.fatturato.get())
-        contanti = float(self.contanti.get())
-        pos = float(self.pos.get())
-        finanziamenti = float(self.finanziamenti.get())
-        bonifici = float(self.bonifici.get())
-        assegni = float(self.assegni.get())
-        acconti = float(self.acconti.get())
-        preincassato = float(self.preincassato.get())
-        sommaCorrispettivi = corrispettivo + fatturato
-        self.entryIncassoTot.insert(0, str(sommaCorrispettivi))
+        try:
+            corrispettivo = float(self.corrispettivo.get())
+            fatturato = float(self.fatturato.get())
+            contanti = float(self.contanti.get())
+            pos = float(self.pos.get())
+            finanziamenti = float(self.finanziamenti.get())
+            bonifici = float(self.bonifici.get())
+            assegni = float(self.assegni.get())
+            acconti = float(self.acconti.get())
+            preincassato = float(self.preincassato.get())
+            sommaCorrispettivi = corrispettivo + fatturato
+            self.entryIncassoTot.insert(0, str(sommaCorrispettivi))
+            incassoTotale = float(self.incassoTotale.get())
+        except ValueError:
+            tkinter.messagebox.showerror(parent=self, title='Valore non corretto',
+                                         message='Il valore inserito non è un numero')
+            self.entryIncassoTot.delete(0, END)
+            self.entryCorrispettivo.delete(0, END)
+            self.entryFatturato.delete(0, END)
+            self.entryContanti.delete(0, END)
+            self.entryPOS.delete(0, END)
+            self.entryFinanziamenti.delete(0, END)
+            self.entryAssegni.delete(0, END)
+            self.entryBonifici.delete(0, END)
+            self.entryAcconti.delete(0, END)
+            self.entry.delete(0, END)
+            ####
+            self.entry.insert(0, self._default_)
+            self.entryContanti.insert(0, self._default_)
+            self.entryPOS.insert(0, self._default_)
+            self.entryBonifici.insert(0, self._default_)
+            self.entryAssegni.insert(0, self._default_)
+            self.entryAcconti.insert(0, self._default_)
+            self.entryFinanziamenti.insert(0, self._default_)
+            self.entryFatturato.insert(0, self._default_)
+            self.entryCorrispettivo.insert(0, self._default_)
 
-        incassoTotale = float(self.incassoTotale.get())
-        totale = contanti + pos + finanziamenti + bonifici + assegni - acconti + preincassato
-        quadratura = totale - incassoTotale
-        quadratura = round(quadratura, 2)
-        # self.entryQuadratura.insert(0, str(quadratura))
-        self.lblQuadratura.configure(text=quadratura)
 
-        if quadratura != 0:
-            tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura",
-                                         message="È stata riscontrata una squadratura di €" + str(quadratura))
+        try:
+            totale = contanti + pos + finanziamenti + bonifici + assegni - acconti + preincassato
+            quadratura = totale - incassoTotale
+            quadratura = round(quadratura, 2)
+            # self.entryQuadratura.insert(0, str(quadratura))
+            self.lblQuadratura.configure(text=quadratura)
+            if quadratura != 0:
+                tkinter.messagebox.showerror(parent=self.frame1, title="Squadratura",
+                                             message="È stata riscontrata una squadratura di €" + str(quadratura))
+
+        except UnboundLocalError:
+            pass
+
+
 
     def eliminaRecord(self):
         indice = self.tblStoricoGiornate.focus()
@@ -795,6 +827,8 @@ class CassaWidget(tk.Toplevel):
         for giornata in giornate:
             giornata = giornata[1:]
             self.tblStoricoGiornate.insert("", END, values=giornata)
+
+        self.tblStoricoGiornate.yview_moveto(1)
 
 
 # FINESTRA CHAT#########################################################################################################

@@ -2,6 +2,7 @@ import pathlib
 from tkinter import END
 
 import mysql.connector
+import sqlite3
 import pygubu
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -197,14 +198,14 @@ class DatabaseConfigApp:
 
         with open('connector.cnf', 'w', encoding='utf-8') as f:
             f.write('[client]\n')
-            f.write('host='+host)
-            f.write('user='+user)
-            f.write('password='+pwd)
-            f.write('database='+db)
-            f.write('port='+port)
+            f.write('host='+host+"\n")
+            f.write('user='+user+"\n")
+            f.write('password='+pwd+"\n")
+            f.write('database='+db+"\n")
+            f.write('port='+port+"\n")
             f.write('socket=/tmp/mysql.sock\n\n')
             f.write('[mysqld]\n')
-            f.write('port='+port)
+            f.write('port='+port+"\n")
             f.write('socket=/tmp/mysql.sock\n')
             f.write('key_buffer_size=16M\n')
             f.write('max_allowed_packet=128M\n\n')
@@ -221,13 +222,13 @@ class DatabaseConfigApp:
 
         with open('VerifyConnector.cnf', 'w', encoding='utf-8') as f:
             f.write('[client]\n')
-            f.write('host=' + host)
-            f.write('user=' + user)
-            f.write('password=' + pwd)
-            f.write('port=' + port)
+            f.write('host=' + host+"\n")
+            f.write('user=' + user+"\n")
+            f.write('password=' + pwd+"\n")
+            f.write('port=' + port+"\n")
             f.write('socket=/tmp/mysql.sock\n\n')
             f.write('[mysqld]\n')
-            f.write('port=' + port)
+            f.write('port=' + port+"\n")
             f.write('socket=/tmp/mysql.sock\n')
             f.write('key_buffer_size=16M\n')
             f.write('max_allowed_packet=128M\n\n')
@@ -492,22 +493,33 @@ class DatabaseConfigApp:
                                             VALUES ('Manager', 'manager', 'manager', 'PV0')""")
         self.mydb.commit()
         self.textLogger.insert(END,'>>>>>Manager User registrato correttamente\n')
-        self.cursor.execute("""INSERT
-                                                    INTO
-                                                    `aliquote`(`aliquota`, `percentuale`)
-                                                    VALUES ('22% Standard', '22');""")
-        self.mydb.commit()
-        self.cursor.execute("""INSERT
-                                                            INTO
-                                                            `aliquote`(`aliquota`, `percentuale`)
-                                                            VALUES ('10% Standard', '10');""")
-        self.mydb.commit()
-        self.cursor.execute("""INSERT
-                                                            INTO
-                                                            `aliquote`(`aliquota`, `percentuale`)
-                                                            VALUES ('Esente', '0');""")
-        self.mydb.commit()
-        self.textLogger.insert(END, '>>>>>Tabella Aliquote popolata correttamente\n')
+        try:
+            self.cursor.execute("""INSERT
+                                                        INTO
+                                                        `aliquote`(`aliquota`, `percentuale`)
+                                                        VALUES ('22% Standard', '22');""")
+            self.mydb.commit()
+            self.cursor.execute("""INSERT
+                                                                INTO
+                                                                `aliquote`(`aliquota`, `percentuale`)
+                                                                VALUES ('10% Standard', '10');""")
+            self.mydb.commit()
+            self.cursor.execute("""INSERT
+                                                                INTO
+                                                                `aliquote`(`aliquota`, `percentuale`)
+                                                                VALUES ('Esente', '0');""")
+            self.mydb.commit()
+            self.textLogger.insert(END, '>>>>>Tabella Aliquote popolata correttamente\n')
+            self.cursor.execute("""INSERT
+                                                                        INTO
+                                                                        `tipoDocumenti`(`tipo`)
+                                                                        VALUES ('Fattura');""")
+            self.cursor.execute("""INSERT
+                                                                                INTO
+                                                                                `tipoDocumenti`(`tipo`)
+                                                                                VALUES ('DDT');""")
+        except mysql.connector.errors.IntegrityError:
+            pass
         self.cursor.close()
         self.mydb.close()
         self.textLogger.insert(END, '===========================================\n\n')
