@@ -2718,6 +2718,9 @@ class VisualizzaProdottoWidget(tk.Toplevel):
         self.button9 = ttk.Button(self.frame40)
         self.button9.configure(text='Ordina prodotto', command=self.ordina)
         self.button9.pack(anchor='e', padx='5', pady='5', side='left')
+        self.button10 = ttk.Button(self.frame40)
+        self.button10.configure(text='Vendi prodotto', command=self.vendi)
+        self.button10.pack(anchor='e', padx='5', pady='5', side='left')
         self.frame40.configure(height='200', width='200')
         self.frame40.pack(fill='x', side='top')
         self.configure(height='200', width='200')
@@ -2733,6 +2736,9 @@ class VisualizzaProdottoWidget(tk.Toplevel):
     def on_closing(self):
         RicercaProdottiWidget(root)
         self.destroy()
+
+    def vendi(self):
+        pass
 
     def ordina(self):
         cod = self.entryCodProd.get()
