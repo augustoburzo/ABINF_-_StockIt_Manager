@@ -2787,6 +2787,50 @@ class VisualizzaProdottoWidget(tk.Toplevel):
             self.treeview5.insert("", END, values=riga)
 
 
+class inserisciVenditaWidget(tk.Toplevel):
+    def __init__(self, nomeProdotto, magazzino, master=None, **kw):
+        super(inserisciVenditaWidget, self).__init__(master, **kw)
+        frame47 = ttk.Frame(self)
+        frame47.configure(height=200, width=200)
+        self.lblNomeProdotto = ttk.Label(frame47)
+        self.lblNomeProdotto.configure(text='Nome prodotto:')
+        self.lblNomeProdotto.pack(anchor="e", side="top")
+        self.label60 = ttk.Label(frame47)
+        self.label60.configure(text='Magazzino:')
+        self.label60.pack(anchor="e", side="top")
+        self.label61 = ttk.Label(frame47)
+        self.label61.configure(text='Quantità:')
+        self.label61.pack(anchor="e", side="top")
+        self.frame47.pack(expand="false", padx=5, pady=5, side="left")
+        self.frame46 = ttk.Frame(self)
+        self.frame46.configure(height=200, width=200)
+        self.entry13 = ttk.Entry(self.frame46)
+        self.entry13.pack(side="top")
+        self.entry13.insert(0, nomeProdotto)
+        self.entry14 = ttk.Entry(self.frame46)
+        self.entry14.pack(side="top")
+        self.entry14.insert(0, magazzino)
+        self.entry17 = ttk.Entry(self.frame46)
+        self._text_ = '1'
+        self.entry17.delete("0", "end")
+        self.entry17.insert("0", self._text_)
+        self.entry17.pack(side="top")
+        self.frame46.pack(padx=5, pady=5, side="left")
+        self.btnScarica = ttk.Button(self)
+        self.btnScarica.configure(text='Scarica')
+        self.btnScarica.pack(fill="both", padx=5, pady=5, side="left")
+        self.btnScarica.configure(command=self.scaricaProdotto)
+        self.img_sell = tk.PhotoImage(file="sell.png")
+        self.configure(height=200, width=200)
+        self.iconphoto(True, self.img_sell)
+        self.title("Seleziona quantità")
+
+    def scaricaProdotto(self):
+        nomePrd = self.entry13.get()
+        mag = self.entry14.get()
+        #TODO: Completare inserimento funzione vendita
+        pass
+
 # FINESTRA PRINCIPALE###################################################################################################
 class StockItApp:
     def __init__(self, master=None):
