@@ -1,4 +1,4 @@
 # ABINF - StockIt Manager
 
-Un sepmlice gestionale da affiancare ad un software di gestione magazzino.
+Un semplice software gestionale.
 Completamente scritto in Python e collegato ad un database MySql
