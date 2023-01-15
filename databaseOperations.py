@@ -415,18 +415,19 @@ class GestioneMagazzino:
         self.mydb.close()
 
     def vendiProdotto(self, codice, qntVenduta, magazzino):
-        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE codice = %s"
-        self.cursor.execute(_SQLSearch, codice)
+        _SQLSearch = "SELECT * FROM prodottiMagazzino WHERE codice = %s;"
+        self.cursor.execute(_SQLSearch, (codice,))
         prodotto = self.cursor.fetchone()
+        idMagazzino = "mag"+magazzino
+        keyMagazzino = int(magazzino) + 7
+        giacenza = prodotto[keyMagazzino]
+        newGiacenza = giacenza - int(qntVenduta)
+
+        _SQLUpdate = "UPDATE prodottiMagazzino SET mag%s = %s WHERE codice = %s;"
+        self.cursor.execute(_SQLUpdate, (int(magazzino), newGiacenza, codice))
+        self.mydb.commit()
         self.cursor.close()
         self.mydb.close()
-        idMagazzino = "mag"+magazzino
-        keyMagazzino = idMagazzino + 7
-        giacenza = prodotto[keyMagazzino]
-        newGiacenza = giacenza - qntVenduta
-
-        _SQLUpdate = "UPDATE prodottiMagazzino SET mag%s = %s WHERE codice = %s"
-        self.cursor.execute(_SQLUpdate, (magazzino, newGiacenza, codice))
 
     def prodottoEsistente(self, ean, codice):
         #Verifica se il prodotto è esistente e restituisce un Booleano

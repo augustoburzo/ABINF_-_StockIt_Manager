@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<interface version="1.2">
+<interface version="1.3">
   <object class="ttk.Frame" id="masterFrame">
     <property name="height">200</property>
     <property name="width">1024</property>
@@ -4070,6 +4070,96 @@ Freepik</property>
             </child>
           </object>
         </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="toplevelVendita" named="True">
+    <property name="height">200</property>
+    <property name="iconphoto">sell.png</property>
+    <property name="title" translatable="yes">Seleziona quantità</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="frame47">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">left</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="lblNomeProdotto" named="True">
+            <property name="text" translatable="yes">Nome prodotto:</property>
+            <layout manager="pack">
+              <property name="anchor">e</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="label60" named="True">
+            <property name="text" translatable="yes">Magazzino:</property>
+            <layout manager="pack">
+              <property name="anchor">e</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="label61">
+            <property name="text" translatable="yes">Quantità:</property>
+            <layout manager="pack">
+              <property name="anchor">e</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame46">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">left</property>
+        </layout>
+        <child>
+          <object class="ttk.Entry" id="entry13">
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="entry14">
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="entry17">
+            <property name="text" translatable="yes">1</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="btnScarica" named="True">
+        <property name="command" type="command" cbtype="simple">scaricaProdotto</property>
+        <property name="text" translatable="yes">Scarica</property>
+        <layout manager="pack">
+          <property name="fill">both</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="side">left</property>
+        </layout>
       </object>
     </child>
   </object>

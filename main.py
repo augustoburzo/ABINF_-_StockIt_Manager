@@ -2440,6 +2440,11 @@ class RicercaProdottiWidget(tk.Toplevel):
 
         self.frame30.configure(height='200', width='200')
         self.frame30.pack(expand='true', fill='both', padx='5', pady='5', side='top')
+        self.frmButtons = ttk.Frame(self)
+        self.btnVendi = ttk.Button(self.frmButtons)
+        self.btnVendi.configure(text="Vendi prodotto", command=self.vendita)
+        self.btnVendi.pack(anchor='w')
+        self.frmButtons.pack(fill='x', expand=False, padx=5, pady=5)
         self.img_warehouse = tk.PhotoImage(file='images/warehouse.png')
         self.configure(height='200', width='200')
         self.geometry('1024x600')
@@ -2450,6 +2455,9 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.gestioneMagazzino = databaseOperations.GestioneMagazzino()
         self.listaMagazzino()
 
+    def vendita(self):
+        box = tkinter.messagebox.showwarning(message='Fuznione non ancora implementata')
+        pass
     def nomeFocus(self, event):
         self.entryRicEANProd.delete(0, END)
         self.entryRicCodProd.delete(0, END)
@@ -2738,6 +2746,9 @@ class VisualizzaProdottoWidget(tk.Toplevel):
         self.destroy()
 
     def vendi(self):
+        codice = self.entryCodProd.get()
+        magazzino = puntoVendita
+        vendi = inserisciVenditaWidget(codeProdotto=codice, magazzino=magazzino)
         pass
 
     def ordina(self):
@@ -2788,46 +2799,50 @@ class VisualizzaProdottoWidget(tk.Toplevel):
 
 
 class inserisciVenditaWidget(tk.Toplevel):
-    def __init__(self, nomeProdotto, magazzino, master=None, **kw):
+    def __init__(self, codeProdotto, magazzino, master=None, **kw):
         super(inserisciVenditaWidget, self).__init__(master, **kw)
-        frame47 = ttk.Frame(self)
-        frame47.configure(height=200, width=200)
-        self.lblNomeProdotto = ttk.Label(frame47)
-        self.lblNomeProdotto.configure(text='Nome prodotto:')
+        self.frame47 = ttk.Frame(self)
+        self.frame47.configure(height=200, width=200)
+        self.lblNomeProdotto = ttk.Label(self.frame47)
+        self.lblNomeProdotto.configure(text='Codice prodotto:')
         self.lblNomeProdotto.pack(anchor="e", side="top")
-        self.label60 = ttk.Label(frame47)
+        self.label60 = ttk.Label(self.frame47)
         self.label60.configure(text='Magazzino:')
         self.label60.pack(anchor="e", side="top")
-        self.label61 = ttk.Label(frame47)
+        self.label61 = ttk.Label(self.frame47)
         self.label61.configure(text='Quantità:')
         self.label61.pack(anchor="e", side="top")
         self.frame47.pack(expand="false", padx=5, pady=5, side="left")
         self.frame46 = ttk.Frame(self)
         self.frame46.configure(height=200, width=200)
-        self.entry13 = ttk.Entry(self.frame46)
-        self.entry13.pack(side="top")
-        self.entry13.insert(0, nomeProdotto)
-        self.entry14 = ttk.Entry(self.frame46)
-        self.entry14.pack(side="top")
-        self.entry14.insert(0, magazzino)
-        self.entry17 = ttk.Entry(self.frame46)
+        self.entryCodeProdotto = ttk.Entry(self.frame46)
+        self.entryCodeProdotto.pack(side="top")
+        self.entryCodeProdotto.insert(0, codeProdotto)
+        self.entryMagazzino = ttk.Entry(self.frame46)
+        self.entryMagazzino.pack(side="top")
+        self.entryMagazzino.insert(0, magazzino)
+        self.entryQty = ttk.Entry(self.frame46)
         self._text_ = '1'
-        self.entry17.delete("0", "end")
-        self.entry17.insert("0", self._text_)
-        self.entry17.pack(side="top")
+        self.entryQty.delete("0", "end")
+        self.entryQty.insert("0", self._text_)
+        self.entryQty.pack(side="top")
         self.frame46.pack(padx=5, pady=5, side="left")
         self.btnScarica = ttk.Button(self)
         self.btnScarica.configure(text='Scarica')
         self.btnScarica.pack(fill="both", padx=5, pady=5, side="left")
         self.btnScarica.configure(command=self.scaricaProdotto)
-        self.img_sell = tk.PhotoImage(file="sell.png")
+        self.img_sell = tk.PhotoImage(file="images/sell.png")
         self.configure(height=200, width=200)
         self.iconphoto(True, self.img_sell)
         self.title("Seleziona quantità")
 
     def scaricaProdotto(self):
-        nomePrd = self.entry13.get()
-        mag = self.entry14.get()
+        codicePrd = self.entryCodeProdotto.get()
+        mag = self.entryMagazzino.get()
+        mag=mag.replace("PV","")
+        qty = self.entryQty.get()
+
+        databaseOperations.GestioneMagazzino().vendiProdotto(codice=codicePrd, magazzino=mag, qntVenduta=qty)
         #TODO: Completare inserimento funzione vendita
         pass
 
