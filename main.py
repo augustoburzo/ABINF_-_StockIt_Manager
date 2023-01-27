@@ -2442,7 +2442,7 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.frame30.pack(expand='true', fill='both', padx='5', pady='5', side='top')
         self.frmButtons = ttk.Frame(self)
         self.btnVendi = ttk.Button(self.frmButtons)
-        self.btnVendi.configure(text="Vendi prodotto", command=self.vendita)
+        self.btnVendi.configure(text="Scarica prodotto", command=self.vendita)
         self.btnVendi.pack(anchor='w')
         self.frmButtons.pack(fill='x', expand=False, padx=5, pady=5)
         self.img_warehouse = tk.PhotoImage(file='images/warehouse.png')
@@ -2456,8 +2456,12 @@ class RicercaProdottiWidget(tk.Toplevel):
         self.listaMagazzino()
 
     def vendita(self):
-        box = tkinter.messagebox.showwarning(message='Fuznione non ancora implementata')
-        pass
+        indice = self.tblProdotti.focus()
+        idx = self.tblProdotti.item(indice)
+        cod = str(idx['values'][0])
+        magazzino = puntoVendita
+        vendi = inserisciVenditaWidget(codeProdotto=cod, magazzino=magazzino)
+        self.destroy()
     def nomeFocus(self, event):
         self.entryRicEANProd.delete(0, END)
         self.entryRicCodProd.delete(0, END)
@@ -2727,7 +2731,7 @@ class VisualizzaProdottoWidget(tk.Toplevel):
         self.button9.configure(text='Ordina prodotto', command=self.ordina)
         self.button9.pack(anchor='e', padx='5', pady='5', side='left')
         self.button10 = ttk.Button(self.frame40)
-        self.button10.configure(text='Vendi prodotto', command=self.vendi)
+        self.button10.configure(text='Scarica prodotto', command=self.vendi)
         self.button10.pack(anchor='e', padx='5', pady='5', side='left')
         self.frame40.configure(height='200', width='200')
         self.frame40.pack(fill='x', side='top')
@@ -2749,7 +2753,6 @@ class VisualizzaProdottoWidget(tk.Toplevel):
         codice = self.entryCodProd.get()
         magazzino = puntoVendita
         vendi = inserisciVenditaWidget(codeProdotto=codice, magazzino=magazzino)
-        pass
 
     def ordina(self):
         cod = self.entryCodProd.get()
@@ -2797,7 +2800,7 @@ class VisualizzaProdottoWidget(tk.Toplevel):
             riga = tuple(map(str, riga.split(' - ')))
             self.treeview5.insert("", END, values=riga)
 
-
+# FINESTRA INSERMENTO VENDITA###########################################################################################
 class inserisciVenditaWidget(tk.Toplevel):
     def __init__(self, codeProdotto, magazzino, master=None, **kw):
         super(inserisciVenditaWidget, self).__init__(master, **kw)
@@ -2844,7 +2847,7 @@ class inserisciVenditaWidget(tk.Toplevel):
 
         databaseOperations.GestioneMagazzino().vendiProdotto(codice=codicePrd, magazzino=mag, qntVenduta=qty)
         #TODO: Completare inserimento funzione vendita
-        pass
+        self.destroy()
 
 # FINESTRA PRINCIPALE###################################################################################################
 class StockItApp:
@@ -2879,6 +2882,10 @@ class StockItApp:
         self.btnStampa.configure(image=self.img_printer, text='Cassa')
         self.btnStampa.pack(expand='false', padx='5', pady='5', side='right')
         self.btnStampa.configure(command=self.finestraStampe)
+        self.btnVendi = ttk.Button(self.frmPulsantiSup)
+        self.img_sell = tk.PhotoImage(file='images/sell.png')
+        self.btnVendi.configure(image=self.img_sell, text='Vendita')
+        self.btnVendi.pack(expand=False, padx=5, pady=5, side='right')
         self.stampeTip = Hovertip(self.btnStampa, "Apri la finestra Stampe")
         self.img_warehouse = tk.PhotoImage(file='images/warehouse.png')
         self.btnMagazzino = ttk.Button(self.frmPulsantiSup)

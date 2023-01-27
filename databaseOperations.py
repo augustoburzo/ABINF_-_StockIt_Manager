@@ -422,6 +422,8 @@ class GestioneMagazzino:
         keyMagazzino = int(magazzino) + 7
         giacenza = prodotto[keyMagazzino]
         newGiacenza = giacenza - int(qntVenduta)
+        if newGiacenza < 0:
+            newGiacenza = 0
 
         _SQLUpdate = "UPDATE prodottiMagazzino SET mag%s = %s WHERE codice = %s;"
         self.cursor.execute(_SQLUpdate, (int(magazzino), newGiacenza, codice))
